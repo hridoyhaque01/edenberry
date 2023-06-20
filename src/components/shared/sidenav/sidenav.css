@@ -1,0 +1,10 @@
+.active {
+  color: #005959;
+  background-color: #f3bdb6;
+}
+
+.active path,
+.active svg,
+.active rect {
+  fill: #005959;
+}

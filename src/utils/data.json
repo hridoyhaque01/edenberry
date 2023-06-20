@@ -1,0 +1,337 @@
+{
+  "customers": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "order_date": "2023-06-20",
+      "email": "johndoe@example.com",
+      "location": "New York",
+      "due_date": "2023-07-01",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "order_date": "2023-06-18",
+      "email": "janesmith@example.com",
+      "location": "Los Angeles",
+      "due_date": "2023-06-30",
+      "status": "inactive"
+    },
+    {
+      "id": 3,
+      "name": "Robert Johnson",
+      "order_date": "2023-06-19",
+      "email": "robertjohnson@example.com",
+      "location": "Chicago",
+      "due_date": "2023-07-02",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 4,
+      "name": "Emily Wilson",
+      "order_date": "2023-06-17",
+      "email": "emilywilson@example.com",
+      "location": "Houston",
+      "due_date": "2023-06-25",
+      "status": "inactive"
+    },
+    {
+      "id": 5,
+      "name": "Michael Brown",
+      "order_date": "2023-06-20",
+      "email": "michaelbrown@example.com",
+      "location": "Philadelphia",
+      "due_date": "2023-06-28",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 6,
+      "name": "Olivia Davis",
+      "order_date": "2023-06-16",
+      "email": "oliviadavis@example.com",
+      "location": "Phoenix",
+      "due_date": "2023-06-24",
+      "status": "inactive"
+    },
+    {
+      "id": 7,
+      "name": "William Miller",
+      "order_date": "2023-06-18",
+      "email": "williammiller@example.com",
+      "location": "San Antonio",
+      "due_date": "2023-06-29",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 8,
+      "name": "Sophia Martinez",
+      "order_date": "2023-06-19",
+      "email": "sophiamartinez@example.com",
+      "location": "San Diego",
+      "due_date": "2023-07-03",
+      "status": "inactive"
+    },
+    {
+      "id": 9,
+      "name": "James Taylor",
+      "order_date": "2023-06-17",
+      "email": "jamestaylor@example.com",
+      "location": "Dallas",
+      "due_date": "2023-06-26",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 10,
+      "name": "Ava Anderson",
+      "order_date": "2023-06-21",
+      "email": "avaanderson@example.com",
+      "location": "San Jose",
+      "due_date": "2023-07-04",
+      "status": "inactive"
+    },
+    {
+      "id": 11,
+      "name": "Logan Thomas",
+      "order_date": "2023-06-15",
+      "email": "loganthomas@example.com",
+      "location": "Austin",
+      "due_date": "2023-06-23",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 12,
+      "name": "Mia Rodriguez",
+      "order_date": "2023-06-18",
+      "email": "miarodriguez@example.com",
+      "location": "Jacksonville",
+      "due_date": "2023-06-27",
+      "status": "inactive"
+    },
+    {
+      "id": 13,
+      "name": "Benjamin Wilson",
+      "order_date": "2023-06-20",
+      "email": "benjaminwilson@example.com",
+      "location": "San Francisco",
+      "due_date": "2023-06-30",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 14,
+      "name": "Evelyn Clark",
+      "order_date": "2023-06-16",
+      "email": "evelynclark@example.com",
+      "location": "Columbus",
+      "due_date": "2023-06-25",
+      "status": "inactive"
+    },
+    {
+      "id": 15,
+      "name": "Alexander Lewis",
+      "order_date": "2023-06-19",
+      "email": "alexanderlewis@example.com",
+      "location": "Indianapolis",
+      "due_date": "2023-07-01",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 16,
+      "name": "Charlotte Turner",
+      "order_date": "2023-06-17",
+      "email": "charlotteturner@example.com",
+      "location": "Seattle",
+      "due_date": "2023-06-26",
+      "status": "inactive"
+    },
+    {
+      "id": 17,
+      "name": "Daniel Hall",
+      "order_date": "2023-06-20",
+      "email": "danielhall@example.com",
+      "location": "Denver",
+      "due_date": "2023-06-30",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 18,
+      "name": "Amelia Hill",
+      "order_date": "2023-06-15",
+      "email": "ameliahill@example.com",
+      "location": "Washington, D.C.",
+      "due_date": "2023-06-24",
+      "status": "inactive"
+    },
+    {
+      "id": 19,
+      "name": "Henry Scott",
+      "order_date": "2023-06-17",
+      "email": "henryscott@example.com",
+      "location": "Boston",
+      "due_date": "2023-06-28",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 20,
+      "name": "Sofia Green",
+      "order_date": "2023-06-21",
+      "email": "sofiagreen@example.com",
+      "location": "Nashville",
+      "due_date": "2023-07-02",
+      "status": "inactive"
+    },
+    {
+      "id": 21,
+      "name": "David Adams",
+      "order_date": "2023-06-16",
+      "email": "davidadams@example.com",
+      "location": "Memphis",
+      "due_date": "2023-06-25",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 22,
+      "name": "Chloe Baker",
+      "order_date": "2023-06-19",
+      "email": "chloebaker@example.com",
+      "location": "Portland",
+      "due_date": "2023-06-29",
+      "status": "inactive"
+    },
+    {
+      "id": 23,
+      "name": "Joseph Wright",
+      "order_date": "2023-06-18",
+      "email": "josephwright@example.com",
+      "location": "Oklahoma City",
+      "due_date": "2023-07-03",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 24,
+      "name": "Ella Young",
+      "order_date": "2023-06-17",
+      "email": "ellayoung@example.com",
+      "location": "Las Vegas",
+      "due_date": "2023-06-26",
+      "status": "inactive"
+    },
+    {
+      "id": 25,
+      "name": "Samuel Turner",
+      "order_date": "2023-06-20",
+      "email": "samuelturner@example.com",
+      "location": "Louisville",
+      "due_date": "2023-06-29",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 26,
+      "name": "Victoria Collins",
+      "order_date": "2023-06-15",
+      "email": "victoriacollins@example.com",
+      "location": "Milwaukee",
+      "due_date": "2023-06-23",
+      "status": "inactive"
+    },
+    {
+      "id": 27,
+      "name": "Jackson Hernandez",
+      "order_date": "2023-06-18",
+      "email": "jacksonhernandez@example.com",
+      "location": "Albuquerque",
+      "due_date": "2023-06-27",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 28,
+      "name": "Penelope Phillips",
+      "order_date": "2023-06-20",
+      "email": "penelopephillips@example.com",
+      "location": "Tucson",
+      "due_date": "2023-06-30",
+      "status": "inactive"
+    },
+    {
+      "id": 29,
+      "name": "Liam King",
+      "order_date": "2023-06-16",
+      "email": "liamking@example.com",
+      "location": "Fresno",
+      "due_date": "2023-06-25",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 30,
+      "name": "Aria Foster",
+      "order_date": "2023-06-19",
+      "email": "ariafoster@example.com",
+      "location": "Sacramento",
+      "due_date": "2023-07-01",
+      "status": "inactive"
+    },
+    {
+      "id": 31,
+      "name": "Carter Powell",
+      "order_date": "2023-06-17",
+      "email": "carterpowell@example.com",
+      "location": "Long Beach",
+      "due_date": "2023-06-26",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 32,
+      "name": "Scarlett Hughes",
+      "order_date": "2023-06-20",
+      "email": "scarletthughes@example.com",
+      "location": "Kansas City",
+      "due_date": "2023-06-30",
+      "status": "inactive"
+    },
+    {
+      "id": 33,
+      "name": "Grayson Simmons",
+      "order_date": "2023-06-15",
+      "email": "graysonsimmons@example.com",
+      "location": "Miami",
+      "due_date": "2023-06-23",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    },
+    {
+      "id": 34,
+      "name": "Luna Price",
+      "order_date": "2023-06-19",
+      "email": "lunaprice@example.com",
+      "location": "Atlanta",
+      "due_date": "2023-07-02",
+      "status": "inactive"
+    },
+    {
+      "id": 35,
+      "name": "Matthew Simmons",
+      "order_date": "2023-06-16",
+      "email": "matthewsimmons@example.com",
+      "location": "Raleigh",
+      "due_date": "2023-06-25",
+      "status": "active",
+      "imageUrl": "./images/user.png"
+    }
+  ]
+}
