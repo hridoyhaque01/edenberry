@@ -333,5 +333,205 @@
       "status": "active",
       "imageUrl": "./images/user.png"
     }
+  ],
+  "coaches": [
+    {
+      "id": 1,
+      "name": "John Smith",
+      "phoneNo": "1234567890",
+      "email": "john.smith@example.com",
+      "service": "Web Development",
+      "location": "New York",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 2,
+      "name": "Jane Doe",
+      "phoneNo": "0987654321",
+      "email": "jane.doe@example.com",
+      "service": "Graphic Design",
+      "location": "Los Angeles",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 3,
+      "name": "David Johnson",
+      "phoneNo": "9876543210",
+      "email": "david.johnson@example.com",
+      "service": "Mobile App Development",
+      "location": "San Francisco",
+      "contractSigned": "No"
+    },
+    {
+      "id": 4,
+      "name": "Emily Williams",
+      "phoneNo": "5432167890",
+      "email": "emily.williams@example.com",
+      "service": "Digital Marketing",
+      "location": "Chicago",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 5,
+      "name": "Michael Brown",
+      "phoneNo": "6789012345",
+      "email": "michael.brown@example.com",
+      "service": "SEO Optimization",
+      "location": "Houston",
+      "contractSigned": "No"
+    },
+    {
+      "id": 6,
+      "name": "Sarah Johnson",
+      "phoneNo": "4567890123",
+      "email": "sarah.johnson@example.com",
+      "service": "Content Writing",
+      "location": "Seattle",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 7,
+      "name": "Robert Davis",
+      "phoneNo": "7890123456",
+      "email": "robert.davis@example.com",
+      "service": "UI/UX Design",
+      "location": "Austin",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 8,
+      "name": "Jennifer Wilson",
+      "phoneNo": "2345678901",
+      "email": "jennifer.wilson@example.com",
+      "service": "E-commerce Development",
+      "location": "Miami",
+      "contractSigned": "No"
+    },
+    {
+      "id": 9,
+      "name": "Christopher Lee",
+      "phoneNo": "8901234567",
+      "email": "christopher.lee@example.com",
+      "service": "Social Media Marketing",
+      "location": "Denver",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 10,
+      "name": "Jessica Taylor",
+      "phoneNo": "3210987654",
+      "email": "jessica.taylor@example.com",
+      "service": "Video Production",
+      "location": "Atlanta",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 11,
+      "name": "Andrew Miller",
+      "phoneNo": "5678901234",
+      "email": "andrew.miller@example.com",
+      "service": "Brand Consulting",
+      "location": "Boston",
+      "contractSigned": "No"
+    },
+    {
+      "id": 12,
+      "name": "Amanda Clark",
+      "phoneNo": "0123456789",
+      "email": "amanda.clark@example.com",
+      "service": "Copywriting",
+      "location": "Phoenix",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 13,
+      "name": "Daniel Anderson",
+      "phoneNo": "7654321098",
+      "email": "daniel.anderson@example.com",
+      "service": "App Design",
+      "location": "Dallas",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 14,
+      "name": "Olivia Wilson",
+      "phoneNo": "9876543210",
+      "email": "olivia.wilson@example.com",
+      "service": "Search Engine Marketing",
+      "location": "San Diego",
+      "contractSigned": "No"
+    },
+    {
+      "id": 15,
+      "name": "Matthew Taylor",
+      "phoneNo": "2345678901",
+      "email": "matthew.taylor@example.com",
+      "service": "Web Hosting",
+      "location": "Philadelphia",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 16,
+      "name": "Sophia Anderson",
+      "phoneNo": "5432109876",
+      "email": "sophia.anderson@example.com",
+      "service": "Print Design",
+      "location": "Washington, D.C.",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 17,
+      "name": "Ethan Thomas",
+      "phoneNo": "7890123456",
+      "email": "ethan.thomas@example.com",
+      "service": "email Marketing",
+      "location": "Orlando",
+      "contractSigned": "No"
+    },
+    {
+      "id": 18,
+      "name": "Isabella Johnson",
+      "phoneNo": "2109876543",
+      "email": "isabella.johnson@example.com",
+      "service": "Illustration",
+      "location": "Portland",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 19,
+      "name": "James Wilson",
+      "phoneNo": "4567890123",
+      "email": "james.wilson@example.com",
+      "service": "Social Media Management",
+      "location": "Nashville",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 20,
+      "name": "Mia Davis",
+      "phoneNo": "9012345678",
+      "email": "mia.davis@example.com",
+      "service": "Logo Design",
+      "location": "Charlotte",
+      "contractSigned": "No"
+    },
+    {
+      "id": 21,
+      "name": "Alexander Thompson",
+      "phoneNo": "5432109876",
+      "email": "alexander.thompson@example.com",
+      "service": "Content Marketing",
+      "location": "Las Vegas",
+      "contractSigned": "Yes"
+    },
+    {
+      "id": 22,
+      "name": "Charlotte Martinez",
+      "phoneNo": "7890123456",
+      "email": "charlotte.martinez@example.com",
+      "service": "SEO Audit",
+      "location": "Raleigh",
+      "contractSigned": "Yes"
+    }
   ]
 }

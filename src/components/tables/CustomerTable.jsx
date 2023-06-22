@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import CustomerModal from "../../components/modals/CustomerModal";
+import { Pagination } from "../../components/shared/pagination/Pagination";
 import data from "../../utils/data.json";
-import CustomerModal from "../modals/CustomerModal";
-import { Pagination } from "../shared/pagination/Pagination";
 
-function Customers() {
+function CustomerTable() {
   const { customers } = data || {};
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -116,4 +116,4 @@ function Customers() {
   );
 }
 
-export default Customers;
+export default CustomerTable;

@@ -1,22 +1,21 @@
 import React from "react";
-import DashboardTabs from "../../components/shared/tabs/DashboardTabs";
+import CoursesTabs from "../../components/shared/tabs/CoursesTabs";
 import Title from "../../components/shared/titles/Title";
-import CustomerTable from "../../components/tables/CustomerTable";
-import Sales from "./Sales";
-import Stockes from "./Stockes";
+import AddCourses from "./AddCourses";
+import AllCourses from "./AllCourses";
 
-function Dashboard() {
+function Courses() {
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <Title></Title>
-      <DashboardTabs></DashboardTabs>
+      <CoursesTabs></CoursesTabs>
       <div className="mt-3">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
         >
-          <Sales></Sales>
+          <AllCourses></AllCourses>
         </div>
         <div
           id="tabs-with-underline-2"
@@ -24,19 +23,11 @@ function Dashboard() {
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-2"
         >
-          <CustomerTable></CustomerTable>
-        </div>
-        <div
-          id="tabs-with-underline-3"
-          className="hidden"
-          role="tabpanel"
-          aria-labelledby="tabs-with-underline-item-3"
-        >
-          <Stockes></Stockes>
+          <AddCourses></AddCourses>
         </div>
       </div>
     </div>
   );
 }
 
-export default Dashboard;
+export default Courses;

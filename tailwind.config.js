@@ -6,9 +6,12 @@ export default {
     "node_modules/preline/dist/*.js",
   ],
   theme: {
+    scrollbar: ["rounded"],
+
     colors: {
       transparent: "transparent",
       disabled: "rgba(0, 0, 0, 0.04)",
+      overlay: "rgba(0, 0, 0, 0.45)",
 
       successColor: "#2CC672",
       primaryColor: "#005959",
@@ -50,25 +53,26 @@ export default {
       darkSemi: "#424242",
       darkMid: "#484848",
 
-      blueLight: "EAEDF7",
+      blueLight: "#EAEDF7",
 
       aqua: "#E0EBEC",
       aquaHigh: "#E8E8E8",
+      aquaLight: "#E6EFEF",
 
       fade: "#F7F6F4",
       fadeHigh: "#9E9E9E",
       fadeSemi: "#919191",
       fadeMid: "#d9d9d9",
-      fadeMid: "#d9d9d9",
+      fadeReg: "#BDBDBD",
 
       white: "#fff",
       whiteHigh: "#F5F5F5",
       whiteSemi: "#FAFAFA",
     },
 
-    // fontFamily: {
-    //   mont: ["Montserrat", "sans-serif"],
-    // },
+    fontFamily: {
+      mont: ["Montserrat", "sans-serif"],
+    },
   },
   plugins: [require("daisyui"), require("preline/plugin")],
   daisyui: {

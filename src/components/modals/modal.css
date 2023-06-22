@@ -1,0 +1,31 @@
+:where(.css-dev-only-do-not-override-1wazalj).ant-select-single:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+:where(.css-dev-only-do-not-override-1wazalj).ant-col-14 {
+  width: 100%;
+  max-width: 100%;
+}
+
+:where(
+    .css-dev-only-do-not-override-1wazalj
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload.ant-upload-select {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 48px;
+  margin-left: auto;
+  border: none;
+  border-left: 1px solid #919191;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
