@@ -67,7 +67,7 @@ function CustomerTable() {
                     key={customer?.id}
                   >
                     <td
-                      className="px-6 py-3 whitespace-nowrap"
+                      className="px-6 py-3 whitespace-nowrap cursor-pointer"
                       data-hs-overlay="#hs-scroll-inside-body-modal"
                     >
                       {customer?.name}

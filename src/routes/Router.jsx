@@ -1,9 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
+import Additional from "../pages/additional/Additional";
 import Coach from "../pages/coach/Coach";
 import Courses from "../pages/courses/Courses";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Products from "../pages/products/Products";
+import Request from "../pages/request/Request";
+import Services from "../pages/services/Services";
 import Users from "../pages/users/Users";
 import PrivateRouter from "./PrivateRouter";
 
@@ -35,6 +38,18 @@ export const routes = createBrowserRouter([
       {
         path: "/users",
         element: <Users></Users>,
+      },
+      {
+        path: "/services",
+        element: <Services></Services>,
+      },
+      {
+        path: "/request",
+        element: <Request></Request>,
+      },
+      {
+        path: "/additional",
+        element: <Additional></Additional>,
       },
     ],
   },
