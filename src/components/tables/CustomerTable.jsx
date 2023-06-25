@@ -1,20 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import CustomerModal from "../../components/modals/CustomerModal";
 import { Pagination } from "../../components/shared/pagination/Pagination";
-import data from "../../utils/data.json";
+import { fetchUsers, setUserData } from "../../features/users/usersSlice";
 
 function CustomerTable() {
-  const { customers } = data || {};
+  const dispatch = useDispatch();
+  const { userData } = useSelector((state) => state.auth);
+  const {
+    isLoading,
+    isError,
+    users,
+    userData: user,
+  } = useSelector((state) => state.users);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = customers?.slice(indexOfFirstRow, indexOfLastRow);
 
-  //   console.log(currentRows);
+  useEffect(() => {
+    dispatch(fetchUsers(userData?.token));
+  }, [dispatch]);
 
-  return (
-    <div className="flex flex-col pb-8">
+  let content = null;
+
+  if (isLoading) {
+    content = <div>Loading...</div>;
+  } else if (!isLoading && isError) {
+    content = <div>Something wen wrong!</div>;
+  } else if (!isLoading && !isError && users?.length === 0) {
+    content = <div>No Data Found!</div>;
+  } else if (!isLoading && !isError && users?.length > 0) {
+    const currentRows = users?.slice(indexOfFirstRow, indexOfLastRow);
+    content = (
       <div className="-m-1.5 overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
@@ -64,16 +82,17 @@ function CustomerTable() {
                 {currentRows?.map((customer) => (
                   <tr
                     className="hover:bg-whiteSemi text-blackLow text-sm"
-                    key={customer?.id}
+                    key={customer?._id}
                   >
                     <td
                       className="px-6 py-3 whitespace-nowrap cursor-pointer"
                       data-hs-overlay="#hs-scroll-inside-body-modal"
+                      onClick={() => dispatch(setUserData(customer))}
                     >
-                      {customer?.name}
+                      {customer?.firstName + " " + customer?.lastName}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {customer?.order_date}
+                      {customer?.orderDate}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
                       {customer?.email}
@@ -82,7 +101,7 @@ function CustomerTable() {
                       {customer?.location}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {customer?.due_date}
+                      {customer?.dueDate}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap text-right">
                       <span
@@ -106,14 +125,19 @@ function CustomerTable() {
           setCurrentPage={setCurrentPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
-          totalRows={customers?.length}
+          totalRows={users?.length}
         ></Pagination>
         <div>
-          <CustomerModal></CustomerModal>
+          <CustomerModal
+            userData={user}
+            token={userData?.token}
+          ></CustomerModal>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <div className="flex flex-col pb-8">{content}</div>;
 }
 
 export default CustomerTable;

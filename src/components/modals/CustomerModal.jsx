@@ -1,122 +1,34 @@
-import { Button, Checkbox, DatePicker, Form, Input, Select } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import React, { useState } from "react";
-// import ReactFlagsSelect from "react-flags-select";
-import { useRef } from "react";
-import { user } from "../../utils/getImages";
+import React, { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { updateUserData } from "../../features/users/usersSlice";
+import dateFormater from "../../utils/dateFormater";
+import getIsoDateString from "../../utils/getIsoDateString";
 
-export default function CustomerModal() {
+export default function CustomerModal({ userData, token }) {
+  // const { userData } = useSelector((state) => state.users);
   const [componentDisabled, setComponentDisabled] = useState(false);
   const [profile, setProfile] = useState(null);
   const profileRef = useRef();
   const [document, setDcument] = useState(null);
   const documentRef = useRef();
+  const dispatch = useDispatch();
 
-  const [mealOneData, setMealOneData] = useState([]);
-  const [mealTwoData, setMealTwoData] = useState([]);
-  const [mealThreeData, setMealThreeData] = useState([]);
-
-  const [profileData, setProfileData] = useState({
-    apparelsize: "",
-    babyname: "",
-    customernote: "",
-    duedate: "",
-    email: "",
-    fathername: "",
-    firstname: "",
-    lastname: "",
-    phone: "",
-    product1: "",
-    product2: "",
-    product3: "",
-    product4: "",
-    shipdate1: "",
-    shipdate2: "",
-    shipdate3: "",
-    shipdate4: "",
-    trackingnumber1: "",
-    trackingnumber2: "",
-    trackingnumber3: "",
-    trackingnumber4: "",
-  });
-
-  const [coachAssignment, setCoachAssignment] = useState({
-    assignmentOne: "",
-    assignmentTwo: "",
-    assignmentThree: "",
-    assignmentFour: "",
-  });
-
-  const handleProfile = (values) => {
-    var duedate = new Date(values?.duedate?.$d).getTime() / 1000;
-    var shipdate1 = new Date(values?.shipdate1?.$d).getTime() / 1000;
-    var shipdate2 = new Date(values?.shipdate2?.$d).getTime() / 1000;
-    var shipdate3 = new Date(values?.shipdate3?.$d).getTime() / 1000;
-    var shipdate4 = new Date(values?.shipdate4?.$d).getTime() / 1000;
-    setProfileData({
-      ...profileData,
-      apparelsize: values?.apparelsize,
-      babyname: values?.babyname,
-      customernote: values?.customernote,
-      duedate,
-      email: values?.email,
-      fathername: values?.fathername,
-      firstname: values?.firstname,
-      lastname: values?.lastname,
-      phone: values?.phone,
-      product1: values?.product1,
-      product2: values?.product2,
-      product3: values?.product3,
-      product4: values?.product4,
-      shipdate1,
-      shipdate2,
-      shipdate3,
-      shipdate4,
-      trackingnumber1: values?.trackingnumber1,
-      trackingnumber2: values?.trackingnumber2,
-      trackingnumber3: values?.trackingnumber3,
-      trackingnumber4: values?.trackingnumber4,
-    });
-  };
-
-  const handleMealTwoPlaning = (e) => {
-    if (e.target.checked) {
-      setMealTwoData([...mealTwoData, e?.target?.name]);
-    } else {
-      const index = mealTwoData?.indexOf(e?.target?.name);
-      if (index !== -1) {
-        mealTwoData?.splice(index, 1);
-      }
-    }
-  };
-
-  const handleMealOnePlaning = (e) => {
-    if (e.target.checked) {
-      setMealOneData([...mealOneData, e?.target?.name]);
-    } else {
-      const index = mealOneData?.indexOf(e?.target?.name);
-      if (index !== -1) {
-        mealOneData?.splice(index, 1);
-      }
-    }
-  };
-
-  const handleMealThreePlaning = (e) => {
-    if (e.target.checked) {
-      setMealThreeData([...mealThreeData, e?.target?.name]);
-    } else {
-      const index = mealThreeData?.indexOf(e?.target?.name);
-      if (index !== -1) {
-        mealThreeData?.splice(index, 1);
-      }
-    }
-  };
-
-  const handleMealPlaning = () => {
-    console.log(mealOneData);
-    console.log(mealTwoData);
-    console.log(mealThreeData);
-  };
+  const {
+    babyName,
+    customerNote,
+    dueDate,
+    email,
+    imageUrl,
+    fatherName,
+    firstName,
+    lastName,
+    apparelSize,
+    phoneNumber,
+    productsFour,
+    productsOne,
+    productsThree,
+    productsTwo,
+  } = userData || {};
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
@@ -138,13 +50,8 @@ export default function CustomerModal() {
 
   const handleDocumentChange = (event) => {
     const file = event.target.files[0];
-    console.log("document");
 
-    if (
-      file?.type === "image/jpg" ||
-      file?.type === "image/jpeg" ||
-      file?.type === "image/png"
-    ) {
+    if (file) {
       setDcument(file);
     } else {
       setDcument(null);
@@ -156,21 +63,89 @@ export default function CustomerModal() {
     setDcument(null);
   };
 
-  const handleCoachAssignment = (values) => {
-    setCoachAssignment({
-      ...coachAssignment,
-      assignmentOne: values?.coachAssOne,
-      assignmentTwo: values?.coachAssTwo,
-      assignmentThree: values?.coachAssThree,
-      assignmentFour: values?.coachAssFour,
-    });
+  const handleProfileData = async (event) => {
+    event.preventDefault();
+    const form = event.target;
+
+    const firstName = form.firstName.value;
+    const lastName = form.lastName.value;
+    const customerNote = form.customerNote.value;
+    const fatherName = form.fatherName.value;
+    const babyName = form.babyName.value;
+    const email = form.email.value;
+    const phoneNumber = form.phone.value;
+    const apparelSize = form.apparelSize.value;
+    const dueDate = dateFormater(form.dueDate.value);
+    const product1 = form.product1.value;
+    const shipdate1 = dateFormater(form.shipdate1.value);
+    const trackingNo1 = form.trackingNo1.value;
+    const product2 = form.product2.value;
+    const shipdate2 = dateFormater(form.shipdate2.value);
+    const trackingNo2 = form.trackingNo2.value;
+    const product3 = form.product3.value;
+    const shipdate3 = dateFormater(form.shipdate3.value);
+    const trackingNo3 = form.trackingNo3.value;
+    const product4 = form.product4.value;
+    const shipdate4 = dateFormater(form.shipdate4.value);
+    const trackingNo4 = form.trackingNo4.value;
+
+    const productsOne = {
+      prductName: product1,
+      shipmentDate: shipdate1,
+      tackingNumber: trackingNo1,
+    };
+    const productsTwo = {
+      prductName: product2,
+      shipmentDate: shipdate2,
+      tackingNumber: trackingNo2,
+    };
+    const productsThree = {
+      prductName: product3,
+      shipmentDate: shipdate3,
+      tackingNumber: trackingNo3,
+    };
+    const productsFour = {
+      prductName: product4,
+      shipmentDate: shipdate4,
+      tackingNumber: trackingNo4,
+    };
+
+    const data = {
+      firstName,
+      lastName,
+      customerNote,
+      fatherName,
+      babyName,
+      email,
+      apparelSize,
+      phoneNumber,
+      dueDate,
+      productsOne,
+      productsTwo,
+      productsThree,
+      productsFour,
+
+      status: "active",
+    };
+
+    const formData = new FormData();
+
+    // const fileList = [profile, document];
+    // console.log(fileList);
+    formData.append(`files`, profile);
+    formData.append(`files`, document);
+    // console.log(profile, document);
+    formData.append("data", JSON.stringify(data));
+    // formData.append("files", fileList);
+    // console.log(formData.get("files"));
+    dispatch(updateUserData({ id: userData?._id, formData, token }));
   };
 
   return (
     <>
       <div
         id="hs-scroll-inside-body-modal"
-        className="hs-overlay hidden w-full h-full fixed top-0 left-0 z-[60] overflow-x-hidden overflow-y-auto "
+        className="hs-overlay hidden w-full h-full fixed top-0 left-0 z-[60] overflow-x-hidden overflow-hidden uppercase"
       >
         <div className="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all max-w-screen-xl m-3 sm:mx-auto h-[calc(100%-3.5rem)]">
           <div className="max-h-full overflow-hidden flex flex-col bg-white border border-blueLight shadow-sm rounded-xl ">
@@ -205,12 +180,16 @@ export default function CustomerModal() {
 
               <div className="flex items-center justify-between my-11">
                 <div className="flex items-center gap-4">
-                  <img src={user} alt="" className="w-16 h-16 rounded-full" />
+                  <img
+                    src={imageUrl}
+                    alt=""
+                    className="w-16 h-16 rounded-full"
+                  />
                   <div>
-                    <h4 className="text-black leading-5">Walter White</h4>
-                    <p className="text-xs text-blackHigh mt-2">
-                      walterwhite@mail.com
-                    </p>
+                    <h4 className="text-black leading-5">
+                      {firstName + " " + lastName}
+                    </h4>
+                    <p className="text-xs text-blackHigh mt-2">{email}</p>
                   </div>
                 </div>
                 <div>
@@ -225,44 +204,31 @@ export default function CustomerModal() {
               </div>
 
               <div className="flex flex-col gap-11">
-                <Form
-                  labelCol={{ span: 4 }}
-                  wrapperCol={{ span: 14 }}
-                  layout="horizontal"
-                  disabled={componentDisabled}
-                  className="w-full relative flex flex-col gap-6"
-                  onFinish={handleProfile}
+                <form
+                  action="#"
+                  className="flex flex-col gap-6"
+                  onSubmit={handleProfileData}
                 >
                   {/* profile  */}
-                  <div className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-5 normal-case">
                     <span className="text-xs font-semibold text-black">
                       PROFILE PICTURE
                     </span>
                     <div className="flex flex-col-reverse">
-                      <Form.Item
+                      <input
+                        required
+                        type="file"
+                        className="h-1 w-1 opacity-0  "
+                        disabled={componentDisabled}
+                        id="profile"
+                        ref={profileRef}
+                        onChange={handleProfileChange}
                         name="profile"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please Select your profile",
-                          },
-                        ]}
-                      >
-                        <Input
-                          type="file"
-                          className="h-1 w-1 opacity-0 invisible absolute"
-                          disabled={componentDisabled}
-                          // required
-                          id="profile"
-                          ref={profileRef}
-                          onChange={handleProfileChange}
-                        />
-                      </Form.Item>
-                      <label
-                        htmlFor="profile"
+                      />
+                      <div
                         className={`w-full border border-fadeMid flex justify-between rounded-md overflow-hidden ${
                           componentDisabled ? "bg-disabled" : "bg-transparent"
-                        } ${componentDisabled ? "" : "cursor-pointer"}`}
+                        }`}
                       >
                         <div className="w-full flex items-center justify-between px-3 text-darkSemi">
                           {profile ? (
@@ -287,258 +253,9 @@ export default function CustomerModal() {
                             <span>Name of the fille</span>
                           )}
                         </div>
-                        <span
-                          className={`py-3 px-4 inline-flex font-mont text-sm text-black bg-whiteHigh border-l border-fadeSemi `}
-                        >
-                          Browse
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                  {/* name  */}
-                  <div className="grid grid-cols-2 items-center gap-6">
-                    <div className="flex flex-col gap-5">
-                      <span className="text-xs font-semibold text-black">
-                        FIRST NAME
-                      </span>
-                      <Form.Item
-                        name="firstname"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your username!",
-                          },
-                        ]}
-                      >
-                        <Input
-                          className="py-3 text-darkSemi placeholder:text-blackSemi "
-                          placeholder="first Name here..."
-                        />
-                      </Form.Item>
-                    </div>
-                    <div className="flex flex-col gap-5">
-                      <span className="text-xs font-semibold text-black">
-                        LAST NAME
-                      </span>
-                      <Form.Item
-                        name="lastname"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your lastname!",
-                          },
-                        ]}
-                      >
-                        <Input
-                          className="py-3 text-darkSemi placeholder:text-blackSemi"
-                          placeholder="last Name here..."
-                        />
-                      </Form.Item>
-                    </div>
-                  </div>
-                  {/* Customer Notes */}
-                  <div className="">
-                    <div className="flex flex-col gap-5">
-                      <span className="text-xs font-semibold text-black">
-                        Customer Notes
-                      </span>
-                      <Form.Item
-                        name="customernote"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your customernote!",
-                          },
-                        ]}
-                      >
-                        <TextArea
-                          className="py-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none"
-                          placeholder="customer notes here..."
-                        />
-                      </Form.Item>
-                      <div className="text-darkMid text-right">(45/1200)</div>
-                    </div>
-                  </div>
-                  {/* father and baby name  */}
-                  <div className="grid grid-cols-2 items-center gap-6">
-                    <div className="flex flex-col gap-5">
-                      <span className="text-xs font-semibold text-black">
-                        Father’s Name
-                      </span>
-                      <Form.Item
-                        name="fathername"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your fathername!",
-                          },
-                        ]}
-                      >
-                        <Input
-                          className="py-3 text-darkSemi placeholder:text-blackSemi"
-                          name="fathername"
-                          placeholder="father Name here..."
-                        />
-                      </Form.Item>
-                    </div>
-                    <div className="flex flex-col gap-5">
-                      <span className="text-xs font-semibold text-black">
-                        Baby’s Name
-                      </span>
-                      <Form.Item
-                        name="babyname"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your fathername!",
-                          },
-                        ]}
-                      >
-                        <Input
-                          className="py-3 text-darkSemi placeholder:text-blackSemi"
-                          name="babyname"
-                          placeholder="baby Name here..."
-                        />
-                      </Form.Item>
-                    </div>
-                  </div>
-                  {/* Email  */}
-                  <div className="flex flex-col gap-5">
-                    <span className="text-xs font-semibold text-black">
-                      Email
-                    </span>
-                    <Form.Item
-                      name="email"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your email!",
-                        },
-                      ]}
-                    >
-                      <Input
-                        className="py-3 text-darkSemi placeholder:text-blackSemi"
-                        placeholder="email here..."
-                        type="email"
-                      />
-                    </Form.Item>
-                  </div>
-                  {/* phone number  */}
-                  <div className="flex flex-col gap-5">
-                    <span className="text-xs font-semibold text-black">
-                      Phone Number
-                    </span>
-                    <Form.Item
-                      name="phone"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your phone number!",
-                        },
-                      ]}
-                    >
-                      <Input
-                        className="py-3 text-darkSemi placeholder:text-blackSemi "
-                        type="number"
-                        placeholder="phone number here..."
-                      />
-                    </Form.Item>
-                  </div>
-                  {/* Due Date and Apparel Size  */}
-                  <div className="grid grid-cols-2 items-center gap-6">
-                    <div className="flex flex-col gap-5">
-                      <span className="text-xs font-semibold text-black">
-                        Due Date
-                      </span>
-                      <Form.Item
-                        name="duedate"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your due date!",
-                          },
-                        ]}
-                      >
-                        <DatePicker className="py-3 w-full text-darkSemi placeholder:text-blackSemi border-fadeMid shadow-none" />
-                      </Form.Item>
-                    </div>
-                    <div className="flex flex-col gap-5">
-                      <span className="text-xs font-semibold text-black">
-                        Apparel Size
-                      </span>
-                      <Form.Item
-                        name="apparelsize"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your apparelsize",
-                          },
-                        ]}
-                      >
-                        <Input
-                          className="py-3 text-darkSemi placeholder:text-blackSemi"
-                          type="number"
-                          placeholder="apparel size here..."
-                        />
-                      </Form.Item>
-                    </div>
-                  </div>
-                  {/* profile  */}
-                  <div className="flex flex-col gap-5">
-                    <span className="text-xs font-semibold text-black">
-                      Upload Document
-                    </span>
-                    <div className="flex flex-col-reverse">
-                      <Form.Item
-                        name="document"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please Select your document",
-                          },
-                        ]}
-                      >
-                        <Input
-                          type="file"
-                          name="document"
-                          className="h-1 w-1 opacity-0 invisible absolute"
-                          disabled={componentDisabled}
-                          // required
-                          id="document"
-                          ref={documentRef}
-                          onChange={handleDocumentChange}
-                        />
-                      </Form.Item>
-                      <div
-                        className={`w-full border border-fadeMid flex justify-between rounded-md overflow-hidden ${
-                          componentDisabled ? "bg-disabled" : "bg-transparent"
-                        }`}
-                      >
-                        <div className="w-full flex items-center justify-between px-3 text-darkSemi">
-                          {document ? (
-                            <>
-                              <span>
-                                {document?.name?.length > 90
-                                  ? document?.name?.slice(0, 90) + "..."
-                                  : document?.name}
-                              </span>
-                              <button
-                                type="button"
-                                className="flex items-center"
-                                onClick={handleDocumentDelete}
-                              >
-                                <span className="material-symbols-outlined text-lg text-errorColor">
-                                  cancel
-                                </span>
-                              </button>
-                            </>
-                          ) : (
-                            <span>Name of the fille</span>
-                          )}
-                        </div>
                         <label
-                          htmlFor="document"
-                          className={`py-3 px-4 inline-flex font-mont text-sm text-black bg-whiteHigh border-l border-fadeSemi ${
+                          htmlFor="profile"
+                          className={`py-3 px-4 inline-flex font-mont text-sm text-black border-l border-fadeSemi ${
                             componentDisabled ? "" : "cursor-pointer"
                           }`}
                         >
@@ -547,800 +264,447 @@ export default function CustomerModal() {
                       </div>
                     </div>
                   </div>
-                  {/* PRODUCT SHIPMENT */}
-                  <div>
-                    <h2 className="text-xl font-semibold text-black">
-                      PRODUCT SHIPMENT
-                    </h2>
-                    <div className="mt-5">
-                      <div className="grid grid-cols-4 gap-4 mb-2">
-                        <div className="col-span-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Product
-                          </span>
-                        </div>
-                        <div className="">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Ship Date
-                          </span>
-                        </div>
-                        <div className="">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Tracking Number
-                          </span>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-4 gap-4">
-                        <div className="col-span-2">
-                          <Form.Item
-                            name="product1"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please select your product",
-                              },
-                            ]}
-                            initialValue="Belly Wrap"
-                          >
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="Belly Wrap">
-                                Belly Wrap
-                              </Select.Option>
-                              <Select.Option value="Postpartum kit">
-                                Postpartum kit
-                              </Select.Option>
-                              <Select.Option value="Mommy Care">
-                                Mommy Care
-                              </Select.Option>
-                              <Select.Option value="Complete Hospital Bag">
-                                Complete Hospital Bag
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div>
-                          <Form.Item
-                            name="shipdate1"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please pick your ship date",
-                              },
-                            ]}
-                          >
-                            <DatePicker className="py-3 w-full text-darkSemi placeholder:text-blackSemi border-fadeMid shadow-none" />
-                          </Form.Item>
-                        </div>
-                        <div>
-                          <Form.Item
-                            name="trackingnumber1"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please input your phone number",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3 text-darkSemi placeholder:text-blackSemi "
-                              type="number"
-                              placeholder="Tracking number here..."
-                            />
-                          </Form.Item>
-                        </div>
-                        <div className="col-span-2">
-                          <Form.Item
-                            name="product2"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please select your product",
-                              },
-                            ]}
-                            initialValue="Postpartum kit"
-                          >
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi ">
-                              <Select.Option value="Belly Wrap">
-                                Belly Wrap
-                              </Select.Option>
-                              <Select.Option value="Postpartum kit">
-                                Postpartum kit
-                              </Select.Option>
-                              <Select.Option value="Mommy Care">
-                                Mommy Care
-                              </Select.Option>
-                              <Select.Option value="Complete Hospital Bag">
-                                Complete Hospital Bag
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div>
-                          <Form.Item
-                            name="shipdate2"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please pick your ship date",
-                              },
-                            ]}
-                          >
-                            <DatePicker className="py-3 w-full text-darkSemi placeholder:text-blackSemi border-fadeMid shadow-none" />
-                          </Form.Item>
-                        </div>
-                        <div>
-                          <Form.Item
-                            name="trackingnumber2"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please input your phone number",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3 text-darkSemi placeholder:text-blackSemi "
-                              type="number"
-                              placeholder="Tracking number here..."
-                            />
-                          </Form.Item>
-                        </div>
-                        <div className="col-span-2">
-                          <Form.Item
-                            name="product3"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please select your product",
-                              },
-                            ]}
-                            initialValue="Mommy Care"
-                          >
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi ">
-                              <Select.Option value="Belly Wrap">
-                                Belly Wrap
-                              </Select.Option>
-                              <Select.Option value="Postpartum kit">
-                                Postpartum kit
-                              </Select.Option>
-                              <Select.Option value="Mommy Care">
-                                Mommy Care
-                              </Select.Option>
-                              <Select.Option value="Complete Hospital Bag">
-                                Complete Hospital Bag
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div>
-                          <Form.Item
-                            name="shipdate3"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please pick your ship date",
-                              },
-                            ]}
-                          >
-                            <DatePicker className="py-3 w-full text-darkSemi placeholder:text-blackSemi border-fadeMid shadow-none" />
-                          </Form.Item>
-                        </div>
-                        <div>
-                          <Form.Item
-                            name="trackingnumber3"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please input your phone number",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3 text-darkSemi placeholder:text-blackSemi "
-                              type="number"
-                              placeholder="Tracking number here..."
-                            />
-                          </Form.Item>
-                        </div>
-                        <div className="col-span-2">
-                          <Form.Item
-                            name="product4"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please select your product",
-                              },
-                            ]}
-                            initialValue="Complete Hospital Bag"
-                          >
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi ">
-                              <Select.Option value="Belly Wrap">
-                                Belly Wrap
-                              </Select.Option>
-                              <Select.Option value="Postpartum kit">
-                                Postpartum kit
-                              </Select.Option>
-                              <Select.Option value="Mommy Care">
-                                Mommy Care
-                              </Select.Option>
-                              <Select.Option value="Complete Hospital Bag">
-                                Complete Hospital Bag
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div>
-                          <Form.Item
-                            name="shipdate4"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please pick your ship date",
-                              },
-                            ]}
-                          >
-                            <DatePicker className="py-3 w-full text-darkSemi placeholder:text-blackSemi border-fadeMid shadow-none" />
-                          </Form.Item>
-                        </div>
-                        <div>
-                          <Form.Item
-                            name="trackingnumber4"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please input your phone number",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3 text-darkSemi placeholder:text-blackSemi "
-                              type="number"
-                              placeholder="Tracking number here..."
-                            />
-                          </Form.Item>
-                        </div>
-                      </div>
+                  {/* names  */}
+                  <div className="grid grid-cols-2 gap-6 items-center ">
+                    <div className="flex flex-col gap-5">
+                      <span className="text-xs font-mont font-semibold text-black">
+                        First name
+                      </span>
+                      <input
+                        required
+                        id="firstname"
+                        type="text"
+                        placeholder="first name here..."
+                        name="firstName"
+                        className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black ${
+                          componentDisabled ? "bg-disabled" : "bg-transparent"
+                        }`}
+                        readOnly={componentDisabled ? true : false}
+                        defaultValue={firstName}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-5">
+                      <span className="text-xs font-mont font-semibold text-black">
+                        last name
+                      </span>
+                      <input
+                        required
+                        id="lastname"
+                        type="text"
+                        placeholder="last name here..."
+                        name="lastName"
+                        className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black ${
+                          componentDisabled ? "bg-disabled" : "bg-transparent"
+                        }`}
+                        readOnly={componentDisabled ? true : false}
+                        defaultValue={lastName}
+                      />
+                    </div>
+                  </div>
+                  {/* customer notes */}
+                  <div className="flex flex-col gap-5">
+                    <label
+                      htmlFor="customernote"
+                      className="text-xs font-mont font-semibold text-black"
+                    >
+                      customer notes
+                    </label>
+                    <div>
+                      <textarea
+                        id="customernote"
+                        name="customerNote"
+                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md resize-none h-32 text-sm placeholder:text-fadeSemi text-black"
+                        placeholder="customer note here..."
+                        defaultValue={customerNote}
+                      ></textarea>
+                      <p className="text-darkMid text-xs text-right">
+                        (45/12000)
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex justify-end mt-8">
-                    <Form.Item>
-                      <Button
-                        htmlType="submit"
-                        className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white dfsfds"
-                        onSubmit={handleProfile}
-                      >
-                        Save & Update
-                      </Button>
-                    </Form.Item>
+                  {/* father and baby name  */}
+                  <div className="grid grid-cols-2 gap-6 items-center normal-case ">
+                    <div className="flex flex-col gap-5">
+                      <span className="text-xs font-mont font-semibold text-black">
+                        Father’s Name
+                      </span>
+                      <input
+                        required
+                        id="fatherName"
+                        type="text"
+                        placeholder="father name here..."
+                        name="fatherName"
+                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                        defaultValue={fatherName}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-5">
+                      <span className="text-xs font-mont font-semibold text-black">
+                        Baby’s Name
+                      </span>
+                      <input
+                        required
+                        id="babyName"
+                        type="text"
+                        placeholder="baby name here..."
+                        name="babyName"
+                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                        defaultValue={babyName}
+                      />
+                    </div>
                   </div>
-                </Form>
+                  {/* email name  */}
+                  <div className="flex flex-col gap-5">
+                    <label
+                      htmlFor="email"
+                      className="text-xs font-mont font-semibold text-black"
+                    >
+                      email
+                    </label>
+                    <input
+                      required
+                      id="email"
+                      type="email"
+                      placeholder="email address here..."
+                      name="email"
+                      className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                      defaultValue={email}
+                    />
+                  </div>
+                  {/* phone number  */}
+                  <div className="flex flex-col gap-5">
+                    <label
+                      htmlFor="phone"
+                      className="text-xs font-mont font-semibold text-black"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      required
+                      id="phone"
+                      type="number"
+                      placeholder="phone number here..."
+                      name="phone"
+                      className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                      defaultValue={phoneNumber}
+                    />
+                  </div>
 
-                <Form
-                  labelCol={{ span: 4 }}
-                  wrapperCol={{ span: 14 }}
-                  layout="horizontal"
-                  disabled={componentDisabled}
-                  className="w-full relative flex flex-col gap-6"
-                  onFinish={handleMealPlaning}
-                >
-                  <div>
-                    <h2 className="text-xl font-semibold text-black">
-                      MEAL PLANING
-                    </h2>
-                    <div className="mt-5">
-                      <div className="grid grid-cols-3 gap-4 mb-2">
-                        <div className="">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Dieters Restrictions for self
-                          </span>
-                        </div>
-                        <div className="">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Dieters Restrictions for self
-                          </span>
-                        </div>
-                        <div className="">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Dieters Restrictions for children
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-4 ">
-                        <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
-                          <Form.Item>
-                            <Checkbox
-                              name="Vegan"
-                              onChange={handleMealOnePlaning}
-                              className="inline-flex items-center pb-2 text-blackHigh"
-                            >
-                              Vegan
-                            </Checkbox>
-                          </Form.Item>
-                          <Form.Item>
-                            <Checkbox
-                              name="Vegetarian"
-                              onChange={handleMealOnePlaning}
-                              className="inline-flex items-center py-2 text-blackHigh"
-                            >
-                              Vegetarian
-                            </Checkbox>
-                          </Form.Item>
-                          <Form.Item>
-                            <Checkbox
-                              name="Gluten Free"
-                              onChange={handleMealOnePlaning}
-                              className="inline-flex items-center pt-2 text-blackHigh"
-                            >
-                              Gluten Free
-                            </Checkbox>
-                          </Form.Item>
-                        </div>
-                        <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
-                          <Form.Item>
-                            <Checkbox
-                              name="Vegan"
-                              onChange={handleMealTwoPlaning}
-                              className="inline-flex items-center pb-2 text-blackHigh"
-                            >
-                              Vegan
-                            </Checkbox>
-                          </Form.Item>
-                          <Form.Item>
-                            <Checkbox
-                              name="Vegetarian"
-                              onChange={handleMealTwoPlaning}
-                              className="inline-flex items-center py-2 text-blackHigh"
-                            >
-                              Vegetarian
-                            </Checkbox>
-                          </Form.Item>
-                          <Form.Item>
-                            <Checkbox
-                              name="Gluten Free"
-                              onChange={handleMealTwoPlaning}
-                              className="inline-flex items-center pt-2 text-blackHigh"
-                            >
-                              Gluten Free
-                            </Checkbox>
-                          </Form.Item>
-                        </div>
-                        <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
-                          <Form.Item>
-                            <Checkbox
-                              name="Vegan"
-                              onChange={handleMealThreePlaning}
-                              className="inline-flex items-center pb-2 text-blackHigh"
-                            >
-                              Vegan
-                            </Checkbox>
-                          </Form.Item>
-                          <Form.Item>
-                            <Checkbox
-                              name="Vegetarian"
-                              onChange={handleMealThreePlaning}
-                              className="inline-flex items-center py-2 text-blackHigh"
-                            >
-                              Vegetarian
-                            </Checkbox>
-                          </Form.Item>
-                          <Form.Item>
-                            <Checkbox
-                              name="Gluten Free"
-                              onChange={handleMealThreePlaning}
-                              className="inline-flex items-center pt-2 text-blackHigh"
-                            >
-                              Gluten Free
-                            </Checkbox>
-                          </Form.Item>
-                        </div>
-                      </div>
+                  {/* Due Date  */}
+                  <div className="grid grid-cols-2 gap-6 items-center normal-case ">
+                    <div className="flex flex-col gap-5">
+                      <span className="text-xs font-mont font-semibold text-black">
+                        Due Date
+                      </span>
+                      <input
+                        required
+                        id="dueDate"
+                        type="date"
+                        name="dueDate"
+                        defaultValue={getIsoDateString(dueDate)}
+                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-5">
+                      <span
+                        htmlFor="apparelSize"
+                        className="text-xs font-mont font-semibold text-black"
+                      >
+                        Apparel Size
+                      </span>
+                      <input
+                        required
+                        id="apparelSize"
+                        type="number"
+                        placeholder="apparel size here..."
+                        name="apparelSize"
+                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                        defaultValue={apparelSize}
+                      />
                     </div>
                   </div>
 
-                  <div className="flex justify-end mt-8">
-                    <Form.Item>
-                      <Button
-                        htmlType="submit"
-                        className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
+                  {/* document  */}
+                  <div className="flex flex-col gap-5 normal-case">
+                    <span className="text-xs font-semibold text-black">
+                      Upload Document
+                    </span>
+                    <div className="flex flex-col-reverse">
+                      <input
+                        required
+                        type="file"
+                        className="h-1 w-1 opacity-0  "
+                        disabled={componentDisabled}
+                        name="document"
+                        id="document"
+                        ref={documentRef}
+                        onChange={handleDocumentChange}
+                      />
+                      <div
+                        className={`w-full border border-fadeMid flex justify-between rounded-md overflow-hidden ${
+                          componentDisabled ? "bg-disabled" : "bg-transparent"
+                        }`}
                       >
-                        Save & Update
-                      </Button>
-                    </Form.Item>
-                  </div>
-                </Form>
-
-                <Form
-                  labelCol={{ span: 4 }}
-                  wrapperCol={{ span: 14 }}
-                  layout="horizontal"
-                  disabled={componentDisabled}
-                  className="w-full relative flex flex-col gap-6"
-                  onFinish={handleCoachAssignment}
-                >
-                  <div>
-                    <h2 className="text-xl font-semibold text-black">
-                      COACH ASSIGNMENT
-                    </h2>
-
-                    <div className="mt-5">
-                      <div className="grid grid-cols-4 gap-4 mb-2">
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Midwife Concierge
-                          </span>
-                          <Form.Item
-                            name="coachAssOne"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please Select Your Assignment",
-                              },
-                            ]}
-                            initialValue="midwife concierge"
-                          >
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="midwife concierge">
-                                Midwife Concierge
-                              </Select.Option>
-                              <Select.Option value="lactation coach">
-                                Lactation Coach
-                              </Select.Option>
-                              <Select.Option value="postpartum therapist">
-                                Postpartum Therapist
-                              </Select.Option>
-                              <Select.Option value="infant sleep coach">
-                                Infant Sleep Coach
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
+                        <div className="w-full flex items-center justify-between px-3 text-darkSemi">
+                          {document ? (
+                            <>
+                              <span className="select-none">
+                                {document?.name?.length > 90
+                                  ? document?.name?.slice(0, 90) + "..."
+                                  : document?.name}
+                              </span>
+                              <button
+                                type="button"
+                                className="flex items-center relative z-50"
+                                onClick={handleDocumentDelete}
+                                disabled={componentDisabled}
+                              >
+                                <span className="material-symbols-outlined text-lg text-errorColor">
+                                  cancel
+                                </span>
+                              </button>
+                            </>
+                          ) : (
+                            <span className="text-sm font-mont ">
+                              Name of the fille
+                            </span>
+                          )}
                         </div>
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Lactation Coach
-                          </span>
-                          <Form.Item
-                            name="coachAssTwo"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please Select Your Assignment",
-                              },
-                            ]}
-                            initialValue="lactation coach"
-                          >
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="midwife concierge">
-                                Midwife Concierge
-                              </Select.Option>
-                              <Select.Option value="lactation coach">
-                                Lactation Coach
-                              </Select.Option>
-                              <Select.Option value="postpartum therapist">
-                                Postpartum Therapist
-                              </Select.Option>
-                              <Select.Option value="infant sleep coach">
-                                Infant Sleep Coach
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Postpartum Therapist
-                          </span>
-                          <Form.Item
-                            name="coachAssThree"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please Select Your Assignment",
-                              },
-                            ]}
-                            initialValue="infant sleep coach"
-                          >
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="midwife concierge">
-                                Midwife Concierge
-                              </Select.Option>
-                              <Select.Option value="lactation coach">
-                                Lactation Coach
-                              </Select.Option>
-                              <Select.Option value="postpartum therapist">
-                                Postpartum Therapist
-                              </Select.Option>
-                              <Select.Option value="infant sleep coach">
-                                Infant Sleep Coach
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Infant Sleep Coach
-                          </span>
-                          <Form.Item
-                            name="coachAssFour"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please Select Your Assignment",
-                              },
-                            ]}
-                            initialValue="infant sleep coach"
-                          >
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="midwife concierge">
-                                Midwife Concierge
-                              </Select.Option>
-                              <Select.Option value="lactation coach">
-                                Lactation Coach
-                              </Select.Option>
-                              <Select.Option value="postpartum therapist">
-                                Postpartum Therapist
-                              </Select.Option>
-                              <Select.Option value="infant sleep coach">
-                                Infant Sleep Coach
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end mt-8">
-                    <Form.Item>
-                      <Button
-                        htmlType="submit"
-                        className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-                      >
-                        Save & Update
-                      </Button>
-                    </Form.Item>
-                  </div>
-                </Form>
-
-                <Form
-                  labelCol={{ span: 4 }}
-                  wrapperCol={{ span: 14 }}
-                  layout="horizontal"
-                  disabled={componentDisabled}
-                  className="w-full relative flex flex-col gap-6"
-                >
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-4">
-                      <h2 className="text-xl font-semibold text-black">
-                        SHIPPING ADDRESS
-                      </h2>
-                      {/* street name one  */}
-                      <div className="flex flex-col gap-2 mt-1">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Street Name 1
-                        </span>
-                        <Form.Item>
-                          <Input
-                            className="py-3 text-darkSemi placeholder:text-blackSemi"
-                            name="streetNameOne"
-                            placeholder="street name here..."
-                          />
-                        </Form.Item>
-                      </div>
-                      {/* street name two  */}
-
-                      <div className="flex flex-col gap-2">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Street Name 2
-                        </span>
-                        <Form.Item
-                          initialValue="place one"
-                          name="streenNameThree"
+                        <label
+                          htmlFor="document"
+                          className={`py-3 px-4 inline-flex font-mont text-sm text-black border-l border-fadeSemi ${
+                            componentDisabled ? "" : "cursor-pointer"
+                          }`}
                         >
-                          <Select className="w-full text-darkSemi placeholder:text-blackSemi">
-                            <Select.Option value="place one">
-                              place one
-                            </Select.Option>
-                            <Select.Option value="place two">
-                              place two
-                            </Select.Option>
-                            <Select.Option value="place three">
-                              place three
-                            </Select.Option>
-                            <Select.Option value="place four">
-                              place four
-                            </Select.Option>
-                          </Select>
-                        </Form.Item>
+                          Browse
+                        </label>
                       </div>
-
-                      {/* city and zip code  */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            City
-                          </span>
-                          <Form.Item initialValue="demo city one" name="city">
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="demo city one">
-                                demo city one
-                              </Select.Option>
-                              <Select.Option value="demo city two">
-                                demo city two
-                              </Select.Option>
-                              <Select.Option value="demo city three">
-                                demo city three
-                              </Select.Option>
-                              <Select.Option value="demo city four">
-                                demo city four
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Zip Code
-                          </span>
-                          <Form.Item initialValue="1200" name="zipcode1">
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="1200">1200</Select.Option>
-                              <Select.Option value="1201">1201</Select.Option>
-                              <Select.Option value="1202">1202</Select.Option>
-                              <Select.Option value="1203">1203</Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                      </div>
-
-                      {/* Country  */}
-
-                      <div className="flex flex-col gap-2">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Country
-                        </span>
-                        <Form.Item initialValue="australia" name="country1">
-                          <Select className="w-full text-darkSemi placeholder:text-blackSemi">
-                            <Select.Option value="australia">
-                              Australia
-                            </Select.Option>
-                            <Select.Option value="colombia">
-                              Colombia
-                            </Select.Option>
-                            <Select.Option value="cuba">Cuba</Select.Option>
-                            <Select.Option value="canada">Canada</Select.Option>
-                          </Select>
-                        </Form.Item>
-                      </div>
-
-                      {/* <div className="flex flex-col gap-2 mt-1">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Country
-                        </span>
-                        <ReactFlagsSelect
-                          selected={shippingCountry}
-                          onSelect={(code) => setShippingCountry(code)}
-                          countries={["fi", "GB", "IE", "IT", "NL", "SE"]}
-                        ></ReactFlagsSelect>
-                      </div> */}
-                    </div>
-
-                    <div className="flex flex-col gap-4">
-                      <h2 className="text-xl font-semibold text-black">
-                        BILLING ADDRESS
-                      </h2>
-                      {/* street name one  */}
-                      <div className="flex flex-col gap-2 mt-1">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Street Name 1
-                        </span>
-                        <Form.Item>
-                          <Input
-                            className="py-3 text-darkSemi placeholder:text-blackSemi"
-                            name="streetNameOne"
-                            placeholder="street name here..."
-                          />
-                        </Form.Item>
-                      </div>
-                      {/* street name two  */}
-
-                      <div className="flex flex-col gap-2">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Street Name 2
-                        </span>
-                        <Form.Item
-                          initialValue="place one"
-                          name="streenNameFour"
-                        >
-                          <Select className="w-full text-darkSemi placeholder:text-blackSemi">
-                            <Select.Option value="place one">
-                              place one
-                            </Select.Option>
-                            <Select.Option value="place two">
-                              place two
-                            </Select.Option>
-                            <Select.Option value="place three">
-                              place three
-                            </Select.Option>
-                            <Select.Option value="place four">
-                              place four
-                            </Select.Option>
-                          </Select>
-                        </Form.Item>
-                      </div>
-
-                      {/* city and zip code  */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            City
-                          </span>
-                          <Form.Item initialValue="demo city one" name="city2">
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="demo city one">
-                                demo city one
-                              </Select.Option>
-                              <Select.Option value="demo city two">
-                                demo city two
-                              </Select.Option>
-                              <Select.Option value="demo city three">
-                                demo city three
-                              </Select.Option>
-                              <Select.Option value="demo city four">
-                                demo city four
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Zip Code
-                          </span>
-                          <Form.Item initialValue="1200" name="zipcode2">
-                            <Select className="w-full flex items-center text-darkSemi placeholder:text-blackSemi">
-                              <Select.Option value="1200">1200</Select.Option>
-                              <Select.Option value="1201">1201</Select.Option>
-                              <Select.Option value="1202">1202</Select.Option>
-                              <Select.Option value="1203">1203</Select.Option>
-                            </Select>
-                          </Form.Item>
-                        </div>
-                      </div>
-
-                      {/* Country  */}
-
-                      {/* Country  */}
-
-                      <div className="flex flex-col gap-2">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          City
-                        </span>
-                        <Form.Item initialValue="colombia" name="country2">
-                          <Select className="w-full text-darkSemi placeholder:text-blackSemi">
-                            <Select.Option value="australia">
-                              Australia
-                            </Select.Option>
-                            <Select.Option value="colombia">
-                              Colombia
-                            </Select.Option>
-                            <Select.Option value="cuba">Cuba</Select.Option>
-                            <Select.Option value="canada">Canada</Select.Option>
-                          </Select>
-                        </Form.Item>
-                      </div>
-
-                      {/* <div className="flex flex-col gap-2 mt-1">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Country
-                        </span>
-                        <ReactFlagsSelect
-                          selected={billingCountry}
-                          onSelect={(code) => setBillingContry(code)}
-                          countries={["fi", "GB", "IE", "IT", "NL", "SE"]}
-                        ></ReactFlagsSelect>
-                      </div> */}
                     </div>
                   </div>
-                </Form>
+
+                  {/* products  */}
+
+                  <div className="flex flex-col gap-5">
+                    <div>
+                      <h2 className="text-xl font-semibold text-black">
+                        PRODUCT SHIPMENT
+                      </h2>
+                    </div>
+                    <div className="grid grid-cols-4 normal-case gap-4">
+                      <div className="col-span-2">
+                        <span className="text-sm text-blackHigh">Product</span>
+                      </div>
+                      <div>
+                        <span className="text-sm text-blackHigh">
+                          Ship Date
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-sm text-blackHigh">
+                          Tracking Number
+                        </span>
+                      </div>
+                      {/* product one  */}
+                      <div className="col-span-2 text-black">
+                        <select
+                          required
+                          className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none"
+                          defaultValue={productsOne?.prductName}
+                          name="product1"
+                        >
+                          <option value="selected" disabled>
+                            select product
+                          </option>
+                          <option value="Belly Wrap">Belly Wrap</option>
+                          <option value="Postpartum kit">Postpartum kit</option>
+                          <option value="Mommy Care">Mommy Care</option>
+                          <option value="Complete Hospital Bag">
+                            Complete Hospital Bag
+                          </option>
+                        </select>
+                      </div>
+                      <div>
+                        <input
+                          required
+                          name="shipdate1"
+                          type="date"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          defaultValue={getIsoDateString(
+                            productsOne?.shipmentDate
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          required
+                          type="number"
+                          placeholder="tracking number here..."
+                          name="trackingNo1"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          defaultValue={productsOne?.tackingNumber}
+                        />
+                      </div>
+                      {/* product two  */}
+                      <div className="col-span-2 text-black">
+                        <select
+                          required
+                          className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none"
+                          defaultValue={productsTwo?.prductName}
+                          name="product2"
+                        >
+                          <option value="selected" disabled>
+                            select product
+                          </option>
+                          <option value="Belly Wrap">Belly Wrap</option>
+                          <option value="Postpartum kit">Postpartum kit</option>
+                          <option value="Mommy Care">Mommy Care</option>
+                          <option value="Complete Hospital Bag">
+                            Complete Hospital Bag
+                          </option>
+                        </select>
+                      </div>
+                      <div>
+                        <input
+                          required
+                          name="shipdate2"
+                          type="date"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          defaultValue={getIsoDateString(
+                            productsTwo?.shipmentDate
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          required
+                          type="number"
+                          placeholder="tracking number here..."
+                          name="trackingNo2"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          defaultValue={productsTwo?.tackingNumber}
+                        />
+                      </div>
+                      {/* product one  */}
+                      <div className="col-span-2 text-black">
+                        <select
+                          required
+                          className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none"
+                          defaultValue={productsThree?.prductName}
+                          name="product3"
+                        >
+                          <option value="selected" disabled>
+                            select product
+                          </option>
+                          <option value="Belly Wrap">Belly Wrap</option>
+                          <option value="Postpartum kit">Postpartum kit</option>
+                          <option value="Mommy Care">Mommy Care</option>
+                          <option value="Complete Hospital Bag">
+                            Complete Hospital Bag
+                          </option>
+                        </select>
+                      </div>
+                      <div>
+                        <input
+                          required
+                          name="shipdate3"
+                          type="date"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          defaultValue={getIsoDateString(
+                            productsThree?.shipmentDate
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          required
+                          type="number"
+                          placeholder="tracking number here..."
+                          name="trackingNo3"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          defaultValue={productsThree?.tackingNumber}
+                        />
+                      </div>
+                      {/* product one  */}
+                      <div className="col-span-2 text-black">
+                        <select
+                          required
+                          className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none"
+                          defaultValue={productsFour?.prductName}
+                          name="product4"
+                        >
+                          <option value="selected" disabled>
+                            select product
+                          </option>
+                          <option value="Belly Wrap">Belly Wrap</option>
+                          <option value="Postpartum kit">Postpartum kit</option>
+                          <option value="Mommy Care">Mommy Care</option>
+                          <option value="Complete Hospital Bag">
+                            Complete Hospital Bag
+                          </option>
+                        </select>
+                      </div>
+                      <div>
+                        <input
+                          required
+                          name="shipdate4"
+                          type="date"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          defaultValue={getIsoDateString(
+                            productsFour?.shipmentDate
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          required
+                          type="number"
+                          placeholder="tracking number here..."
+                          name="trackingNo4"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          defaultValue={productsFour?.tackingNumber}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end">
+                    <button
+                      className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
+                      type="submit"
+                    >
+                      Save & Update
+                    </button>
+                  </div>
+                </form>
+
+                <form action="">
+                  <div className="flex flex-col gap-5">
+                    <div>
+                      <h2 className="text-xl font-semibold text-black">
+                        MEAL PLANING
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-3 items-center normal-case">
+                      <div>
+                        <span className="text-sm font-mont font-semibold text-blackHigh">
+                          Dieters Restrictions for self
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-sm font-mont font-semibold text-blackHigh">
+                          Dieters Restrictions for self
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-sm font-mont font-semibold text-blackHigh">
+                          Dieters Restrictions for self
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

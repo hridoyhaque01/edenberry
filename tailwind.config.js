@@ -2,7 +2,7 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{html,js,ts,jsx,tsx}",
     "node_modules/preline/dist/*.js",
   ],
   theme: {
@@ -72,6 +72,9 @@ export default {
 
     fontFamily: {
       mont: ["Montserrat", "sans-serif"],
+    },
+    backgroundImage: {
+      authBg: "url('./assets/images/authBg.png')",
     },
   },
   plugins: [require("daisyui"), require("preline/plugin")],
