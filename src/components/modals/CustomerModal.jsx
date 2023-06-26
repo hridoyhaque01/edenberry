@@ -17,6 +17,7 @@ export default function CustomerModal({ userData, token }) {
   const [mealThreeData, setMealThreeData] = useState([]);
 
   const {
+    documentUrl,
     babyName,
     customerNote,
     dueDate,
@@ -133,14 +134,13 @@ export default function CustomerModal({ userData, token }) {
 
     const formData = new FormData();
 
-    // const fileList = [profile, document];
-    // console.log(fileList);
-    formData.append(`files`, profile);
-    formData.append(`files`, document);
-    // console.log(profile, document);
+    if (!imageUrl) {
+      formData.append(`files`, profile);
+    }
+    if (!documentUrl) {
+      formData.append(`files`, document);
+    }
     formData.append("data", JSON.stringify(data));
-    // formData.append("files", fileList);
-    // console.log(formData.get("files"));
     dispatch(updateUserData({ id: userData?._id, formData, token }));
   };
 
@@ -181,7 +181,7 @@ export default function CustomerModal({ userData, token }) {
     <>
       <div
         id="hs-scroll-inside-body-modal"
-        className="hs-overlay hidden w-full h-full fixed top-0 left-0 z-[60] overflow-x-hidden overflow-hidden uppercase"
+        className="hs-overlay hidden w-full h-full fixed top-0 left-0 z-[60] overflow-x-hidden overflow-hidden "
       >
         <div className="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all max-w-screen-xl m-3 sm:mx-auto h-[calc(100%-3.5rem)]">
           <div className="max-h-full overflow-hidden flex flex-col bg-white border border-blueLight shadow-sm rounded-xl ">
@@ -246,13 +246,13 @@ export default function CustomerModal({ userData, token }) {
                   onSubmit={handleProfileData}
                 >
                   {/* profile  */}
-                  <div className="flex flex-col gap-5 normal-case">
+                  <div className="flex flex-col gap-5 ">
                     <span className="text-xs font-semibold text-black">
                       PROFILE PICTURE
                     </span>
                     <div className="flex flex-col-reverse">
                       <input
-                        required
+                        required={imageUrl ? false : true}
                         type="file"
                         className="h-1 w-1 opacity-0  "
                         disabled={componentDisabled}
@@ -360,7 +360,7 @@ export default function CustomerModal({ userData, token }) {
                   </div>
 
                   {/* father and baby name  */}
-                  <div className="grid grid-cols-2 gap-6 items-center normal-case ">
+                  <div className="grid grid-cols-2 gap-6 items-center  ">
                     <div className="flex flex-col gap-5">
                       <span className="text-xs font-mont font-semibold text-black">
                         Father’s Name
@@ -428,7 +428,7 @@ export default function CustomerModal({ userData, token }) {
                   </div>
 
                   {/* Due Date  */}
-                  <div className="grid grid-cols-2 gap-6 items-center normal-case ">
+                  <div className="grid grid-cols-2 gap-6 items-center  ">
                     <div className="flex flex-col gap-5">
                       <span className="text-xs font-mont font-semibold text-black">
                         Due Date
@@ -462,13 +462,13 @@ export default function CustomerModal({ userData, token }) {
                   </div>
 
                   {/* document  */}
-                  <div className="flex flex-col gap-5 normal-case">
+                  <div className="flex flex-col gap-5 ">
                     <span className="text-xs font-semibold text-black">
                       Upload Document
                     </span>
                     <div className="flex flex-col-reverse">
                       <input
-                        required
+                        required={documentUrl ? false : true}
                         type="file"
                         className="h-1 w-1 opacity-0  "
                         disabled={componentDisabled}
@@ -527,7 +527,7 @@ export default function CustomerModal({ userData, token }) {
                         PRODUCT SHIPMENT
                       </h2>
                     </div>
-                    <div className="grid grid-cols-4 normal-case gap-4">
+                    <div className="grid grid-cols-4  gap-4">
                       <div className="col-span-2">
                         <span className="text-sm text-blackHigh">Product</span>
                       </div>
@@ -542,12 +542,13 @@ export default function CustomerModal({ userData, token }) {
                         </span>
                       </div>
                       {/* product one  */}
-                      <div className="col-span-2 text-black">
+
+                      <div className="relative col-span-2">
                         <select
-                          required
-                          className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none"
-                          defaultValue={productsOne?.prductName}
+                          className="w-full bg-transparent p-2.5 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
                           name="product1"
+                          defaultValue={productsOne?.prductName}
+                          required
                         >
                           <option value="selected" disabled>
                             select product
@@ -559,6 +560,11 @@ export default function CustomerModal({ userData, token }) {
                             Complete Hospital Bag
                           </option>
                         </select>
+                        <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                          <span className="material-symbols-outlined">
+                            expand_more
+                          </span>
+                        </div>
                       </div>
                       <div>
                         <input
@@ -577,17 +583,17 @@ export default function CustomerModal({ userData, token }) {
                           type="number"
                           placeholder="tracking number here..."
                           name="trackingNo1"
-                          className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                          className="w-full outline-none border border-fadeMid bg-transparent p-3 rounded-md text-sm placeholder:text-fadeSemi text-black"
                           defaultValue={productsOne?.tackingNumber}
                         />
                       </div>
                       {/* product two  */}
-                      <div className="col-span-2 text-black">
+                      <div className="relative col-span-2">
                         <select
-                          required
-                          className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none"
-                          defaultValue={productsTwo?.prductName}
+                          className="w-full bg-transparent p-2.5 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
                           name="product2"
+                          defaultValue={productsTwo?.prductName}
+                          required
                         >
                           <option value="selected" disabled>
                             select product
@@ -599,6 +605,11 @@ export default function CustomerModal({ userData, token }) {
                             Complete Hospital Bag
                           </option>
                         </select>
+                        <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                          <span className="material-symbols-outlined">
+                            expand_more
+                          </span>
+                        </div>
                       </div>
                       <div>
                         <input
@@ -621,13 +632,13 @@ export default function CustomerModal({ userData, token }) {
                           defaultValue={productsTwo?.tackingNumber}
                         />
                       </div>
-                      {/* product one  */}
-                      <div className="col-span-2 text-black">
+                      {/* product three  */}
+                      <div className="relative col-span-2">
                         <select
-                          required
-                          className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none"
-                          defaultValue={productsThree?.prductName}
+                          className="w-full bg-transparent p-2.5 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
                           name="product3"
+                          defaultValue={productsThree?.prductName}
+                          required
                         >
                           <option value="selected" disabled>
                             select product
@@ -639,6 +650,11 @@ export default function CustomerModal({ userData, token }) {
                             Complete Hospital Bag
                           </option>
                         </select>
+                        <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                          <span className="material-symbols-outlined">
+                            expand_more
+                          </span>
+                        </div>
                       </div>
                       <div>
                         <input
@@ -661,13 +677,13 @@ export default function CustomerModal({ userData, token }) {
                           defaultValue={productsThree?.tackingNumber}
                         />
                       </div>
-                      {/* product one  */}
-                      <div className="col-span-2 text-black">
+                      {/* product four  */}
+                      <div className="relative col-span-2">
                         <select
-                          required
-                          className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none"
-                          defaultValue={productsFour?.prductName}
+                          className="w-full bg-transparent p-2.5 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
                           name="product4"
+                          defaultValue={productsFour?.prductName}
+                          required
                         >
                           <option value="selected" disabled>
                             select product
@@ -679,6 +695,11 @@ export default function CustomerModal({ userData, token }) {
                             Complete Hospital Bag
                           </option>
                         </select>
+                        <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                          <span className="material-symbols-outlined">
+                            expand_more
+                          </span>
+                        </div>
                       </div>
                       <div>
                         <input
@@ -740,97 +761,97 @@ export default function CustomerModal({ userData, token }) {
 
                       <div className="grid grid-cols-3 gap-4 ">
                         <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 pb-2">
                             <input
                               type="checkbox"
                               name="Vegan"
                               onChange={handleMealOnePlaning}
-                              className="inline-flex items-center pb-2 text-blackHigh"
+                              className="inline-flex items-center  text-blackHigh checkbox "
                               id="VeganOne"
                             />
                             <label htmlFor="VeganOne">Vegan</label>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 py-2">
                             <input
                               type="checkbox"
                               name="Vegetarian"
                               id="VegetarianOne"
                               onChange={handleMealOnePlaning}
-                              className="inline-flex items-center py-2 text-blackHigh"
+                              className="inline-flex items-center  text-blackHigh checkbox"
                             />
                             <label htmlFor="VegetarianOne">Vegetarian</label>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 pt-2">
                             <input
                               type="checkbox"
                               name="Gluten Free"
                               id="GlutenOne"
                               onChange={handleMealOnePlaning}
-                              className="inline-flex items-center pt-2 text-blackHigh"
+                              className="inline-flex items-center  text-blackHigh checkbox"
                             />
                             <label htmlFor="GlutenOne">Gluten Free</label>
                           </div>
                         </div>
                         <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 pb-2">
                             <input
                               type="checkbox"
                               name="Vegan"
                               onChange={handleMealTwoPlaning}
-                              className="inline-flex items-center pb-2 text-blackHigh"
+                              className="inline-flex items-center  text-blackHigh checkbox"
                               id="VeganTwo"
                             />
                             <label htmlFor="VeganTwo">Vegan</label>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 py-2">
                             <input
                               type="checkbox"
                               name="Vegetarian"
                               id="VegetarianTwo"
                               onChange={handleMealOnePlaning}
-                              className="inline-flex items-center py-2 text-blackHigh"
+                              className="inline-flex items-center  text-blackHigh checkbox"
                             />
                             <label htmlFor="VegetarianTwo">Vegetarian</label>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 pt-2">
                             <input
                               type="checkbox"
                               name="Gluten Free"
                               id="GlutenTwo"
                               onChange={handleMealOnePlaning}
-                              className="inline-flex items-center pt-2 text-blackHigh"
+                              className="inline-flex items-center  text-blackHigh checkbox"
                             />
                             <label htmlFor="GlutenTwo">Gluten Free</label>
                           </div>
                         </div>
                         <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 pb-2">
                             <input
                               type="checkbox"
                               name="Vegan"
                               onChange={handleMealThreePlaning}
-                              className="inline-flex items-center pb-2 text-blackHigh"
+                              className="inline-flex items-center  text-blackHigh checkbox"
                               id="VeganThree"
                             />
                             <label htmlFor="VeganThree">Vegan</label>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 py-2">
                             <input
                               type="checkbox"
                               name="Vegetarian"
                               id="VegetarianThree"
                               onChange={handleMealThreePlaning}
-                              className="inline-flex items-center py-2 text-blackHigh bg-white"
+                              className="inline-flex items-center  text-blackHigh bg-white checkbox"
                             />
                             <label htmlFor="VegetarianThree">Vegetarian</label>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 pt-2">
                             <input
                               type="checkbox"
                               name="Gluten Free"
                               id="GlutenThree"
                               onChange={handleMealThreePlaning}
-                              className="inline-flex items-center pt-2 text-blackHigh"
+                              className="inline-flex items-center  text-blackHigh checkbox"
                             />
                             <label htmlFor="GlutenThree">Gluten Free</label>
                           </div>
@@ -847,6 +868,414 @@ export default function CustomerModal({ userData, token }) {
                       >
                         Save & Update
                       </button>
+                    </div>
+                  </div>
+                </form>
+
+                <form>
+                  <div>
+                    <h2 className="text-xl font-semibold text-black">
+                      COACH ASSIGNMENT
+                    </h2>
+
+                    <div className="mt-5">
+                      <div className="grid grid-cols-4 gap-4 mb-2">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Midwife Concierge
+                          </span>
+                          <div className="relative">
+                            <select
+                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                              name="asssignmentOne"
+                              required
+                            >
+                              <option value="midwife concierge">
+                                Midwife Concierge
+                              </option>
+                              <option value="lactation coach">
+                                Lactation Coach
+                              </option>
+                              <option value="postpartum therapist">
+                                Postpartum Therapist
+                              </option>
+                              <option value="infant sleep coach">
+                                Infant Sleep Coach
+                              </option>
+                            </select>
+                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                              <span className="material-symbols-outlined">
+                                expand_more
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Lactation Coach
+                          </span>
+                          <div className="relative">
+                            <select
+                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                              name="asssignmentTwo"
+                              required
+                            >
+                              <option value="midwife concierge">
+                                Midwife Concierge
+                              </option>
+                              <option value="lactation coach">
+                                Lactation Coach
+                              </option>
+                              <option value="postpartum therapist">
+                                Postpartum Therapist
+                              </option>
+                              <option value="infant sleep coach">
+                                Infant Sleep Coach
+                              </option>
+                            </select>
+                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                              <span className="material-symbols-outlined">
+                                expand_more
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Postpartum Therapist
+                          </span>
+                          <div className="relative">
+                            <select
+                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                              name="asssignmentThree"
+                              required
+                            >
+                              <option value="midwife concierge">
+                                Midwife Concierge
+                              </option>
+                              <option value="lactation coach">
+                                Lactation Coach
+                              </option>
+                              <option value="postpartum therapist">
+                                Postpartum Therapist
+                              </option>
+                              <option value="infant sleep coach">
+                                Infant Sleep Coach
+                              </option>
+                            </select>
+                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                              <span className="material-symbols-outlined">
+                                expand_more
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Infant Sleep Coach
+                          </span>
+                          <div className="relative">
+                            <select
+                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                              name="asssignmentFour"
+                              required
+                            >
+                              <option value="midwife concierge">
+                                Midwife Concierge
+                              </option>
+                              <option value="lactation coach">
+                                Lactation Coach
+                              </option>
+                              <option value="postpartum therapist">
+                                Postpartum Therapist
+                              </option>
+                              <option value="infant sleep coach">
+                                Infant Sleep Coach
+                              </option>
+                            </select>
+                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                              <span className="material-symbols-outlined">
+                                expand_more
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end mt-8">
+                    <div>
+                      <button
+                        type="submit"
+                        className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
+                      >
+                        Save & Update
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <form>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-4">
+                      <h2 className="text-xl font-semibold text-black">
+                        SHIPPING ADDRESS
+                      </h2>
+                      {/* street name one  */}
+                      <div className="flex flex-col gap-2 mt-1">
+                        <span className="text-sm font-semibold text-blackHigh">
+                          Street Name 1
+                        </span>
+                        <div>
+                          <input
+                            className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md"
+                            name="shippingStreetOne"
+                            placeholder="street name here..."
+                          />
+                        </div>
+                      </div>
+                      {/* street name two  */}
+
+                      <div className="flex flex-col gap-2">
+                        <span className="text-sm font-semibold text-blackHigh">
+                          Street Name 2
+                        </span>
+
+                        <div className="relative">
+                          <select
+                            className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                            name="shippingStreetTwo"
+                            required
+                          >
+                            <option value="place one">place one</option>
+                            <option value="place two">place two</option>
+                            <option value="place three">place three</option>
+                            <option value="place four">place four</option>
+                          </select>
+                          <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                            <span className="material-symbols-outlined">
+                              expand_more
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* city and zip code  */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            City
+                          </span>
+                          <div className="relative">
+                            <select
+                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                              name="shippingCity"
+                              required
+                            >
+                              <option value="demo city one">
+                                demo city one
+                              </option>
+                              <option value="demo city two">
+                                demo city two
+                              </option>
+                              <option value="demo city three">
+                                demo city three
+                              </option>
+                              <option value="demo city four">
+                                demo city four
+                              </option>
+                            </select>
+                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                              <span className="material-symbols-outlined">
+                                expand_more
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Zip Code
+                          </span>
+                          <div className="relative">
+                            <select
+                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                              name="shippingZipCode"
+                              required
+                            >
+                              <option value="1200">1200</option>
+                              <option value="1201">1201</option>
+                              <option value="1202">1202</option>
+                              <option value="1203">1203</option>
+                            </select>
+                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                              <span className="material-symbols-outlined">
+                                expand_more
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Country  */}
+
+                      <div className="flex flex-col gap-2">
+                        <span className="text-sm font-semibold text-blackHigh">
+                          Country
+                        </span>
+                        <div className="relative">
+                          <select
+                            className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                            name="shippingCountry"
+                            required
+                          >
+                            <option value="australia">Australia</option>
+                            <option value="colombia">Colombia</option>
+                            <option value="cuba">Cuba</option>
+                            <option value="canada">Canada</option>
+                          </select>
+                          <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                            <span className="material-symbols-outlined">
+                              expand_more
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4">
+                      <h2 className="text-xl font-semibold text-black">
+                        BILLING ADDRESS
+                      </h2>
+                      {/* street name one  */}
+                      <div className="flex flex-col gap-2 mt-1">
+                        <span className="text-sm font-semibold text-blackHigh">
+                          Street Name 1
+                        </span>
+                        <div>
+                          <input
+                            className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md"
+                            name="billingStreetOne"
+                            placeholder="street name here..."
+                          />
+                        </div>
+                      </div>
+                      {/* street name two  */}
+
+                      <div className="flex flex-col gap-2">
+                        <span className="text-sm font-semibold text-blackHigh">
+                          Street Name 2
+                        </span>
+                        <div className="relative">
+                          <select
+                            className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                            name="billingStreetTwo"
+                            required
+                          >
+                            <option value="place one">place one</option>
+                            <option value="place two">place two</option>
+                            <option value="place three">place three</option>
+                            <option value="place four">place four</option>
+                          </select>
+                          <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                            <span className="material-symbols-outlined">
+                              expand_more
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* city and zip code  */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            City
+                          </span>
+                          <div className="relative">
+                            <select
+                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                              name="billingCity"
+                              required
+                            >
+                              <option value="demo city one">
+                                demo city one
+                              </option>
+                              <option value="demo city two">
+                                demo city two
+                              </option>
+                              <option value="demo city three">
+                                demo city three
+                              </option>
+                              <option value="demo city four">
+                                demo city four
+                              </option>
+                            </select>
+                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                              <span className="material-symbols-outlined">
+                                expand_more
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Zip Code
+                          </span>
+                          <div className="relative">
+                            <select
+                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                              name="billingZipCode"
+                              required
+                            >
+                              <option value="1200">1200</option>
+                              <option value="1201">1201</option>
+                              <option value="1202">1202</option>
+                              <option value="1203">1203</option>
+                            </select>
+                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                              <span className="material-symbols-outlined">
+                                expand_more
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Country  */}
+
+                      <div className="flex flex-col gap-2">
+                        <span className="text-sm font-semibold text-blackHigh">
+                          City
+                        </span>
+                        <div className="relative">
+                          <select
+                            className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                            name="billingCountry"
+                            required
+                          >
+                            <option value="australia">Australia</option>
+                            <option value="colombia">Colombia</option>
+                            <option value="cuba">Cuba</option>
+                            <option value="canada">Canada</option>
+                          </select>
+                          <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                            <span className="material-symbols-outlined">
+                              expand_more
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* <div className="flex flex-col gap-2 mt-1">
+                        <span className="text-sm font-semibold text-blackHigh">
+                          Country
+                        </span>
+                        <ReactFlagsSelect
+                          selected={billingCountry}
+                          onSelect={(code) => setBillingContry(code)}
+                          countries={["fi", "GB", "IE", "IT", "NL", "SE"]}
+                        ></ReactFlagsSelect>
+                      </div> */}
                     </div>
                   </div>
                 </form>

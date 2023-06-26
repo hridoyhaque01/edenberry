@@ -1,6 +1,6 @@
 import React from "react";
 
-function CoachTabs() {
+function ProductTabs() {
   return (
     <div className="bg-fade text-fadeHigh ">
       <nav
@@ -16,7 +16,7 @@ function CoachTabs() {
           aria-controls="tabs-with-underline-1"
           role="tab"
         >
-          Coaches
+          Listed Product
         </button>
 
         <button
@@ -27,7 +27,7 @@ function CoachTabs() {
           aria-controls="tabs-with-underline-3"
           role="tab"
         >
-          Add Coach
+          Add Product
         </button>
         <button
           type="button"
@@ -36,11 +36,11 @@ function CoachTabs() {
           aria-controls="tabs-with-underline-2"
           role="tab"
         >
-          Calendar
+          Inventory
         </button>
       </nav>
     </div>
   );
 }
 
-export default CoachTabs;
+export default ProductTabs;

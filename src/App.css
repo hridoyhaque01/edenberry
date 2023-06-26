@@ -13,3 +13,7 @@ body {
   cursor: pointer;
   /* Add any additional styling you want */
 }
+
+.scrollbar-none::-webkit-scrollbar {
+  width: 0;
+}

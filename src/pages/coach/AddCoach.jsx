@@ -1,10 +1,28 @@
-import { Button, Form, Input } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { user } from "../../utils/getImages";
 
 function AddCoach() {
   const [componentDisabled, setComponentDisabled] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const profileRef = useRef();
+
+  const handleProfileChange = (event) => {
+    const file = event.target.files[0];
+    if (
+      file?.type === "image/jpg" ||
+      file?.type === "image/jpeg" ||
+      file?.type === "image/png"
+    ) {
+      setProfile(file);
+    } else {
+      setProfile(null);
+    }
+  };
+
+  const handleProfileDelete = () => {
+    profileRef.current.value = "";
+    setProfile(null);
+  };
 
   return (
     <section className="pb-10">
@@ -37,52 +55,71 @@ function AddCoach() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-11">
-          <Form
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 14 }}
-            layout="horizontal"
-            disabled={componentDisabled}
-            className="w-full relative flex flex-col gap-6"
-          >
+        <div className="">
+          <form className="flex flex-col gap-6">
             {/* profile  */}
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5 ">
               <span className="text-xs font-semibold text-black">
                 PROFILE PICTURE
               </span>
-              <div
-                className={`w-full ${
-                  componentDisabled ? "bg-disabled" : "bg-transparent"
-                } border border-fadeMid rounded-xl relative py-3 px-2`}
-              >
-                <span className="select-none text-blackSemi">
-                  Name of the fille
-                </span>
-                <Input
+              <div className="flex flex-col-reverse">
+                <input
+                  required
                   type="file"
-                  className="w-full opacity-0 invisible absolute"
-                  id="profile"
+                  className="h-1 w-1 opacity-0  "
+                  disabled={componentDisabled}
+                  id="coachprofile"
+                  ref={profileRef}
+                  onChange={handleProfileChange}
+                  name="coachprofile"
                 />
-                <label
-                  htmlFor="profile"
-                  className={`absolute inset-y-0 right-0 text-black text-sm ${
-                    componentDisabled
-                      ? "bg-disabled"
-                      : "bg-whiteHigh cursor-pointer "
-                  }  flex items-center justify-center px-4 border-l border-l-fadeSemi rounded-r-xl select-none z-20 `}
+                <div
+                  className={`w-full border border-fadeMid flex justify-between rounded-md overflow-hidden ${
+                    componentDisabled ? "bg-disabled" : "bg-transparent"
+                  }`}
                 >
-                  Browse
-                </label>
+                  <div className="w-full flex items-center justify-between px-3 text-darkSemi">
+                    {profile ? (
+                      <>
+                        <span className="select-none">
+                          {profile?.name?.length > 90
+                            ? profile?.name?.slice(0, 90) + "..."
+                            : profile?.name}
+                        </span>
+                        <button
+                          type="button"
+                          className="flex items-center relative z-50"
+                          onClick={handleProfileDelete}
+                          disabled={componentDisabled}
+                        >
+                          <span className="material-symbols-outlined text-lg text-errorColor">
+                            cancel
+                          </span>
+                        </button>
+                      </>
+                    ) : (
+                      <span>Name of the fille</span>
+                    )}
+                  </div>
+                  <label
+                    htmlFor="coachprofile"
+                    className={`py-3 px-4 inline-flex font-mont text-sm text-black border-l border-fadeSemi ${
+                      componentDisabled ? "" : "cursor-pointer"
+                    }`}
+                  >
+                    Browse
+                  </label>
+                </div>
               </div>
             </div>
-            {/* name  */}
+            {/* names  */}
             <div className="grid grid-cols-2 items-center gap-6">
               <div className="flex flex-col gap-5">
                 <span className="text-xs font-semibold text-black">
                   FIRST NAME
                 </span>
-                <Input
-                  className="py-3 text-darkSemi placeholder:text-blackSemi"
+                <input
+                  className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                   name="firstname"
                   placeholder="first Name here..."
                 />
@@ -91,23 +128,30 @@ function AddCoach() {
                 <span className="text-xs font-semibold text-black">
                   LAST NAME
                 </span>
-                <Input
-                  className="py-3 text-darkSemi placeholder:text-blackSemi"
+                <input
+                  className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                   name="lastname"
                   placeholder="last Name here..."
                 />
               </div>
             </div>
-
+            {/* Add Coach Speciality */}
             <div className="flex flex-col gap-5">
               <span className="text-xs font-semibold text-black">
                 Add Coach Speciality
               </span>
-              <Input
-                className="py-3 text-darkSemi placeholder:text-blackSemi"
-                name="coachSpciality"
-                placeholder="coach speciality here..."
-              />
+              <select
+                required
+                className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none text-black"
+                name="product1"
+              >
+                <option value="selected" disabled>
+                  select product
+                </option>
+                <option value="Belly Wrap">location coach</option>
+                <option value="Postpartum kit">location coach</option>
+                <option value="Mommy Care">location coach</option>
+              </select>
             </div>
 
             {/* Customer Notes */}
@@ -116,9 +160,9 @@ function AddCoach() {
                 <span className="text-xs font-semibold text-black">
                   Professional Bio
                 </span>
-                <TextArea
+                <textarea
                   name="customernote"
-                  className="py-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none"
+                  className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md"
                   placeholder="customer notes here..."
                 />
                 <div className="text-darkMid text-right">(45/1200)</div>
@@ -128,8 +172,8 @@ function AddCoach() {
             {/* Email  */}
             <div className="flex flex-col gap-5">
               <span className="text-xs font-semibold text-black">Email</span>
-              <Input
-                className="py-3 text-darkSemi placeholder:text-blackSemi"
+              <input
+                className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                 name="email"
                 placeholder="email here..."
               />
@@ -139,8 +183,8 @@ function AddCoach() {
               <span className="text-xs font-semibold text-black">
                 Phone Number
               </span>
-              <Input
-                className="py-3 text-darkSemi placeholder:text-blackSemi "
+              <input
+                className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                 type="number"
                 name="phone"
                 placeholder="phone number here..."
@@ -151,8 +195,8 @@ function AddCoach() {
               <span className="text-xs font-semibold text-black">
                 Dialpad Number
               </span>
-              <Input
-                className="py-3 text-darkSemi placeholder:text-blackSemi "
+              <input
+                className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                 type="number"
                 name="dialpadNumber"
                 placeholder="phone number here..."
@@ -160,14 +204,14 @@ function AddCoach() {
             </div>
 
             <div className="flex justify-end mt-8">
-              <Button
+              <button
                 type="submit"
                 className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
               >
                 Save & Update
-              </Button>
+              </button>
             </div>
-          </Form>
+          </form>
         </div>
       </div>
     </section>

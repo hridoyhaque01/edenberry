@@ -3,7 +3,6 @@ import CoachTabs from "../../components/shared/tabs/CoachTabs";
 import Title from "../../components/shared/titles/Title";
 import CoachTable from "../../components/tables/CoachTable";
 import AddCoach from "./AddCoach";
-import AddProducts from "./AddProducts";
 import Calender from "./Calender";
 
 function Coach() {
@@ -19,14 +18,7 @@ function Coach() {
         >
           <CoachTable></CoachTable>
         </div>
-        <div
-          id="tabs-with-underline-2"
-          className="hidden"
-          role="tabpanel"
-          aria-labelledby="tabs-with-underline-item-2"
-        >
-          <Calender></Calender>
-        </div>
+
         <div
           id="tabs-with-underline-3"
           className="hidden"
@@ -36,12 +28,12 @@ function Coach() {
           <AddCoach></AddCoach>
         </div>
         <div
-          id="tabs-with-underline-4"
+          id="tabs-with-underline-2"
           className="hidden"
           role="tabpanel"
-          aria-labelledby="tabs-with-underline-item-4"
+          aria-labelledby="tabs-with-underline-item-2"
         >
-          <AddProducts></AddProducts>
+          <Calender></Calender>
         </div>
       </div>
     </div>

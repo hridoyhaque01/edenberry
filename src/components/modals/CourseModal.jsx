@@ -1,5 +1,3 @@
-import { Button, Form, Input } from "antd";
-import TextArea from "antd/es/input/TextArea";
 import React from "react";
 import { imageIcon } from "../../utils/getImages";
 
@@ -7,7 +5,7 @@ function CourseModal() {
   return (
     <div
       id="course-modal"
-      className="hs-overlay hidden w-full h-full fixed inset-y-0 left-0 z-[60] overflow-x-hidden overflow-y-auto bg-overlay "
+      className="hs-overlay hidden w-full h-full fixed inset-y-0 left-0 z-[60] overflow-x-hidden overflow-y-auto bg-overlay scrollbar-none"
     >
       <div className=" hs-overlay-open:opacity-100 hs-overlay-open:duration-300 opacity-0 ease-out transition-all w-full h-full mx-auto flex items-center justify-center ">
         <div className="w-[44rem] z-20 bg-white h-[calc(100%-8rem)] overflow-auto rounded-xl">
@@ -23,20 +21,15 @@ function CourseModal() {
               <span className="material-symbols-outlined">close</span>
             </button>
           </div>
-          <div className="flex flex-col gap-11 p-8">
-            <Form
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 14 }}
-              layout="horizontal"
-              className="w-full relative flex flex-col gap-6"
-            >
+          <div className="w-full p-8">
+            <form className="flex flex-col gap-6">
               {/* COURSE NAME */}
               <div className="flex flex-col gap-5">
                 <span className="text-xs font-semibold text-black font-mont capitalize">
-                  LESSON nAME
+                  LESSON NAME
                 </span>
-                <Input
-                  className="py-3 text-darkSemi placeholder:text-blackSemi"
+                <input
+                  className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
                   name="coachSpciality"
                   placeholder="lesson name here..."
                 />
@@ -48,7 +41,7 @@ function CourseModal() {
                   THUMBNAIL
                 </span>
                 <div className={` w-full`}>
-                  <Input
+                  <input
                     type="file"
                     className="w-full opacity-0 invisible absolute"
                     id="profile"
@@ -71,27 +64,29 @@ function CourseModal() {
 
               {/* profile  */}
               <div className="flex flex-col gap-5">
-                <div className="flex flex-col gap-5">
-                  <span className="text-xs font-semibold text-black font-mont">
+                <div className="flex flex-col gap-5 ">
+                  <span className="text-xs font-semibold text-black">
                     UPLOAD VIDEO
                   </span>
-                  <div
-                    className={`w-full "bg-transparent" border border-fadeMid rounded-xl relative py-3 px-2`}
-                  >
-                    <span className="select-none text-blackSemi">
-                      Name of the fille
-                    </span>
-                    <Input
+                  <div className="flex flex-col-reverse">
+                    <input
+                      required
                       type="file"
-                      className="w-full opacity-0 invisible absolute"
+                      className="h-1 w-1 opacity-0  "
                       id="profile"
+                      name="profile"
                     />
-                    <label
-                      htmlFor="profile"
-                      className={`absolute inset-y-0 right-0 text-black text-sm bg-whiteHigh cursor-pointer  flex items-center justify-center px-4 border-l border-l-fadeSemi rounded-r-xl select-none z-20 `}
+                    <div
+                      className={`w-full border border-fadeMid flex items-center justify-between rounded-md overflow-hidden pl-2`}
                     >
-                      Browse
-                    </label>
+                      <span>Name of the file</span>
+                      <label
+                        htmlFor="profile"
+                        className={`py-3 px-4 inline-flex font-mont text-sm text-black bg-whiteHigh border-l border-fadeSemi cursor-pointer`}
+                      >
+                        Browse
+                      </label>
+                    </div>
                   </div>
                 </div>
                 {/* 
@@ -116,9 +111,9 @@ function CourseModal() {
                   <span className="text-xs font-semibold text-black font-mont uppercase">
                     Description
                   </span>
-                  <TextArea
+                  <textarea
                     name="customernote"
-                    className="py-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none"
+                    className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                     placeholder="customer notes here..."
                   />
                   <div className="text-darkMid text-right">(45/1200)</div>
@@ -127,14 +122,14 @@ function CourseModal() {
               {/* buttons */}
 
               <div className="flex justify-end mt-8">
-                <Button
+                <button
                   type="submit"
                   className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
                 >
                   Save & Update
-                </Button>
+                </button>
               </div>
-            </Form>
+            </form>
           </div>
         </div>
       </div>

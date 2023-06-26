@@ -14,8 +14,14 @@ export default {
       overlay: "rgba(0, 0, 0, 0.45)",
 
       successColor: "#2CC672",
+      greenColor: "#00AE5B",
+
+      redColor: "#FF4646",
+
       primaryColor: "#005959",
       secondaryColor: "#F3BDB6",
+      secondaryLight: "#FFEFEB",
+
       errorColor: "#FF6B6B",
       warningColor: "#FF9F43",
       infoColor: "#54A0FF",
@@ -68,6 +74,11 @@ export default {
       white: "#fff",
       whiteHigh: "#F5F5F5",
       whiteSemi: "#FAFAFA",
+    },
+
+    boxShadow: {
+      lg: "0px 4px 32px 0px rgba(0, 0, 0, 0.08)",
+      sm: "0px 2px 4px 0px rgba(28, 41, 90, 0.04)",
     },
 
     fontFamily: {
