@@ -12,6 +12,9 @@ export default function CustomerModal({ userData, token }) {
   const [document, setDcument] = useState(null);
   const documentRef = useRef();
   const dispatch = useDispatch();
+  const [mealOneData, setMealOneData] = useState([]);
+  const [mealTwoData, setMealTwoData] = useState([]);
+  const [mealThreeData, setMealThreeData] = useState([]);
 
   const {
     babyName,
@@ -139,6 +142,39 @@ export default function CustomerModal({ userData, token }) {
     // formData.append("files", fileList);
     // console.log(formData.get("files"));
     dispatch(updateUserData({ id: userData?._id, formData, token }));
+  };
+
+  const handleMealTwoPlaning = (e) => {
+    if (e.target.checked) {
+      setMealTwoData([...mealTwoData, e?.target?.name]);
+    } else {
+      const index = mealTwoData?.indexOf(e?.target?.name);
+      if (index !== -1) {
+        mealTwoData?.splice(index, 1);
+      }
+    }
+  };
+
+  const handleMealOnePlaning = (e) => {
+    if (e.target.checked) {
+      setMealOneData([...mealOneData, e?.target?.name]);
+    } else {
+      const index = mealOneData?.indexOf(e?.target?.name);
+      if (index !== -1) {
+        mealOneData?.splice(index, 1);
+      }
+    }
+  };
+
+  const handleMealThreePlaning = (e) => {
+    if (e.target.checked) {
+      setMealThreeData([...mealThreeData, e?.target?.name]);
+    } else {
+      const index = mealThreeData?.indexOf(e?.target?.name);
+      if (index !== -1) {
+        mealThreeData?.splice(index, 1);
+      }
+    }
   };
 
   return (
@@ -678,30 +714,139 @@ export default function CustomerModal({ userData, token }) {
                   </div>
                 </form>
 
-                <form action="">
-                  <div className="flex flex-col gap-5">
-                    <div>
-                      <h2 className="text-xl font-semibold text-black">
-                        MEAL PLANING
-                      </h2>
-                    </div>
+                <form>
+                  <div>
+                    <h2 className="text-xl font-semibold text-black">
+                      MEAL PLANING
+                    </h2>
+                    <div className="mt-5">
+                      <div className="grid grid-cols-3 gap-4 mb-2">
+                        <div className="">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Dieters Restrictions for self
+                          </span>
+                        </div>
+                        <div className="">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Dieters Restrictions for self
+                          </span>
+                        </div>
+                        <div className="">
+                          <span className="text-sm font-semibold text-blackHigh">
+                            Dieters Restrictions for children
+                          </span>
+                        </div>
+                      </div>
 
-                    <div className="grid grid-cols-3 items-center normal-case">
-                      <div>
-                        <span className="text-sm font-mont font-semibold text-blackHigh">
-                          Dieters Restrictions for self
-                        </span>
+                      <div className="grid grid-cols-3 gap-4 ">
+                        <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Vegan"
+                              onChange={handleMealOnePlaning}
+                              className="inline-flex items-center pb-2 text-blackHigh"
+                              id="VeganOne"
+                            />
+                            <label htmlFor="VeganOne">Vegan</label>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Vegetarian"
+                              id="VegetarianOne"
+                              onChange={handleMealOnePlaning}
+                              className="inline-flex items-center py-2 text-blackHigh"
+                            />
+                            <label htmlFor="VegetarianOne">Vegetarian</label>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Gluten Free"
+                              id="GlutenOne"
+                              onChange={handleMealOnePlaning}
+                              className="inline-flex items-center pt-2 text-blackHigh"
+                            />
+                            <label htmlFor="GlutenOne">Gluten Free</label>
+                          </div>
+                        </div>
+                        <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Vegan"
+                              onChange={handleMealTwoPlaning}
+                              className="inline-flex items-center pb-2 text-blackHigh"
+                              id="VeganTwo"
+                            />
+                            <label htmlFor="VeganTwo">Vegan</label>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Vegetarian"
+                              id="VegetarianTwo"
+                              onChange={handleMealOnePlaning}
+                              className="inline-flex items-center py-2 text-blackHigh"
+                            />
+                            <label htmlFor="VegetarianTwo">Vegetarian</label>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Gluten Free"
+                              id="GlutenTwo"
+                              onChange={handleMealOnePlaning}
+                              className="inline-flex items-center pt-2 text-blackHigh"
+                            />
+                            <label htmlFor="GlutenTwo">Gluten Free</label>
+                          </div>
+                        </div>
+                        <div className=" flex flex-col justify-center divide-y divide-aquaHigh p-4 border border-aquaHigh rounded-xl">
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Vegan"
+                              onChange={handleMealThreePlaning}
+                              className="inline-flex items-center pb-2 text-blackHigh"
+                              id="VeganThree"
+                            />
+                            <label htmlFor="VeganThree">Vegan</label>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Vegetarian"
+                              id="VegetarianThree"
+                              onChange={handleMealThreePlaning}
+                              className="inline-flex items-center py-2 text-blackHigh bg-white"
+                            />
+                            <label htmlFor="VegetarianThree">Vegetarian</label>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="checkbox"
+                              name="Gluten Free"
+                              id="GlutenThree"
+                              onChange={handleMealThreePlaning}
+                              className="inline-flex items-center pt-2 text-blackHigh"
+                            />
+                            <label htmlFor="GlutenThree">Gluten Free</label>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-sm font-mont font-semibold text-blackHigh">
-                          Dieters Restrictions for self
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-sm font-mont font-semibold text-blackHigh">
-                          Dieters Restrictions for self
-                        </span>
-                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end mt-8">
+                    <div>
+                      <button
+                        type="submit"
+                        className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
+                      >
+                        Save & Update
+                      </button>
                     </div>
                   </div>
                 </form>
