@@ -54,7 +54,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     userLoggedOut: (state) => {
-      console.log("re");
       state.userData = "";
       localStorage.removeItem("tokenExpiration");
       localStorage.removeItem("userData");
@@ -69,7 +68,7 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.error = "";
-      state.userData = action.payload;
+      state.userData = action.payload.data;
     });
     builder.addCase(login.rejected, (state) => {
       state.isLoading = false;

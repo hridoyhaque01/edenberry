@@ -1,13 +1,24 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addWellness,
+  fetchWellness,
+} from "../../features/services/servicesSlice";
 import { imageIcon } from "../../utils/getImages";
 
 function WellnessModal() {
   const thumbnailRef = useRef();
+  const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const { isLoading, isError, isSuccess } = useSelector(
+    (state) => state.services
+  );
+  const dispatch = useDispatch();
 
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
+    console.log(file);
     if (
       file?.type === "image/jpg" ||
       file?.type === "image/jpeg" ||
@@ -21,10 +32,38 @@ function WellnessModal() {
     }
   };
 
-  const handleThumbnailDelete = () => {
-    thumbnailRef.current.value = "";
-    setThumbnail(null);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const form = event.target;
+    const title = form.title.value;
+    const siteUrl = form.siteUrl.value;
+    const description = form.description.value;
+
+    const formData = new FormData();
+
+    const data = {
+      title,
+      siteUrl,
+      description,
+    };
+
+    formData.append("data", JSON.stringify(data));
+    formData.append("files", thumbnail);
+
+    dispatch(addWellness(formData));
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(fetchWellness());
+      formRef.current.reset();
+      thumbnailRef.current.value = "";
+      setThumbnail(null);
+      setThumbnailPreview(null);
+    }
+  }, [isSuccess]);
+
   return (
     <div
       id="wellness-modal"
@@ -45,7 +84,11 @@ function WellnessModal() {
             </button>
           </div>
           <div className="w-full p-8">
-            <form className="flex flex-col gap-6">
+            <form
+              className="flex flex-col gap-6"
+              onSubmit={handleSubmit}
+              ref={formRef}
+            >
               {/* Title */}
               <div className="flex flex-col gap-5">
                 <span className="text-xs font-semibold text-black font-mont capitalize">
@@ -53,7 +96,7 @@ function WellnessModal() {
                 </span>
                 <input
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
-                  name="coachSpciality"
+                  name="title"
                   placeholder="lesson name here..."
                 />
               </div>
@@ -99,7 +142,7 @@ function WellnessModal() {
                         <img
                           src={thumbnailPreview}
                           alt=""
-                          className=" w-full h-60 rounded-md"
+                          className=" w-full h-60 rounded-md  bg-center bg-cover object-cover"
                         />
                       </div>
                     </label>
@@ -107,14 +150,14 @@ function WellnessModal() {
                 </div>
               </div>
 
-              {/* Title */}
+              {/* Content Link */}
               <div className="flex flex-col gap-5">
                 <span className="text-xs font-semibold text-black font-mont capitalize">
                   Content Link
                 </span>
                 <input
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
-                  name="coachSpciality"
+                  name="siteUrl"
                   placeholder="content link here..."
                 />
               </div>
@@ -126,7 +169,7 @@ function WellnessModal() {
                     Description
                   </span>
                   <textarea
-                    name="welnessNote"
+                    name="description"
                     className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                     placeholder="wellness description here..."
                   />
@@ -139,6 +182,7 @@ function WellnessModal() {
                 <button
                   type="submit"
                   className="text-darkSemi font-mont font-semibold text-sm"
+                  disabled={isLoading}
                 >
                   Cancel
                 </button>
@@ -149,6 +193,9 @@ function WellnessModal() {
                   Save & Update
                 </button>
               </div>
+              {isError && (
+                <p className="text-errorColor">Something went wrong!</p>
+              )}
             </form>
           </div>
         </div>

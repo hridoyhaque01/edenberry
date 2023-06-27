@@ -6,6 +6,7 @@ import Register from "../pages/authentication/register/Register";
 import Coach from "../pages/coach/Coach";
 import Courses from "../pages/courses/Courses";
 import Dashboard from "../pages/dashboard/Dashboard";
+import WellnessForm from "../pages/formPages/WellnessForm";
 import Products from "../pages/products/Products";
 import Request from "../pages/request/Request";
 import Services from "../pages/services/Services";
@@ -44,6 +45,10 @@ export const routes = createBrowserRouter([
       {
         path: "/services",
         element: <Services></Services>,
+      },
+      {
+        path: "/addwellness",
+        element: <WellnessForm></WellnessForm>,
       },
       {
         path: "/request",

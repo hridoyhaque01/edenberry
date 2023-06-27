@@ -1,44 +1,58 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import WellnessModal from "../../components/modals/WellnessModal";
-import { wellness1 } from "../../utils/getImages";
+import AddButton from "../../components/shared/button/AddButton";
+import { fetchWellness } from "../../features/services/servicesSlice";
 
 function Wellness() {
+  const { isLoading, isError, wellness } = useSelector(
+    (state) => state.services
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchWellness());
+  }, []);
+
+  let content = null;
+
+  if (isLoading) {
+    content = <div>loading...</div>;
+  } else if (!isLoading && isError) {
+    content = <div>Something went wrong!</div>;
+  } else if (!isLoading && !isError && wellness?.length === 0) {
+    content = <div>No data found!</div>;
+  } else if (!isLoading && !isError && wellness?.length > 0) {
+    content = wellness?.map((item) => (
+      <Link
+        to={item?.siteUrl}
+        className=" rounded-xl overflow-hidden shadow-lg"
+        key={item?._id}
+      >
+        <div>
+          <img
+            src={item?.fileUrl}
+            alt=""
+            className="h-96 bg-center object-cover w-full bg-cover "
+          />
+        </div>
+        <div className="py-4 px-3">
+          <h4 className="text-base text-dark font-semibold font-mont">
+            {item?.title}
+          </h4>
+          <p className="text-fadeHigh font-mont">{item?.description}</p>
+        </div>
+      </Link>
+    ));
+  }
+
   return (
     <>
-      <section className="pb-10">
-        <div className="grid grid-cols-3 gap-6">
-          <div className=" rounded-xl overflow-hidden shadow-lg">
-            <div>
-              <img
-                src={wellness1}
-                alt=""
-                className="h-96 bg-center object-cover"
-              />
-            </div>
-            <div className="py-4 px-3">
-              <h4 className="text-base text-dark font-semibold font-mont">
-                Nutrition
-              </h4>
-              <p className="text-fadeHigh font-mont">
-                Lorem ipsum dolor sit amet consectetur. Scelerisque commodo nec
-                viverra condimentum. Nunc tellus. m dolor sit amet consectetur.
-                Scelerisque commodo nec viverra condimentu
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="mt-11">
-          <h4 className="text-xl font-mont font-semibold text-dark">
-            Add Wellness{" "}
-          </h4>
-          <button
-            type="button"
-            className="flex items-center gap-1 text-primaryColor mt-8"
-            data-hs-overlay="#wellness-modal"
-          >
-            <span className="material-symbols-outlined">add</span>
-            <span className="text-sm font-mont font-semibold">Add New</span>
-          </button>
+      <section className="pb-10 relative">
+        <div className="grid grid-cols-3 gap-6">{content}</div>
+        <div className="fixed bottom-16 right-12">
+          <AddButton path="/addwellness" name="add new"></AddButton>
         </div>
       </section>
       <WellnessModal></WellnessModal>

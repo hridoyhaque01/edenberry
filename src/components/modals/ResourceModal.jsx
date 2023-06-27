@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addLesson, editLesson } from "../../features/resources/resourcesSlice";
+import { addLesson, editLesson } from "../../features/services/servicesSlice";
 import { imageIcon } from "../../utils/getImages";
 
 function ResourceModal() {
-  const { type, editData, indexNo } = useSelector((state) => state.resource);
+  const { type, editData, indexNo } = useSelector((state) => state.services);
 
   const thumbnailRef = useRef();
   const formRef = useRef();

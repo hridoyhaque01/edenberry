@@ -1,13 +1,11 @@
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ResourceModal from "../../components/modals/ResourceModal";
-import { addType } from "../../features/resources/resourcesSlice";
+import { addType } from "../../features/services/servicesSlice";
 import { imageIcon } from "../../utils/getImages";
 
 function AddRecomendedResource() {
-  const { isLoading, isError, lessons, isSuccess } = useSelector(
-    (state) => state.resource
-  );
+  const { lessons } = useSelector((state) => state.services);
   const thumbnailRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
