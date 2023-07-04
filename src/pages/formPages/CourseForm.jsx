@@ -1,16 +1,29 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ResourceModal from "../../components/modals/ResourceModal";
-import { addType } from "../../features/services/servicesSlice";
+import { useLocation } from "react-router-dom";
+import CourseModal from "../../components/modals/CourseModal";
+import FormTitle from "../../components/shared/titles/FormTitle";
+import { addCourse, updateCourse } from "../../features/services/courseSlice";
 import { imageIcon } from "../../utils/getImages";
 
-function AddRecomendedResource() {
-  const { lessons } = useSelector((state) => state.services);
+function CourseForm() {
+  const { state } = useLocation();
+  const { data, type } = state || {};
+  const { title, description, fileUrl, _id: id } = data || {};
   const thumbnailRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState(null);
-  const formRef = useRef();
+  const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
+  const {
+    isLoading,
+    isError,
+    singleCourse,
+    isSuccess,
+    courseId,
+    lessons: initialLesson,
+    isLessonAddSuccess,
+  } = useSelector((state) => state.courses);
   const dispatch = useDispatch();
+  const [lessons, setLessons] = useState([]);
 
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
@@ -19,11 +32,7 @@ function AddRecomendedResource() {
       file?.type === "image/jpeg" ||
       file?.type === "image/png"
     ) {
-      setThumbnail({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-      });
+      setThumbnail(file);
       const imageURL = URL.createObjectURL(file);
       setThumbnailPreview(imageURL);
     } else {
@@ -31,73 +40,89 @@ function AddRecomendedResource() {
     }
   };
 
-  const handleModal = (index, type, data) => {
-    dispatch(addType({ index, type, data }));
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
+
     const form = event.target;
+    const title = form.title.value;
     const description = form.description.value;
-    const resourceName = form.resourceName.value;
 
-    // formRef.current.reset();
-    // thumbnailRef.current.value = "";
-    // setThumbnail(null);
-    // setThumbnailPreview(null);
+    const formData = new FormData();
 
-    const data = { description, resourceName, thumbnail, lessons };
-    console.log(data);
+    const data = {
+      title,
+      description,
+    };
+
+    formData.append("data", JSON.stringify(data));
+
+    if (type === "edit") {
+      if (!thumbnail) {
+        dispatch(updateCourse({ id, formData }));
+      } else {
+        console.log("helo 2");
+        formData.append("files", thumbnail);
+        dispatch(updateCourse({ id, formData }));
+      }
+    } else {
+      formData.append("files", thumbnail);
+      dispatch(addCourse(formData));
+    }
   };
 
-  const handleThumbnailDelete = () => {
-    thumbnailRef.current.value = "";
-    setThumbnail(null);
-  };
+  useEffect(() => {
+    console.log(initialLesson);
+    if (isLessonAddSuccess) {
+      setLessons(initialLesson);
+    }
+  }, [isLessonAddSuccess]);
+
   return (
     <>
-      <section className="pb-12">
-        <div className="p-8 rounded-xl border border-blueLight">
+      <section className="pt-12 pb-10">
+        <FormTitle
+          path="/services"
+          title={`${type === "edit" ? "Update" : "Add"} Course`}
+        ></FormTitle>
+
+        <div className="mt-12 z-20 p-8 bg-white overflow-auto rounded-xl shadow-sm border border-blueLight">
           <form
             action="#"
             className="flex flex-col gap-6"
             onSubmit={handleSubmit}
-            ref={formRef}
           >
-            {/* resource name  */}
-
             <div className="flex flex-col gap-5">
               <span className="text-xs font-mont font-semibold text-black">
-                Resource Name
+                Course Name
               </span>
               <input
                 required
-                id="resourceName"
+                id="courseName"
                 type="text"
-                placeholder="Resource name here..."
-                name="resourceName"
+                placeholder="course name here..."
+                name="title"
                 className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black `}
               />
             </div>
             {/* thumbnail  */}
             <div className="flex flex-col gap-5 ">
               <span className="text-xs font-semibold text-black">
-                THUMBNAIL PICTURE
+                COURSE THUMBNAIL
               </span>
 
               <div className="flex flex-col">
                 <input
-                  required
+                  required={type === "edit" ? false : true}
                   type="file"
                   className="h-1 w-1 opacity-0  "
-                  id="resource"
+                  id="course"
                   ref={thumbnailRef}
                   onChange={handleThumbnailChange}
-                  name="resource"
+                  name="course"
                 />
-                {!thumbnail && !thumbnailPreview && (
+                {!thumbnailPreview && (
                   <label
-                    htmlFor="resource"
+                    htmlFor="course"
                     className={`flex flex-col items-center justify-center w-[30rem] max-w-[30rem] h-60 rounded-xl bg-fade border border-secondaryColor cursor-pointer`}
                   >
                     <div>
@@ -112,9 +137,9 @@ function AddRecomendedResource() {
                     </p>
                   </label>
                 )}
-                {thumbnail && thumbnailPreview && (
+                {thumbnailPreview && (
                   <label
-                    htmlFor="resource"
+                    htmlFor="course"
                     className={` w-[30rem] max-w-[30rem] h-60 rounded-xl cursor-pointer`}
                   >
                     <div className="">
@@ -135,6 +160,7 @@ function AddRecomendedResource() {
               </span>
               <div>
                 <textarea
+                  required
                   id="description"
                   name="description"
                   className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md resize-none h-32 text-sm placeholder:text-fadeSemi text-black"
@@ -146,40 +172,40 @@ function AddRecomendedResource() {
 
             {/* Lesson */}
 
-            <div className="flex flex-col gap-5">
-              <span className="text-xs font-mont font-semibold text-black">
-                Lessons
-              </span>
-              {lessons?.map((item, i) => (
-                <div
-                  className="flex items-center justify-between border  border-fadeSemi p-2 rounded-lg"
-                  key={i}
-                >
+            <div className="flex items-center justify-end">
+              <button
+                disabled={isLoading}
+                className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
+                type="submit"
+              >
+                Publish
+              </button>
+            </div>
+            {lessons?.map((lesson, index) => (
+              <div className="flex flex-col gap-5" key={index}>
+                <span className="text-xs font-mont font-semibold text-black">
+                  Lessons
+                </span>
+                <div className="flex items-center justify-between border  border-fadeSemi p-2 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div>
                       <img
-                        src={item?.previewUrl}
+                        src={lesson?.imageUrl}
                         alt=""
                         className="w-16 h-16 rounded-md"
                       />
                     </div>
                     <div>
                       <h4 className="text-black font-mont font-bold text-2xl">
-                        {item?.lessonName?.length > 24
-                          ? item?.lessonName?.slice(0, 24) + "..."
-                          : item?.lessonName}
+                        Fundamentals of Human Lactation
                       </h4>
                       <p className="text-xs font-mont font-semibold mt-2">
-                        Lesson: <span>{i + 1 < 9 ? "0" + (i + 1) : i}</span>
+                        Lesson: <span>01</span> | <span>34min</span>{" "}
                       </p>
                     </div>
                   </div>
                   <div>
-                    <button
-                      type="button"
-                      data-hs-overlay="#lesson-modal"
-                      onClick={() => handleModal(i, "edit", item)}
-                    >
+                    <button type="button" data-hs-overlay="#lesson-modal">
                       <svg
                         width="24"
                         height="25"
@@ -209,14 +235,14 @@ function AddRecomendedResource() {
                     </button>
                   </div>
                 </div>
-              ))}
-
+              </div>
+            ))}
+            {courseId && (
               <div>
                 <button
                   type="button"
                   className="flex items-center gap-1 text-primaryColor"
-                  data-hs-overlay="#lesson-modal"
-                  onClick={() => handleModal("", "add", {})}
+                  data-hs-overlay="#course-modal"
                 >
                   <span className="material-symbols-outlined">add</span>
                   <span className="text-sm font-mont font-semibold">
@@ -224,22 +250,13 @@ function AddRecomendedResource() {
                   </span>
                 </button>
               </div>
-            </div>
-
-            <div className="flex items-center justify-end">
-              <button
-                className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
-                type="submit"
-              >
-                Publish
-              </button>
-            </div>
+            )}
           </form>
         </div>
       </section>
-      <ResourceModal></ResourceModal>
+      <CourseModal id={courseId}></CourseModal>
     </>
   );
 }
 
-export default AddRecomendedResource;
+export default CourseForm;

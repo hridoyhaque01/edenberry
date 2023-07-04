@@ -27,6 +27,10 @@ const Login = () => {
     }
   }, [userData?.token]);
 
+  console.log(userData);
+
+  console.log(isLoading);
+
   return (
     <section className="h-screen bg-authBg bg-no-repeat bg-cover bg-whiteSemi flex flex-col items-center justify-center w-full">
       <div className="flex flex-col">

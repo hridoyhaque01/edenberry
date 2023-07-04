@@ -1,0 +1,124 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+
+const initialState = {
+  isLoading: false,
+  isError: false,
+  wellness: [],
+  lessons: [],
+  isSuccess: false,
+  type: "",
+  editData: {},
+  activeTab: "guide",
+};
+
+// fetch wellness
+
+export const fetchWellness = createAsyncThunk(
+  "wellness/fetchWellness",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/wellness`
+      );
+      return response?.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// add new wellness
+
+export const addWellness = createAsyncThunk(
+  "wellness/addWellness",
+  async (formData) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/wellness/add`,
+        formData
+      );
+      return response?.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// add new wellness
+
+export const updateWellness = createAsyncThunk(
+  "wellness/updateWellness",
+  async ({ id, formData }) => {
+    try {
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/wellness/edit/${id}`,
+        formData
+      );
+      return response?.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+const wellnessSlice = createSlice({
+  name: "wellnessSlice",
+  initialState,
+  reducers: {
+    addType: (state, action) => {
+      state.type = action.payload.type;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchWellness.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+    });
+    builder.addCase(fetchWellness.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.wellness = action.payload;
+    });
+    builder.addCase(fetchWellness.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+    });
+
+    // add welness
+    builder.addCase(addWellness.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(addWellness.fulfilled, (state) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+    });
+    builder.addCase(addWellness.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+    // add welness
+    builder.addCase(updateWellness.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(updateWellness.fulfilled, (state) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+    });
+    builder.addCase(updateWellness.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+  },
+});
+
+export default wellnessSlice.reducer;
+export const { addType } = wellnessSlice.actions;

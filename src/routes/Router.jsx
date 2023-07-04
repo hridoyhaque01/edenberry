@@ -6,6 +6,9 @@ import Register from "../pages/authentication/register/Register";
 import Coach from "../pages/coach/Coach";
 import Courses from "../pages/courses/Courses";
 import Dashboard from "../pages/dashboard/Dashboard";
+import CourseForm from "../pages/formPages/CourseForm";
+import GuideForm from "../pages/formPages/GuideForm";
+import ResourceForm from "../pages/formPages/ResourceForm";
 import WellnessForm from "../pages/formPages/WellnessForm";
 import Products from "../pages/products/Products";
 import Request from "../pages/request/Request";
@@ -49,6 +52,34 @@ export const routes = createBrowserRouter([
       {
         path: "/addwellness",
         element: <WellnessForm></WellnessForm>,
+      },
+      {
+        path: "/editwellness",
+        element: <WellnessForm></WellnessForm>,
+      },
+      {
+        path: "/addCourse",
+        element: <CourseForm></CourseForm>,
+      },
+      {
+        path: "/editCourse",
+        element: <CourseForm></CourseForm>,
+      },
+      {
+        path: "/addResource",
+        element: <ResourceForm></ResourceForm>,
+      },
+      {
+        path: "/editResource",
+        element: <ResourceForm></ResourceForm>,
+      },
+      {
+        path: "/addGuide",
+        element: <GuideForm></GuideForm>,
+      },
+      {
+        path: "/editGuide",
+        element: <GuideForm></GuideForm>,
       },
       {
         path: "/request",

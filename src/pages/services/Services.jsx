@@ -2,7 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import ServiceTabs from "../../components/shared/tabs/ServiceTabs";
 import Title from "../../components/shared/titles/Title";
+import Courses from "./Courses";
 import DailyGuide from "./DailyGuide";
+import Resources from "./Resources";
 import Wellness from "./Wellness";
 
 function Services() {
@@ -27,7 +29,7 @@ function Services() {
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-2"
         >
-          Recommended Resources
+          <Resources></Resources>
         </div>
         {/* <div
           id="tabs-with-underline-3"
@@ -43,7 +45,7 @@ function Services() {
           aria-labelledby="tabs-with-underline-item-4"
           className={`${activeTab === "courses" ? "" : "hidden"}`}
         >
-          Courses
+          <Courses></Courses>
         </div>
         {/* <div
           id="tabs-with-underline-5"

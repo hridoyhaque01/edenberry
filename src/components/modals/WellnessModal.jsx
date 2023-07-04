@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addWellness,
   fetchWellness,
-} from "../../features/services/servicesSlice";
+} from "../../features/services/wellnessSlice";
 import { imageIcon } from "../../utils/getImages";
 
 function WellnessModal() {

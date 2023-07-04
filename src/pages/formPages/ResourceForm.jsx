@@ -1,29 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import FormTitle from "../../components/shared/titles/FormTitle";
 
 import {
-  addWellness,
-  fetchWellness,
-  updateWellness,
-} from "../../features/services/wellnessSlice";
+  addResource,
+  fetchResources,
+  updateResource,
+} from "../../features/services/resourceSlice";
 import { imageIcon } from "../../utils/getImages";
 
-function WellnessForm() {
+function ResourceForm() {
   const { state } = useLocation();
-
   const { data, type } = state || {};
-
-  const { title, description, fileUrl, _id: id } = data || {};
-
+  const { title, description, postFor, imageUrl, _id: id } = data || {};
   const thumbnailRef = useRef();
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(imageUrl || null);
   const { isLoading, isError, isSuccess } = useSelector(
-    (state) => state.wellness
+    (state) => state.resources
   );
+
   const dispatch = useDispatch();
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
@@ -47,12 +45,14 @@ function WellnessForm() {
 
     const form = event.target;
     const title = form.title.value;
+    const postFor = form.postFor.value;
     const description = form.description.value;
 
     const formData = new FormData();
 
     const data = {
       title,
+      postFor,
       description,
     };
 
@@ -60,21 +60,21 @@ function WellnessForm() {
 
     if (type === "edit") {
       if (!thumbnail) {
-        dispatch(updateWellness({ id, formData }));
+        dispatch(updateResource({ id, formData }));
       } else {
         console.log("helo 2");
         formData.append("files", thumbnail);
-        dispatch(updateWellness({ id, formData }));
+        dispatch(updateResource({ id, formData }));
       }
     } else {
       formData.append("files", thumbnail);
-      dispatch(addWellness(formData));
+      dispatch(addResource(formData));
     }
   };
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(fetchWellness());
+      dispatch(fetchResources());
       formRef.current.reset();
       thumbnailRef.current.value = "";
       setThumbnail(null);
@@ -86,7 +86,7 @@ function WellnessForm() {
     <section className="pt-12 pb-10">
       <FormTitle
         path="/services"
-        title={`${type === "edit" ? "Update" : "Add"} Wellness`}
+        title={`${type === "edit" ? "Update" : "Add"} Resource`}
       ></FormTitle>
 
       <div className="mt-12 z-20 p-8 bg-white overflow-auto rounded-xl shadow-sm border border-blueLight">
@@ -95,18 +95,43 @@ function WellnessForm() {
           onSubmit={handleSubmit}
           ref={formRef}
         >
-          {/* Title */}
+          {/* Resource NAME */}
           <div className="flex flex-col gap-5">
             <span className="text-xs font-semibold text-black font-mont capitalize">
-              Title
+              Resource NAME
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="title"
-              placeholder="lesson name here..."
+              placeholder="Resource name here..."
               required
               defaultValue={title}
             />
+          </div>
+          {/* post is for */}
+          <div className="flex flex-col gap-5">
+            <span className="text-xs font-semibold text-black font-mont capitalize">
+              This post is for
+            </span>
+            <div className="relative col-span-2">
+              <select
+                className="w-full bg-transparent p-2.5 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                name="postFor"
+                required
+                defaultValue={postFor}
+              >
+                <option value="select post" disabled>
+                  select post
+                </option>
+                <option value="Postpartum Home Page">
+                  Postpartum Home Page
+                </option>
+                <option value="Prenatal Home Page">Prenatal Home Page</option>
+              </select>
+              <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                <span className="material-symbols-outlined">expand_more</span>
+              </div>
+            </div>
           </div>
 
           {/* thumbnail  */}
@@ -158,18 +183,6 @@ function WellnessForm() {
             </div>
           </div>
 
-          {/* Content Link */}
-          {/* <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont capitalize">
-              Content Link
-            </span>
-            <input
-              className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
-              name="siteUrl"
-              placeholder="content link here..."
-            />
-          </div> */}
-
           {/* Customer Notes */}
           <div className="">
             <div className="flex flex-col gap-5">
@@ -189,20 +202,12 @@ function WellnessForm() {
           {/* buttons */}
 
           <div className="flex justify-end items-center gap-6 mt-8">
-            <Link
-              type="submit"
-              className="text-darkSemi font-mont font-semibold text-sm"
-              disabled={isLoading}
-              to="/services"
-            >
-              Cancel
-            </Link>
             <button
               type="submit"
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
               disabled={isLoading}
             >
-              Save & Update
+              Publish
             </button>
           </div>
           {isError && <p className="text-errorColor">Something went wrong!</p>}
@@ -212,4 +217,4 @@ function WellnessForm() {
   );
 }
 
-export default WellnessForm;
+export default ResourceForm;

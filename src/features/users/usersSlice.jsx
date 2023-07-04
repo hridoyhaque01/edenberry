@@ -12,14 +12,11 @@ const initialState = {
 
 export const updateUserData = createAsyncThunk(
   "users/update",
-  async ({ id, formData, token }) => {
+  async ({ id, formData }) => {
     try {
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/edit/${id}`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/users/add`,
+        formData
       );
       console.log(response);
       return response?.data;
@@ -29,22 +26,32 @@ export const updateUserData = createAsyncThunk(
   }
 );
 
-export const fetchUsers = createAsyncThunk(
-  "users/fetchUsers",
-  async (token) => {
+export const addUser = createAsyncThunk(
+  "users/update",
+  async ({ id, formData }) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/admin`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/users/edit/${id}`,
+        formData
       );
+      console.log(response);
       return response?.data;
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   }
 );
+
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/users`
+    );
+    return response?.data;
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 const usersSlice = createSlice({
   name: "userSlice",

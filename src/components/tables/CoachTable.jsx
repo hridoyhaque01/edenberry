@@ -1,16 +1,34 @@
-import React, { useState } from "react";
-import data from "../../utils/data.json";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCoaches } from "../../features/coach/coachSlice";
+import CoachModal from "../modals/CoachModal";
 import { Pagination } from "../shared/pagination/Pagination";
 
 function CoachTable() {
-  const { coaches } = data || {};
+  const { isLoading, isError, coaches } = useSelector((state) => state.coaches);
+  const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = coaches?.slice(indexOfFirstRow, indexOfLastRow);
+  const { userData } = useSelector((state) => state.auth);
 
-  //   console.log(currentRows);
+  useEffect(() => {
+    dispatch(fetchCoaches(userData?.token));
+  }, []);
+
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
+
+  if (!isLoading && isError) {
+    return <div>Something went wrong!</div>;
+  }
+
+  if (!isLoading && !isError && coaches?.length === 0) {
+    return <div>No coaches found</div>;
+  }
 
   return (
     <div className="flex flex-col pb-8">
@@ -51,22 +69,19 @@ function CoachTable() {
                   >
                     Location
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-5 text-right text-base font-normal"
-                  >
-                    Contact Signed
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-aquaHigh">
                 {currentRows?.map((coaches) => (
                   <tr
                     className="hover:bg-whiteSemi text-blackLow text-sm"
-                    key={coaches?.id}
+                    key={coaches?._id}
                   >
-                    <td className="px-6 py-3 whitespace-nowrap">
-                      {coaches?.name}
+                    <td
+                      className="px-6 py-3 whitespace-nowrap"
+                      data-hs-overlay="#coach-modal"
+                    >
+                      {coaches?.firstName + " " + coaches?.lastName}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
                       {coaches?.phoneNo}
@@ -81,9 +96,6 @@ function CoachTable() {
                     <td className="px-6 py-3 whitespace-nowrap">
                       {coaches?.location}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-right">
-                      {coaches?.contractSigned}
-                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -97,6 +109,9 @@ function CoachTable() {
           setRowsPerPage={setRowsPerPage}
           totalRows={coaches?.length}
         ></Pagination>
+        <div>
+          <CoachModal></CoachModal>
+        </div>
       </div>
     </div>
   );
