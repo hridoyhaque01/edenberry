@@ -14,7 +14,7 @@ function Resources() {
 
   useEffect(() => {
     dispatch(fetchResources());
-  }, []);
+  }, [dispatch]);
 
   console.log(resources);
 

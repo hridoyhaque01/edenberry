@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import WellnessModal from "../../components/modals/WellnessModal";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
@@ -10,12 +9,11 @@ function Wellness() {
   const { isLoading, isError, wellness } = useSelector(
     (state) => state.wellness
   );
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchWellness());
-  }, []);
+  }, [dispatch]);
 
   let content = null;
 

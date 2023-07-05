@@ -10,7 +10,7 @@ function Courses() {
 
   useEffect(() => {
     dispatch(fetchCourses());
-  }, []);
+  }, [dispatch]);
 
   let content = null;
 

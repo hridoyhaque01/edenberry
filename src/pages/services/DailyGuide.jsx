@@ -14,7 +14,7 @@ function DailyGuide() {
 
   useEffect(() => {
     dispatch(fetchGuides());
-  }, []);
+  }, [dispatch]);
 
   let postpartum = null;
   let prenatal = null;

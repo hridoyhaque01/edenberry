@@ -6,6 +6,7 @@ const initialState = {
   isError: false,
   users: [],
   isSuccess: false,
+  userData: {},
 };
 
 export const addUser = createAsyncThunk("users/add", async (formData) => {
@@ -52,6 +53,12 @@ const usersSlice = createSlice({
   name: "userSlice",
   initialState,
 
+  reducers: {
+    setUser: (state, action) => {
+      state.userData = action.payload;
+    },
+  },
+
   extraReducers: (builder) => {
     builder.addCase(fetchUsers.pending, (state) => {
       state.isLoading = true;
@@ -90,18 +97,15 @@ const usersSlice = createSlice({
     // update user data
 
     builder.addCase(updateUser.pending, (state) => {
-      state.isLoading = true;
       state.isError = false;
       state.isSuccess = false;
     });
     builder.addCase(updateUser.fulfilled, (state) => {
-      state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
     });
 
     builder.addCase(updateUser.rejected, (state) => {
-      state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
     });
@@ -109,3 +113,4 @@ const usersSlice = createSlice({
 });
 
 export default usersSlice.reducer;
+export const { setUser } = usersSlice.actions;

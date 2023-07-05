@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerModal from "../../components/modals/CustomerModal";
 import { Pagination } from "../../components/shared/pagination/Pagination";
-import { fetchUsers } from "../../features/users/usersSlice";
+import { fetchUsers, setUser } from "../../features/users/usersSlice";
 
 function CustomerTable() {
   const dispatch = useDispatch();
-  const { userData } = useSelector((state) => state.auth);
   const {
     isLoading,
     isError,
@@ -19,7 +18,7 @@ function CustomerTable() {
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
   useEffect(() => {
-    dispatch(fetchUsers(userData?.token));
+    dispatch(fetchUsers());
   }, [dispatch]);
 
   let content = null;
@@ -87,7 +86,7 @@ function CustomerTable() {
                     <td
                       className="px-6 py-3 whitespace-nowrap cursor-pointer"
                       data-hs-overlay="#hs-scroll-inside-body-modal"
-                      // onClick={() => dispatch(setUserData(customer))}
+                      onClick={() => dispatch(setUser(customer))}
                     >
                       {customer?.firstName + " " + customer?.lastName}
                     </td>
@@ -128,10 +127,7 @@ function CustomerTable() {
           totalRows={users?.length}
         ></Pagination>
         <div>
-          <CustomerModal
-            userData={user}
-            token={userData?.token}
-          ></CustomerModal>
+          <CustomerModal userData={user}></CustomerModal>
         </div>
       </div>
     );

@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { updateUserData } from "../../features/users/usersSlice";
+import { updateUser } from "../../features/users/usersSlice";
 import dateFormater from "../../utils/dateFormater";
 import getIsoDateString from "../../utils/getIsoDateString";
 
-export default function CustomerModal({ userData, token }) {
+export default function CustomerModal({ userData }) {
   // const { userData } = useSelector((state) => state.users);
   const [componentDisabled, setComponentDisabled] = useState(false);
   const [profile, setProfile] = useState(null);
@@ -16,13 +17,14 @@ export default function CustomerModal({ userData, token }) {
   const [mealTwoData, setMealTwoData] = useState([]);
   const [mealThreeData, setMealThreeData] = useState([]);
 
+  const { isLoading, isError } = useSelector((state) => state.users);
+
   const {
-    documentUrl,
     babyName,
     customerNote,
     dueDate,
     email,
-    imageUrl,
+    fileUrl,
     fatherName,
     firstName,
     lastName,
@@ -33,6 +35,7 @@ export default function CustomerModal({ userData, token }) {
     productsThree,
     productsTwo,
   } = userData || {};
+  console.log(userData);
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
@@ -67,7 +70,7 @@ export default function CustomerModal({ userData, token }) {
     setDcument(null);
   };
 
-  const handleProfileData = async (event) => {
+  const handleSubmitProfile = async (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -131,17 +134,20 @@ export default function CustomerModal({ userData, token }) {
 
       status: "active",
     };
-
+    console.log("modal value = ", form.dueDate.value);
+    console.log("modal convert = ", dueDate);
     const formData = new FormData();
 
-    if (!imageUrl) {
+    if (profile) {
       formData.append(`files`, profile);
     }
-    if (!documentUrl) {
+    if (document) {
       formData.append(`files`, document);
     }
     formData.append("data", JSON.stringify(data));
-    // dispatch(updateUserData({ id: userData?._id, formData, token }));
+
+    // console.log(formData.get("data"));
+    dispatch(updateUser({ id: userData?._id, formData }));
   };
 
   const handleMealTwoPlaning = (e) => {
@@ -217,7 +223,7 @@ export default function CustomerModal({ userData, token }) {
               <div className="flex items-center justify-between my-11">
                 <div className="flex items-center gap-4">
                   <img
-                    src={imageUrl}
+                    src={fileUrl}
                     alt=""
                     className="w-16 h-16 rounded-full"
                   />
@@ -243,7 +249,7 @@ export default function CustomerModal({ userData, token }) {
                 <form
                   action="#"
                   className="flex flex-col gap-6"
-                  onSubmit={handleProfileData}
+                  onSubmit={handleSubmitProfile}
                 >
                   {/* profile  */}
                   <div className="flex flex-col gap-5 ">
@@ -252,7 +258,6 @@ export default function CustomerModal({ userData, token }) {
                     </span>
                     <div className="flex flex-col-reverse">
                       <input
-                        required={imageUrl ? false : true}
                         type="file"
                         className="h-1 w-1 opacity-0  "
                         disabled={componentDisabled}
@@ -347,6 +352,7 @@ export default function CustomerModal({ userData, token }) {
                     </label>
                     <div>
                       <textarea
+                        required
                         id="customernote"
                         name="customerNote"
                         className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md resize-none h-32 text-sm placeholder:text-fadeSemi text-black"
@@ -438,7 +444,8 @@ export default function CustomerModal({ userData, token }) {
                         id="dueDate"
                         type="date"
                         name="dueDate"
-                        defaultValue={getIsoDateString(dueDate)}
+                        value={getIsoDateString(dueDate)}
+                        onChange={() => console.log(dueDate)}
                         className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
                       />
                     </div>
@@ -468,7 +475,6 @@ export default function CustomerModal({ userData, token }) {
                     </span>
                     <div className="flex flex-col-reverse">
                       <input
-                        required={documentUrl ? false : true}
                         type="file"
                         className="h-1 w-1 opacity-0  "
                         disabled={componentDisabled}
@@ -572,9 +578,10 @@ export default function CustomerModal({ userData, token }) {
                           name="shipdate1"
                           type="date"
                           className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-                          defaultValue={getIsoDateString(
-                            productsOne?.shipmentDate
-                          )}
+                          value={getIsoDateString(productsOne?.shipmentDate)}
+                          onChange={() =>
+                            console.log(productsOne?.shipmentDate)
+                          }
                         />
                       </div>
                       <div>
@@ -662,9 +669,10 @@ export default function CustomerModal({ userData, token }) {
                           name="shipdate3"
                           type="date"
                           className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-                          defaultValue={getIsoDateString(
-                            productsThree?.shipmentDate
-                          )}
+                          value={getIsoDateString(productsThree?.shipmentDate)}
+                          onChange={() =>
+                            console.log(productsThree?.shipmentDate)
+                          }
                         />
                       </div>
                       <div>
@@ -707,9 +715,10 @@ export default function CustomerModal({ userData, token }) {
                           name="shipdate4"
                           type="date"
                           className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-                          defaultValue={getIsoDateString(
-                            productsFour?.shipmentDate
-                          )}
+                          value={getIsoDateString(productsFour?.shipmentDate)}
+                          onChange={() =>
+                            console.log(productsFour?.shipmentDate)
+                          }
                         />
                       </div>
                       <div>
@@ -727,12 +736,17 @@ export default function CustomerModal({ userData, token }) {
 
                   <div className="flex items-center justify-end">
                     <button
+                      disabled={isLoading}
                       className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                       type="submit"
                     >
                       Save & Update
                     </button>
                   </div>
+
+                  {isError && (
+                    <div className="text-errorColor">Something went wrong!</div>
+                  )}
                 </form>
 
                 <form>
