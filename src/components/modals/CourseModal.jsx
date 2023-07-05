@@ -11,7 +11,7 @@ function CourseModal({ id, type }) {
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const dispatch = useDispatch();
-  const { isLessonAddSuccess, isLoading, isError } = useSelector(
+  const { isLessonAddSuccess, isLoading, isError, lessons } = useSelector(
     (state) => state.courses
   );
   const [data, setData] = useState();
@@ -43,6 +43,7 @@ function CourseModal({ id, type }) {
     const formData = new FormData();
 
     const data = {
+      id: lessons?.length + 1,
       title,
       description,
       videoUrl,
@@ -56,12 +57,9 @@ function CourseModal({ id, type }) {
 
   useEffect(() => {
     if (isLessonAddSuccess) {
-      console.log(data);
-
       dispatch(addLocalLessons(data));
-      // dispatch(addLocalLessons({title }))
     }
-  }, [isLessonAddSuccess]);
+  }, [isLessonAddSuccess, dispatch]);
 
   return (
     <div

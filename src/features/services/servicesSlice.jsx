@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
   activeTab: "guide",
   screen: {},
+  innerActiveTab: "postpartum",
 };
 
 // fetch wellness
@@ -31,6 +32,9 @@ const servicesSlice = createSlice({
     changeTab: (state, action) => {
       state.activeTab = action.payload;
     },
+    changeInnerTab: (state, action) => {
+      state.innerActiveTab = action.payload;
+    },
   },
   extraReducers: (builder) => {
     // fetch welcome screen
@@ -55,4 +59,4 @@ const servicesSlice = createSlice({
 });
 
 export default servicesSlice.reducer;
-export const { changeTab } = servicesSlice.actions;
+export const { changeTab, changeInnerTab } = servicesSlice.actions;

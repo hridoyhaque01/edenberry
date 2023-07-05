@@ -99,6 +99,7 @@ const courseSlice = createSlice({
   reducers: {
     addLocalLessons: (state, action) => {
       state.lessons.push(action.payload);
+      state.isLessonAddSuccess = true;
     },
   },
   extraReducers: (builder) => {

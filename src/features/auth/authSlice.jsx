@@ -13,6 +13,8 @@ const initialState = {
   error: "",
   userData: isTokenValid ? storedUserData : "",
   isRegisterSuccess: false,
+  isSuccess: false,
+  admins: [],
 };
 
 export const login = createAsyncThunk("auth/login", async (data) => {

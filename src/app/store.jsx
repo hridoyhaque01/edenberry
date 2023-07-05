@@ -1,6 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
+import adminReducer from "../features/admin/adminSlice";
 import authReducer from "../features/auth/authSlice";
 import coachReducer from "../features/coach/coachSlice";
+import midWiveReducer from "../features/midwives/midWiveSlice";
 import courseReducer from "../features/services/courseSlice";
 import guidesReducer from "../features/services/guidesSlice";
 import resourceSlice from "../features/services/resourceSlice";
@@ -18,5 +20,7 @@ export const store = configureStore({
     resources: resourceSlice,
     guides: guidesReducer,
     coaches: coachReducer,
+    admins: adminReducer,
+    midwives: midWiveReducer,
   },
 });

@@ -1,21 +1,25 @@
 import React from "react";
-import UserTabs from "../../components/shared/tabs/UsersTabs";
+import { useSelector } from "react-redux";
+import StaffModal from "../../components/modals/StaffModal";
+import StaffTabs from "../../components/shared/tabs/StaffTabs";
 import Title from "../../components/shared/titles/Title";
-import UsersTable from "../../components/tables/UsersTable";
-import AddUser from "./AddUser";
+import StaffTable from "../../components/tables/StaffsTable";
+import AddStaff from "./AddStaff";
 
-function Users() {
+function Staffs() {
+  const { activeStaff } = useSelector((state) => state.admins);
+
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <Title></Title>
-      <UserTabs></UserTabs>
+      <StaffTabs></StaffTabs>
       <div className="mt-3">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
         >
-          <UsersTable></UsersTable>
+          <StaffTable></StaffTable>
         </div>
         <div
           id="tabs-with-underline-2"
@@ -23,11 +27,14 @@ function Users() {
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-2"
         >
-          <AddUser></AddUser>
+          <AddStaff></AddStaff>
         </div>
+      </div>
+      <div>
+        <StaffModal staff={activeStaff}></StaffModal>
       </div>
     </div>
   );
 }
 
-export default Users;
+export default Staffs;

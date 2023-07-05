@@ -8,33 +8,24 @@ const initialState = {
   isSuccess: true,
 };
 
-export const fetchCoaches = createAsyncThunk(
-  "coach/fetchCoaches",
-  async (token) => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/coach`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      return response?.data;
-    } catch (error) {
-      console.log(error);
-    }
+export const fetchCoaches = createAsyncThunk("coach/fetchCoaches", async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/coach`
+    );
+    return response?.data;
+  } catch (error) {
+    console.log(error);
   }
-);
+});
 
 export const addCoache = createAsyncThunk(
   "coach/addCoache",
-  async ({ token, formData }) => {
+  async (formData) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/coach/add`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        formData
       );
       return response?.data;
     } catch (error) {

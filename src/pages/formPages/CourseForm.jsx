@@ -71,7 +71,6 @@ function CourseForm() {
   };
 
   useEffect(() => {
-    console.log(initialLesson);
     if (isLessonAddSuccess) {
       setLessons(initialLesson);
     }

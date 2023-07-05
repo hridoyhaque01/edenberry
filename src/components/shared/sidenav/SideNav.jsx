@@ -124,7 +124,7 @@ export default function SideNav() {
           {/* Users */}
 
           <NavLink
-            to="/users"
+            to="/staffs"
             className="w-full flex items-center py-2 px-4 gap-2"
           >
             <span>
@@ -141,7 +141,7 @@ export default function SideNav() {
                 />
               </svg>
             </span>
-            <span>Users</span>
+            <span>Staffs</span>
           </NavLink>
 
           {/* Request */}

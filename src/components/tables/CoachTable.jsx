@@ -15,7 +15,7 @@ function CoachTable() {
   const { userData } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(fetchCoaches(userData?.token));
+    dispatch(fetchCoaches());
   }, []);
 
   if (isLoading) {

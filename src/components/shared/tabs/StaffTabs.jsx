@@ -1,6 +1,6 @@
 import React from "react";
 
-function UserTabs() {
+function StaffTabs() {
   return (
     <div className="bg-fade text-fadeHigh ">
       <nav
@@ -16,7 +16,7 @@ function UserTabs() {
           aria-controls="tabs-with-underline-1"
           role="tab"
         >
-          Users
+          Staffs
         </button>
         <button
           type="button"
@@ -25,11 +25,11 @@ function UserTabs() {
           aria-controls="tabs-with-underline-2"
           role="tab"
         >
-          Add User
+          Add Staff
         </button>
       </nav>
     </div>
   );
 }
 
-export default UserTabs;
+export default StaffTabs;

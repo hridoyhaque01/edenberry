@@ -13,7 +13,7 @@ import WellnessForm from "../pages/formPages/WellnessForm";
 import Products from "../pages/products/Products";
 import Request from "../pages/request/Request";
 import Services from "../pages/services/Services";
-import Users from "../pages/users/Users";
+import Staffs from "../pages/staffs/Staffs";
 import PrivateRouter from "./PrivateRouter";
 
 export const routes = createBrowserRouter([
@@ -42,8 +42,8 @@ export const routes = createBrowserRouter([
         element: <Courses></Courses>,
       },
       {
-        path: "/users",
-        element: <Users></Users>,
+        path: "/staffs",
+        element: <Staffs></Staffs>,
       },
       {
         path: "/services",

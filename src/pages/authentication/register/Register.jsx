@@ -29,6 +29,14 @@ const Register = () => {
         email,
         password,
         status: "active",
+        permissions: [
+          "services",
+          "coach",
+          "products",
+          "staffs",
+          "request",
+          "additional",
+        ],
       };
       dispatch(register(data));
     }

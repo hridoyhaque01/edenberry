@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerModal from "../../components/modals/CustomerModal";
 import { Pagination } from "../../components/shared/pagination/Pagination";
-import { fetchUsers, setUserData } from "../../features/users/usersSlice";
+import { fetchUsers } from "../../features/users/usersSlice";
 
 function CustomerTable() {
   const dispatch = useDispatch();
@@ -87,7 +87,7 @@ function CustomerTable() {
                     <td
                       className="px-6 py-3 whitespace-nowrap cursor-pointer"
                       data-hs-overlay="#hs-scroll-inside-body-modal"
-                      onClick={() => dispatch(setUserData(customer))}
+                      // onClick={() => dispatch(setUserData(customer))}
                     >
                       {customer?.firstName + " " + customer?.lastName}
                     </td>

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import WellnessModal from "../../components/modals/WellnessModal";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
 import { fetchCourses } from "../../features/services/courseSlice";
@@ -35,7 +34,6 @@ function Courses() {
           <AddButton path="/addCourse" name="add new"></AddButton>
         </div>
       </section>
-      <WellnessModal></WellnessModal>
     </>
   );
 }

@@ -29,7 +29,7 @@ function AddCoach() {
     const formData = new FormData();
 
     formData.append("data", JSON.stringify(data));
-    dispatch(addCoache({ token: userData?.token, formData }));
+    dispatch(addCoache(formData));
   };
 
   // useEffect(() => {

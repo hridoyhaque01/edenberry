@@ -6,6 +6,7 @@ const initialState = {
   isError: false,
   resources: [],
   isSuccess: false,
+  activeTab: "postpartum",
 };
 
 // fetch course
@@ -61,6 +62,11 @@ export const updateResource = createAsyncThunk(
 const resourceSlice = createSlice({
   name: "resourceSlice",
   initialState,
+  reducers: {
+    changeTab: (state, action) => {
+      state.activeTab = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchResources.pending, (state) => {
       state.isLoading = true;
@@ -113,3 +119,4 @@ const resourceSlice = createSlice({
 });
 
 export default resourceSlice.reducer;
+export const { changeTab } = resourceSlice.actions;

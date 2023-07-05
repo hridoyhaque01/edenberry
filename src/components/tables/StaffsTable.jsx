@@ -1,26 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, setUserData } from "../../features/users/usersSlice";
-import CustomerModal from "../modals/CustomerModal";
+import {
+  fetchAdmin,
+  updateAdmin,
+  updateStaff,
+} from "../../features/admin/adminSlice";
 import { Pagination } from "../shared/pagination/Pagination";
 
-function UsersTable() {
+function StaffTable() {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
   const {
     isLoading,
+    isRequestLoading,
     isError,
-    users,
-    userData: user,
-  } = useSelector((state) => state.users);
+    admins: staffs,
+    isSuccess,
+  } = useSelector((state) => state.admins);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
+  const handleStatusChange = (value, id) => {
+    let status = "inactive";
+    if (value === "inactive") {
+      status = "active";
+    }
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ status }));
+    dispatch(updateAdmin({ token: userData?.token, formData, id }));
+  };
+
   useEffect(() => {
-    dispatch(fetchUsers(userData?.token));
+    dispatch(fetchAdmin(userData?.token));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(fetchAdmin(userData?.token));
+    }
+  }, [isSuccess, dispatch]);
 
   let content = null;
 
@@ -28,10 +48,10 @@ function UsersTable() {
     content = <div>Loading...</div>;
   } else if (!isLoading && isError) {
     content = <div>Something wen wrong!</div>;
-  } else if (!isLoading && !isError && users?.length === 0) {
+  } else if (!isLoading && !isError && staffs?.length === 0) {
     content = <div>No Data Found!</div>;
-  } else if (!isLoading && !isError && users?.length > 0) {
-    const currentRows = users?.slice(indexOfFirstRow, indexOfLastRow);
+  } else if (!isLoading && !isError && staffs?.length > 0) {
+    const currentRows = staffs?.slice(indexOfFirstRow, indexOfLastRow);
     content = (
       <div className="-m-1.5 overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
@@ -55,7 +75,7 @@ function UsersTable() {
                     scope="col"
                     className="px-6 py-5 text-left text-base font-normal"
                   >
-                    Role
+                    Permissons
                   </th>
                   <th
                     scope="col"
@@ -66,35 +86,49 @@ function UsersTable() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-aquaHigh">
-                {currentRows?.map((customer) => (
+                {currentRows?.map((staff) => (
                   <tr
                     className="hover:bg-whiteSemi text-blackLow text-sm"
-                    key={customer?._id}
+                    key={staff?._id}
                   >
                     <td
-                      className="px-6 py-3 whitespace-nowrap "
-                      onClick={() => dispatch(setUserData(customer))}
+                      className="px-6 py-3 whitespace-nowrap cursor-pointer"
+                      data-hs-overlay="#staff-modal"
+                      onClick={() => dispatch(updateStaff(staff))}
                     >
-                      {customer?.firstName + " " + customer?.lastName}
+                      {staff?.firstName + " " + staff?.lastName}
                     </td>
 
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {customer?.email}
+                      {staff?.email}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {customer?.role}
+                      <div className="flex gap-2">
+                        {staff?.permissions?.map((permission, i) => (
+                          <span
+                            className="bg-aqua text-black capitalize inline-flex px-3 py-1.5 rounded-lg text-xs"
+                            key={i}
+                          >
+                            {permission}
+                          </span>
+                        ))}
+                      </div>
                     </td>
 
                     <td className="px-6 py-3 whitespace-nowrap text-right">
-                      <span
+                      <button
+                        onClick={() =>
+                          handleStatusChange(staff?.status, staff?._id)
+                        }
+                        disabled={isRequestLoading}
                         className={`bg-aqua ${
-                          customer?.status === "active"
+                          staff?.status === "active"
                             ? "text-successColor"
                             : "text-errorColor"
                         } capitalize inline-flex px-3 py-1.5 rounded-lg`}
                       >
-                        {customer?.status}
-                      </span>
+                        {staff?.status}
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -107,14 +141,8 @@ function UsersTable() {
           setCurrentPage={setCurrentPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
-          totalRows={users?.length}
+          totalRows={staffs?.length}
         ></Pagination>
-        <div>
-          <CustomerModal
-            userData={user}
-            token={userData?.token}
-          ></CustomerModal>
-        </div>
       </div>
     );
   }
@@ -122,4 +150,4 @@ function UsersTable() {
   return <div className="flex flex-col pb-8">{content}</div>;
 }
 
-export default UsersTable;
+export default StaffTable;

@@ -1,26 +1,15 @@
 import React, { Fragment } from "react";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
-const DropdownMenu = ({ item, setItem, setActions, dropdownMenus }) => {
-  const navigate = useNavigate();
+const DropdownMenu = ({ dispatchFun, id, dropdownMenus }) => {
+  const dispatch = useDispatch();
 
-  const handleUpdateStatus = (status, actionName) => {
-    if (status === "edit") {
-      setItem(item);
-      navigate(`${item?._id}`, {
-        state: {
-          type: "edit",
-          details: item,
-        },
-      });
-    } else {
-      setActions({ actionName, status });
-      setItem(item);
-    }
+  const handleUpdateStatus = (status) => {
+    dispatch(dispatchFun({ id, status }));
   };
 
   return (
-    <td className="px-0 py-0 capitalize text-right pr-4">
+    <td className="px-0 py-0 capitalize text-right pr-4 whitespace-nowrap">
       <div className="dropdown dropdown-bottom dropdown-end">
         <label
           tabIndex={1}

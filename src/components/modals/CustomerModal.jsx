@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateUserData } from "../../features/users/usersSlice";
+// import { updateUserData } from "../../features/users/usersSlice";
 import dateFormater from "../../utils/dateFormater";
 import getIsoDateString from "../../utils/getIsoDateString";
 
@@ -141,7 +141,7 @@ export default function CustomerModal({ userData, token }) {
       formData.append(`files`, document);
     }
     formData.append("data", JSON.stringify(data));
-    dispatch(updateUserData({ id: userData?._id, formData, token }));
+    // dispatch(updateUserData({ id: userData?._id, formData, token }));
   };
 
   const handleMealTwoPlaning = (e) => {
