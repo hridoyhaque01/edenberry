@@ -84,8 +84,6 @@ const courseSlice = createSlice({
   reducers: {
     addLocalLessons: (state, action) => {
       state.lessons.push(action.payload);
-      console.log(state.lessons);
-
       state.isLessonAddSuccess = true;
     },
   },

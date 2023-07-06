@@ -18,7 +18,6 @@ function WellnessModal() {
 
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (
       file?.type === "image/jpg" ||
       file?.type === "image/jpeg" ||

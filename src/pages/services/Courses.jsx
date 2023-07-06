@@ -8,7 +8,6 @@ function Courses() {
   const dispatch = useDispatch();
 
   // useEffect(() => {
-  //   dispatch(fetchCourses());
   // }, [dispatch]);
 
   let content = null;

@@ -1,12 +1,10 @@
-import React, { memo } from "react";
+import React from "react";
 import CoachTabs from "../../components/shared/tabs/CoachTabs";
 import Title from "../../components/shared/titles/Title";
 import CoachTable from "../../components/tables/CoachTable";
 import AddCoach from "./AddCoach";
 
 function Coach() {
-  console.log("coach");
-
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <Title></Title>
@@ -33,4 +31,4 @@ function Coach() {
   );
 }
 
-export default memo(Coach);
+export default Coach;

@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import CourseModal from "../../components/modals/CourseModal";
 import FormTitle from "../../components/shared/titles/FormTitle";
-import { addCourse, updateCourse } from "../../features/services/courseSlice";
+import {
+  addCourse,
+  fetchCourses,
+  updateCourse,
+} from "../../features/services/courseSlice";
 import { imageIcon } from "../../utils/getImages";
 
 function CourseForm() {
@@ -16,9 +20,11 @@ function CourseForm() {
     fileUrl,
     _id: id,
   } = data || {};
+
   const thumbnailRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
+  const [isDisabled, setIsDisabled] = useState(false);
   const {
     isLoading,
     isSuccess,
@@ -26,6 +32,7 @@ function CourseForm() {
     lessons: initialLesson,
     isLessonAddSuccess,
   } = useSelector((state) => state.courses);
+
   const dispatch = useDispatch();
   const [lessons, setLessons] = useState(stateLessons || []);
 
@@ -69,16 +76,23 @@ function CourseForm() {
   };
 
   useEffect(() => {
-    setLessons(initialLesson);
-  }, []);
-  console.log(stateLessons);
+    if (stateLessons?.length === 0) {
+      setLessons(initialLesson);
+    }
+  }, [stateLessons?.length]);
 
   useEffect(() => {
     if (isLessonAddSuccess) {
-      console.log(initialLesson);
       setLessons(initialLesson);
     }
   }, [isLessonAddSuccess, initialLesson]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(fetchCourses());
+      setIsDisabled(true);
+    }
+  }, [isSuccess, dispatch]);
 
   return (
     <>
@@ -179,7 +193,7 @@ function CourseForm() {
 
             <div className="flex items-center justify-end">
               <button
-                disabled={isLoading || courseId ? true : false}
+                disabled={isLoading || isDisabled}
                 className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                 type="submit"
               >
@@ -197,7 +211,7 @@ function CourseForm() {
                     <div className="flex items-center gap-3">
                       <div>
                         <img
-                          src={lesson?.imageURL}
+                          src={lesson?.fileUrl}
                           alt=""
                           className="w-16 h-16 rounded-md"
                         />
@@ -212,7 +226,7 @@ function CourseForm() {
                       </div>
                     </div>
                     <div>
-                      <button type="button" data-hs-overlay="#lesson-modal">
+                      <button type="button" data-hs-overlay="#course-modal">
                         <svg
                           width="24"
                           height="25"
@@ -261,7 +275,7 @@ function CourseForm() {
           </form>
         </div>
       </section>
-      <CourseModal id={courseId}></CourseModal>
+      <CourseModal id={courseId || id} type={type}></CourseModal>
     </>
   );
 }

@@ -17,3 +17,35 @@ body {
 .scrollbar-none::-webkit-scrollbar {
   width: 0;
 }
+
+.ql-snow .ql-tooltip {
+  left: 0 !important;
+}
+
+.ql-snow .ql-tooltip input {
+  background-color: transparent !important;
+  outline: none;
+  height: 40px !important;
+  width: 340px !important;
+}
+
+.ql-snow .ql-tooltip[data-mode="link"]::before {
+  content: "Enter link:";
+  color: #000 !important;
+}
+
+.ql-snow .ql-tooltip .ql-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  margin-left: 10px;
+  padding: 0 24px;
+  background-color: #5267dd;
+  color: #fff;
+}
+
+.ql-editor {
+  height: 320px !important;
+  overflow-y: auto !important;
+}

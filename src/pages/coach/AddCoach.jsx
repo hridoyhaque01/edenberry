@@ -35,8 +35,6 @@ function AddCoach() {
     }
   }, [isSuccess]);
 
-  console.log("coach add ");
-
   return (
     <section className="pb-10">
       <div className="max-h-full overflow-hidden flex flex-col bg-white border border-blueLight shadow-sm rounded-xl p-8">
@@ -111,4 +109,4 @@ function AddCoach() {
   );
 }
 
-export default AddCoach;
+export default React.memo(AddCoach);

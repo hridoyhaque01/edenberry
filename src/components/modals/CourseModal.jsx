@@ -7,6 +7,8 @@ import {
 import { imageIcon } from "../../utils/getImages";
 
 function CourseModal({ id, type }) {
+  console.log(id, type);
+  const lessonModalRef = useRef();
   const thumbnailRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
@@ -47,12 +49,13 @@ function CourseModal({ id, type }) {
     formData.append("data", JSON.stringify(data));
     formData.append("files", thumbnail);
     dispatch(addLesson({ id: id, formData }));
-    setData({ ...data, imageURL: thumbnailPreview });
+    setData({ ...data, fileUrl: thumbnailPreview });
   };
 
   useEffect(() => {
     if (isLessonAddSuccess) {
       dispatch(addLocalLessons(data));
+      lessonModalRef.current.reset();
     }
   }, [isLessonAddSuccess, dispatch]);
 
@@ -76,7 +79,11 @@ function CourseModal({ id, type }) {
             </button>
           </div>
           <div className="w-full p-8">
-            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+            <form
+              className="flex flex-col gap-6"
+              onSubmit={handleSubmit}
+              ref={lessonModalRef}
+            >
               {/* COURSE NAME */}
               <div className="flex flex-col gap-5">
                 <span className="text-xs font-semibold text-black font-mont capitalize">

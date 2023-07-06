@@ -61,7 +61,6 @@ function ResourceForm() {
       if (!thumbnail) {
         dispatch(updateResource({ id, formData }));
       } else {
-        console.log("helo 2");
         formData.append("files", thumbnail);
         dispatch(updateResource({ id, formData }));
       }

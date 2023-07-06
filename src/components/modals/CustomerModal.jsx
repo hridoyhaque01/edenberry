@@ -134,8 +134,6 @@ export default function CustomerModal({ userData }) {
 
       status: "active",
     };
-    console.log("modal value = ", form.dueDate.value);
-    console.log("modal convert = ", dueDate);
     const formData = new FormData();
 
     if (profile) {
@@ -146,7 +144,6 @@ export default function CustomerModal({ userData }) {
     }
     formData.append("data", JSON.stringify(data));
 
-    // console.log(formData.get("data"));
     dispatch(updateUser({ id: userData?._id, formData }));
   };
 

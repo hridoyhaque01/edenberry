@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CoachModal from "../modals/CoachModal";
 import { Pagination } from "../shared/pagination/Pagination";
@@ -11,16 +11,6 @@ function CoachTable() {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = coaches?.slice(indexOfFirstRow, indexOfLastRow);
-
-  // useEffect(() => {
-  //   dispatch(fetchCoaches());
-  // }, []);
-
-  // useMemo(() => {
-  //   dispatch(fetchCoaches());
-  // }, []);
-
-  console.log("coach table");
 
   if (isLoading) {
     return <div>loading...</div>;
@@ -121,4 +111,4 @@ function CoachTable() {
   );
 }
 
-export default memo(CoachTable);
+export default CoachTable;

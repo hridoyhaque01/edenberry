@@ -1,6 +1,8 @@
 import React from "react";
+import "react-quill/dist/quill.snow.css";
 import AditionalTabs from "../../components/shared/tabs/AditionalTabs";
 import Title from "../../components/shared/titles/Title";
+import Privacy from "./Privacy";
 
 function Products() {
   return (
@@ -13,7 +15,7 @@ function Products() {
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
         >
-          aditional data
+          <Privacy></Privacy>
         </div>
       </div>
     </div>

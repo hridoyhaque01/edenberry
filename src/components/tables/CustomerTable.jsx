@@ -17,10 +17,6 @@ function CustomerTable() {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
-  // useEffect(() => {
-  //   dispatch(fetchUsers());
-  // }, [dispatch]);
-
   let content = null;
 
   if (isLoading) {
