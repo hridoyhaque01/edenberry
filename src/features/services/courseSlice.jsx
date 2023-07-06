@@ -26,21 +26,6 @@ export const fetchCourses = createAsyncThunk(
     }
   }
 );
-// fetch course
-
-export const fetchSingleCourses = createAsyncThunk(
-  "course/fetchSingleCourses",
-  async (id) => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/courses/find/${id}`
-      );
-      return response?.data;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
 
 // add new course
 
@@ -99,6 +84,8 @@ const courseSlice = createSlice({
   reducers: {
     addLocalLessons: (state, action) => {
       state.lessons.push(action.payload);
+      console.log(state.lessons);
+
       state.isLessonAddSuccess = true;
     },
   },
@@ -111,22 +98,9 @@ const courseSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.courses = action.payload;
+      state.isSuccess = false;
     });
     builder.addCase(fetchCourses.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
-    });
-
-    //   fetch single course
-    builder.addCase(fetchSingleCourses.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
-    });
-    builder.addCase(fetchSingleCourses.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isError = false;
-    });
-    builder.addCase(fetchSingleCourses.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
     });

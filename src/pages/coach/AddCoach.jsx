@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCoache } from "../../features/coach/coachSlice";
+import { addCoache, fetchCoaches } from "../../features/coach/coachSlice";
 
 function AddCoach() {
-  const [componentDisabled, setComponentDisabled] = useState(false);
-  const { isLoading, isSuccess, isError } = useSelector(
+  const { isRequestLoading, isSuccess, isResponseError } = useSelector(
     (state) => state.coaches
   );
-  const { userData } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const form = event.target;
     const firstName = form.firstName.value;
     const lastName = form.lastName.value;
@@ -27,16 +25,17 @@ function AddCoach() {
     };
 
     const formData = new FormData();
-
     formData.append("data", JSON.stringify(data));
     dispatch(addCoache(formData));
   };
 
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     dispatch(fetchCoaches(userData?.token));
-  //   }
-  // }, [isSuccess]);
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(fetchCoaches());
+    }
+  }, [isSuccess]);
+
+  console.log("coach add ");
 
   return (
     <section className="pb-10">
@@ -97,7 +96,7 @@ function AddCoach() {
 
             <div className="flex justify-end mt-8">
               <button
-                disabled={isLoading}
+                disabled={isRequestLoading}
                 type="submit"
                 className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
               >
@@ -106,7 +105,7 @@ function AddCoach() {
             </div>
           </form>
         </div>
-        {isError && <div>Something went Wrong!</div>}
+        {isResponseError && <div>Something went Wrong!</div>}
       </div>
     </section>
   );

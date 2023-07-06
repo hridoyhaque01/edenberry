@@ -1,16 +1,15 @@
-import React, { useEffect } from "react";
+import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
-import { fetchCourses } from "../../features/services/courseSlice";
 
 function Courses() {
   const { isLoading, isError, courses } = useSelector((state) => state.courses);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchCourses());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchCourses());
+  // }, [dispatch]);
 
   let content = null;
 
@@ -38,4 +37,4 @@ function Courses() {
   );
 }
 
-export default Courses;
+export default memo(Courses);

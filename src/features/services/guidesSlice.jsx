@@ -5,6 +5,8 @@ const initialState = {
   isLoading: false,
   isError: false,
   guides: [],
+  isRequestLoading: false,
+  isResponseError: false,
   isSuccess: false,
   activeTab: "postpartum",
 };
@@ -74,45 +76,45 @@ const guideSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.guides = action.payload;
+      state.isSuccess = false;
     });
     builder.addCase(fetchGuides.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
-      state.isSuccess = false;
     });
 
     // add daily guide
     builder.addCase(addGuide.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
       state.isSuccess = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
     });
     builder.addCase(addGuide.fulfilled, (state) => {
-      state.isLoading = false;
-      state.isError = false;
       state.isSuccess = true;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
     });
     builder.addCase(addGuide.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
       state.isSuccess = false;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
     });
 
     // update course
     builder.addCase(updateGuide.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
       state.isSuccess = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
     });
     builder.addCase(updateGuide.fulfilled, (state) => {
-      state.isLoading = false;
-      state.isError = false;
       state.isSuccess = true;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
     });
     builder.addCase(updateGuide.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
       state.isSuccess = false;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
     });
   },
 });

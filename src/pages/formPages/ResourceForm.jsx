@@ -13,27 +13,26 @@ import { imageIcon } from "../../utils/getImages";
 function ResourceForm() {
   const { state } = useLocation();
   const { data, type } = state || {};
-  const { title, description, postFor, imageUrl, _id: id } = data || {};
+  const { title, description, postFor, fileUrl, _id: id } = data || {};
   const thumbnailRef = useRef();
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState(imageUrl || null);
-  const { isLoading, isError, isSuccess } = useSelector(
+  const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
+  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
     (state) => state.resources
   );
 
   const dispatch = useDispatch();
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (
       file?.type === "image/jpg" ||
       file?.type === "image/jpeg" ||
       file?.type === "image/png"
     ) {
       setThumbnail(file);
-      const imageURL = URL.createObjectURL(file);
-      setThumbnailPreview(imageURL);
+      const fileUrl = URL.createObjectURL(file);
+      setThumbnailPreview(fileUrl);
     } else {
       setThumbnail(null);
       setThumbnailPreview(null);
@@ -97,8 +96,8 @@ function ResourceForm() {
         >
           {/* Resource NAME */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont capitalize">
-              Resource NAME
+            <span className="text-xs font-semibold text-black font-mont uppercase">
+              RESOURCE NAME
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
@@ -110,7 +109,7 @@ function ResourceForm() {
           </div>
           {/* post is for */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont capitalize">
+            <span className="text-xs font-semibold text-black font-mont uppercase">
               This post is for
             </span>
             <div className="relative col-span-2">
@@ -136,7 +135,7 @@ function ResourceForm() {
 
           {/* thumbnail  */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont">
+            <span className="text-xs font-semibold text-black font-mont uppercase">
               Thumbnail
             </span>
             <div className="flex flex-col">
@@ -184,20 +183,18 @@ function ResourceForm() {
           </div>
 
           {/* Customer Notes */}
-          <div className="">
-            <div className="flex flex-col gap-5">
-              <span className="text-xs font-semibold text-black font-mont uppercase">
-                Description
-              </span>
-              <textarea
-                required
-                name="description"
-                className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-                placeholder="wellness description here..."
-                defaultValue={description}
-              />
-              <div className="text-darkMid text-right">(45/1200)</div>
-            </div>
+          <div className="flex flex-col gap-5">
+            <span className="text-xs font-semibold text-black font-mont uppercase">
+              Description
+            </span>
+            <textarea
+              required
+              name="description"
+              className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
+              placeholder="wellness description here..."
+              defaultValue={description}
+            />
+            <div className="text-darkMid text-right">(45/1200)</div>
           </div>
           {/* buttons */}
 
@@ -205,12 +202,14 @@ function ResourceForm() {
             <button
               type="submit"
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-              disabled={isLoading}
+              disabled={isRequestLoading}
             >
               Publish
             </button>
           </div>
-          {isError && <p className="text-errorColor">Something went wrong!</p>}
+          {isResponseError && (
+            <p className="text-errorColor">Something went wrong!</p>
+          )}
         </form>
       </div>
     </section>

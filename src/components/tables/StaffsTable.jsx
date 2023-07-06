@@ -32,9 +32,9 @@ function StaffTable() {
     dispatch(updateAdmin({ token: userData?.token, formData, id }));
   };
 
-  useEffect(() => {
-    dispatch(fetchAdmin(userData?.token));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchAdmin(userData?.token));
+  // }, [dispatch]);
 
   useEffect(() => {
     if (isSuccess) {

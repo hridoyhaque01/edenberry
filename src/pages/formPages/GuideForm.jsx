@@ -19,11 +19,11 @@ function GuideForm() {
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const { isLoading, isError, isSuccess } = useSelector(
+  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
     (state) => state.guides
   );
-
   const dispatch = useDispatch();
+
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
     if (
@@ -202,12 +202,14 @@ function GuideForm() {
             <button
               type="submit"
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-              disabled={isLoading}
+              disabled={isRequestLoading}
             >
               Publish
             </button>
           </div>
-          {isError && <p className="text-errorColor">Something went wrong!</p>}
+          {isResponseError && (
+            <p className="text-errorColor">Something went wrong!</p>
+          )}
         </form>
       </div>
     </section>

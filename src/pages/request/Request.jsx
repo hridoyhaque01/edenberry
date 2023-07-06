@@ -56,9 +56,9 @@ function Request() {
     );
   }
 
-  useEffect(() => {
-    dispatch(fetchMidWives());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchMidWives());
+  // }, []);
 
   useEffect(() => {
     if (isSuccess) {

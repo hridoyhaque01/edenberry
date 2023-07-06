@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
 import GuideTabs from "../../components/shared/tabs/GuideTabs";
-import { fetchGuides } from "../../features/services/guidesSlice";
 
 function DailyGuide() {
   const { isLoading, isError, guides, activeTab } = useSelector(
@@ -12,9 +11,9 @@ function DailyGuide() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchGuides());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchGuides());
+  // }, []);
 
   let postpartum = null;
   let prenatal = null;

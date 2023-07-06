@@ -6,6 +6,8 @@ const initialState = {
   isError: false,
   resources: [],
   isSuccess: false,
+  isRequestLoading: false,
+  isResponseError: false,
   activeTab: "postpartum",
 };
 
@@ -84,35 +86,35 @@ const resourceSlice = createSlice({
 
     // add course
     builder.addCase(addResource.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
       state.isSuccess = false;
     });
     builder.addCase(addResource.fulfilled, (state) => {
-      state.isLoading = false;
-      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
       state.isSuccess = true;
     });
     builder.addCase(addResource.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
       state.isSuccess = false;
     });
 
     // update course
     builder.addCase(updateResource.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
       state.isSuccess = false;
     });
     builder.addCase(updateResource.fulfilled, (state) => {
-      state.isLoading = false;
-      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
       state.isSuccess = true;
     });
     builder.addCase(updateResource.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
       state.isSuccess = false;
     });
   },

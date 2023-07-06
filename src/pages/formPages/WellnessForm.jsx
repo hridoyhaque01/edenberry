@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import FormTitle from "../../components/shared/titles/FormTitle";
 
 import {
@@ -21,13 +21,12 @@ function WellnessForm() {
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const { isLoading, isError, isSuccess } = useSelector(
+  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
     (state) => state.wellness
   );
   const dispatch = useDispatch();
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (
       file?.type === "image/jpg" ||
       file?.type === "image/jpeg" ||
@@ -62,7 +61,6 @@ function WellnessForm() {
       if (!thumbnail) {
         dispatch(updateWellness({ id, formData }));
       } else {
-        console.log("helo 2");
         formData.append("files", thumbnail);
         dispatch(updateWellness({ id, formData }));
       }
@@ -97,13 +95,13 @@ function WellnessForm() {
         >
           {/* Title */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont capitalize">
-              Title
+            <span className="text-xs font-semibold text-black font-mont uppercase">
+              Wellness NAME
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="title"
-              placeholder="lesson name here..."
+              placeholder="wellness name here..."
               required
               defaultValue={title}
             />
@@ -111,8 +109,8 @@ function WellnessForm() {
 
           {/* thumbnail  */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont">
-              Thumbnail
+            <span className="text-xs font-semibold text-black font-mont uppercase">
+              Wellness THUMBNAIL
             </span>
             <div className="flex flex-col">
               <input
@@ -189,23 +187,17 @@ function WellnessForm() {
           {/* buttons */}
 
           <div className="flex justify-end items-center gap-6 mt-8">
-            <Link
-              type="submit"
-              className="text-darkSemi font-mont font-semibold text-sm"
-              disabled={isLoading}
-              to="/services"
-            >
-              Cancel
-            </Link>
             <button
               type="submit"
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-              disabled={isLoading}
+              disabled={isRequestLoading}
             >
               Save & Update
             </button>
           </div>
-          {isError && <p className="text-errorColor">Something went wrong!</p>}
+          {isResponseError && (
+            <p className="text-errorColor">Something went wrong!</p>
+          )}
         </form>
       </div>
     </section>

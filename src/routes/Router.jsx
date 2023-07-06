@@ -4,7 +4,6 @@ import Additional from "../pages/additional/Additional";
 import Login from "../pages/authentication/login/Login";
 import Register from "../pages/authentication/register/Register";
 import Coach from "../pages/coach/Coach";
-import Courses from "../pages/courses/Courses";
 import Dashboard from "../pages/dashboard/Dashboard";
 import CourseForm from "../pages/formPages/CourseForm";
 import GuideForm from "../pages/formPages/GuideForm";
@@ -37,10 +36,7 @@ export const routes = createBrowserRouter([
         path: "/products",
         element: <Products></Products>,
       },
-      {
-        path: "/courses",
-        element: <Courses></Courses>,
-      },
+
       {
         path: "/staffs",
         element: <Staffs></Staffs>,

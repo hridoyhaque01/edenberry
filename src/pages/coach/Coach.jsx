@@ -1,11 +1,12 @@
-import React from "react";
+import React, { memo } from "react";
 import CoachTabs from "../../components/shared/tabs/CoachTabs";
 import Title from "../../components/shared/titles/Title";
 import CoachTable from "../../components/tables/CoachTable";
 import AddCoach from "./AddCoach";
-import Calender from "./Calender";
 
 function Coach() {
+  console.log("coach");
+
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <Title></Title>
@@ -27,17 +28,9 @@ function Coach() {
         >
           <AddCoach></AddCoach>
         </div>
-        <div
-          id="tabs-with-underline-2"
-          className="hidden"
-          role="tabpanel"
-          aria-labelledby="tabs-with-underline-item-2"
-        >
-          <Calender></Calender>
-        </div>
       </div>
     </div>
   );
 }
 
-export default Coach;
+export default memo(Coach);

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addAdmin } from "../../features/admin/adminSlice";
+import { addAdmin, fetchAdmin } from "../../features/admin/adminSlice";
 
 export default function AddStaff() {
   const dispatch = useDispatch();
@@ -9,7 +9,7 @@ export default function AddStaff() {
   );
 
   const { userData } = useSelector((state) => state.auth);
-
+  const formRef = useRef();
   const [permissions, setPermissions] = useState([]);
 
   const handleCheckbox = (event) => {
@@ -44,6 +44,13 @@ export default function AddStaff() {
     dispatch(addAdmin({ token: userData?.token, formData }));
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      formRef.current.reset();
+      dispatch(fetchAdmin(userData?.token));
+    }
+  }, [dispatch, isSuccess]);
+
   return (
     <section className="pb-10">
       <div className="p-8 border border-blueLight rounded-xl shadow-sm">
@@ -53,6 +60,7 @@ export default function AddStaff() {
           action=""
           className="flex flex-col gap-6 mt-11"
           onSubmit={handleSubmit}
+          ref={formRef}
         >
           {/* names  */}
           <div className="grid grid-cols-2 gap-6 items-center ">

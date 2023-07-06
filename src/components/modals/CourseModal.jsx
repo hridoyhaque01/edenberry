@@ -15,7 +15,6 @@ function CourseModal({ id, type }) {
     (state) => state.courses
   );
   const [data, setData] = useState();
-
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
 
@@ -34,21 +33,17 @@ function CourseModal({ id, type }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const form = event.target;
     const title = form.title.value;
     const description = form.description.value;
     const videoUrl = form.videoUrl.value;
-
     const formData = new FormData();
-
     const data = {
       id: lessons?.length + 1,
       title,
       description,
       videoUrl,
     };
-
     formData.append("data", JSON.stringify(data));
     formData.append("files", thumbnail);
     dispatch(addLesson({ id: id, formData }));

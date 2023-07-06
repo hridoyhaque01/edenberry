@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
 import ResourceTabs from "../../components/shared/tabs/ResourceTabs";
-import { fetchResources } from "../../features/services/resourceSlice";
 
 function Resources() {
   const { isLoading, isError, resources, activeTab } = useSelector(
@@ -12,11 +11,9 @@ function Resources() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchResources());
-  }, [dispatch]);
-
-  console.log(resources);
+  // useEffect(() => {
+  //   dispatch(fetchResources());
+  // }, []);
 
   let postpartum = null;
   let prenatal = null;
@@ -40,7 +37,7 @@ function Resources() {
 
     if (postpartums?.length > 0) {
       postpartum = postpartums?.map((item) => (
-        <Card key={item?._id} item={item} navigateUrl="/editGuide"></Card>
+        <Card key={item?._id} item={item} navigateUrl="/editResource"></Card>
       ));
     } else {
       postpartum = <div>No postpartum data found!</div>;
@@ -48,7 +45,7 @@ function Resources() {
 
     if (prenatals?.length > 0) {
       prenatal = prenatals?.map((item) => (
-        <Card key={item?._id} item={item} navigateUrl="/editGuide"></Card>
+        <Card key={item?._id} item={item} navigateUrl="/editResource"></Card>
       ));
     } else {
       prenatal = <div>No prenatal data found!</div>;
@@ -80,7 +77,7 @@ function Resources() {
       </div>
 
       <div className="fixed bottom-16 right-12">
-        <AddButton path="/addGuide" name="add new"></AddButton>
+        <AddButton path="/addResource" name="add new"></AddButton>
       </div>
     </section>
   );

@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import WellnessModal from "../../components/modals/WellnessModal";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
-import { fetchWellness } from "../../features/services/wellnessSlice";
 
 function Wellness() {
   const { isLoading, isError, wellness } = useSelector(
@@ -11,9 +10,9 @@ function Wellness() {
   );
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchWellness());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchWellness());
+  // }, []);
 
   let content = null;
 

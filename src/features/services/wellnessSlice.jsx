@@ -5,10 +5,9 @@ const initialState = {
   isLoading: false,
   isError: false,
   wellness: [],
-  lessons: [],
   isSuccess: false,
-  type: "",
-  editData: {},
+  isRequestLoading: false,
+  isResponseError: false,
   activeTab: "guide",
 };
 
@@ -65,11 +64,6 @@ export const updateWellness = createAsyncThunk(
 const wellnessSlice = createSlice({
   name: "wellnessSlice",
   initialState,
-  reducers: {
-    addType: (state, action) => {
-      state.type = action.payload.type;
-    },
-  },
   extraReducers: (builder) => {
     builder.addCase(fetchWellness.pending, (state) => {
       state.isLoading = true;
@@ -87,38 +81,37 @@ const wellnessSlice = createSlice({
 
     // add welness
     builder.addCase(addWellness.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
       state.isSuccess = false;
     });
     builder.addCase(addWellness.fulfilled, (state) => {
-      state.isLoading = false;
-      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
       state.isSuccess = true;
     });
     builder.addCase(addWellness.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
       state.isSuccess = false;
     });
     // add welness
     builder.addCase(updateWellness.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
       state.isSuccess = false;
     });
     builder.addCase(updateWellness.fulfilled, (state) => {
-      state.isLoading = false;
-      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
       state.isSuccess = true;
     });
     builder.addCase(updateWellness.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
       state.isSuccess = false;
     });
   },
 });
 
 export default wellnessSlice.reducer;
-export const { addType } = wellnessSlice.actions;

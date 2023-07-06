@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerModal from "../../components/modals/CustomerModal";
 import { Pagination } from "../../components/shared/pagination/Pagination";
-import { fetchUsers, setUser } from "../../features/users/usersSlice";
+import { setUser } from "../../features/users/usersSlice";
 
 function CustomerTable() {
   const dispatch = useDispatch();
@@ -17,9 +17,9 @@ function CustomerTable() {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchUsers());
+  // }, [dispatch]);
 
   let content = null;
 
