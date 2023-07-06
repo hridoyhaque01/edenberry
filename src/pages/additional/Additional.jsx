@@ -1,5 +1,6 @@
 import React from "react";
 import "react-quill/dist/quill.snow.css";
+import PrivacyModal from "../../components/modals/PrivacyModal";
 import AditionalTabs from "../../components/shared/tabs/AditionalTabs";
 import Title from "../../components/shared/titles/Title";
 import Privacy from "./Privacy";
@@ -18,6 +19,7 @@ function Products() {
           <Privacy></Privacy>
         </div>
       </div>
+      <PrivacyModal></PrivacyModal>
     </div>
   );
 }

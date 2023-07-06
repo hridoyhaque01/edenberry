@@ -63,10 +63,10 @@ function PrivacyModal() {
       className="hs-overlay hidden w-full h-full fixed inset-y-0 left-0 z-[60] overflow-x-hidden overflow-y-auto bg-overlay scrollbar-none"
     >
       <div className=" hs-overlay-open:opacity-100 hs-overlay-open:duration-300 opacity-0 ease-out transition-all w-full h-full mx-auto flex items-center justify-center ">
-        <div className="w-[44rem] z-20 bg-white h-[calc(100%-8rem)] overflow-auto rounded-xl">
+        <div className="w-[44rem] z-20 bg-white h-auto overflow-auto rounded-xl">
           <div className="w-full py-3 px-4 bg-secondaryColor flex items-center justify-between">
             <span className="text-xl text-white font-semibold">
-              Add New Lesson
+              Edit Privacy Policy
             </span>
             <button
               type="button"
