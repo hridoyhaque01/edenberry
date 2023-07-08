@@ -22,7 +22,7 @@ export const fetchResources = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );
@@ -39,7 +39,7 @@ export const addResource = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );
@@ -56,7 +56,7 @@ export const updateResource = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );

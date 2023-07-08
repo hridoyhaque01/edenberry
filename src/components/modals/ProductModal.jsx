@@ -1,10 +1,12 @@
 import React, { useRef, useState } from "react";
-import { product } from "../../utils/getImages";
+import { imageIcon } from "../../utils/getImages";
 
 function ProductModal() {
   const [profile, setProfile] = useState(null);
   const profileRef = useRef();
   const [productCount, setProductCount] = useState(1);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const formRef = useRef();
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
@@ -14,6 +16,8 @@ function ProductModal() {
       file?.type === "image/png"
     ) {
       setProfile(file);
+      const imageURL = URL.createObjectURL(file);
+      setThumbnailPreview(imageURL);
     } else {
       setProfile(null);
     }
@@ -34,6 +38,18 @@ function ProductModal() {
     } else {
       setProductCount((prev) => prev - 1);
     }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const productName = form.productname?.value;
+    const description = form.productname?.value;
+    const data = {
+      productName,
+      description,
+      productCount,
+    };
   };
 
   return (
@@ -60,7 +76,11 @@ function ProductModal() {
             {/* title  */}
             <div className="flex gap-4 mb-12">
               <div>
-                <img src={product} alt="" className="w-24 h-24 rounded-md" />
+                <img
+                  src={thumbnailPreview || imageIcon}
+                  alt=""
+                  className="w-24 h-24 rounded-md border border-fade"
+                />
               </div>
               <h4 className="text-2xl font-bold text-black">Postpartum Kit</h4>
             </div>
@@ -124,6 +144,7 @@ function ProductModal() {
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
                   name="productname"
                   placeholder="Product name here..."
+                  required
                 />
               </div>
 
@@ -134,9 +155,10 @@ function ProductModal() {
                     Product Description
                   </span>
                   <textarea
-                    name="customernote"
+                    name="description"
                     className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                     placeholder="customer notes here..."
+                    required
                   />
                   <div className="text-darkMid text-right">(45/1200)</div>
                 </div>

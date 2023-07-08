@@ -11,6 +11,7 @@ module.exports = {
   plugins: ["react-refresh"],
   rules: {
     "react-refresh/only-export-components": 0,
+    "no-useless-catch": 0,
     "no-unused-vars": 0,
     "no-undef": 0,
     "import/no-unresolved": 0,

@@ -17,7 +17,7 @@ export const fetchCoaches = createAsyncThunk("coach/fetchCoaches", async () => {
     );
     return response?.data;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 });
 
@@ -31,7 +31,7 @@ export const addCoache = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );

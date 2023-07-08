@@ -20,7 +20,7 @@ export const addUser = createAsyncThunk("users/add", async (formData) => {
     console.log(response);
     return response?.data;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 });
 
@@ -35,7 +35,7 @@ export const updateUser = createAsyncThunk(
       console.log(response);
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );

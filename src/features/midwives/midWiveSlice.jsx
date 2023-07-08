@@ -19,7 +19,7 @@ export const fetchMidWives = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );
@@ -36,7 +36,7 @@ export const updateMidWives = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );

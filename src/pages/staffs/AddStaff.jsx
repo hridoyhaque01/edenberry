@@ -24,6 +24,8 @@ export default function AddStaff() {
     }
   };
 
+  console.log(isResponseError);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -42,7 +44,7 @@ export default function AddStaff() {
     };
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
-    dispatch(addAdmin({ token: userData?.token, formData }));
+    dispatch(addAdmin({ token: userData?.token, data }));
   };
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export default function AddStaff() {
       formRef.current.reset();
       dispatch(fetchAdmin(userData?.token));
     }
-  }, [dispatch, isSuccess]);
+  }, [dispatch, isSuccess, userData?.token]);
 
   return (
     <section className="pb-10">
@@ -148,11 +150,11 @@ export default function AddStaff() {
                 <input
                   type="checkbox"
                   name="products"
-                  id="products"
+                  id="staffProducts"
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("products")}
                 />
-                <label htmlFor="products">Products</label>
+                <label htmlFor="staffProducts">Products</label>
               </div>
               <div className="flex items-center gap-2 text-blackHigh">
                 <input

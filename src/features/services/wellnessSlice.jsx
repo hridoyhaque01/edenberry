@@ -22,7 +22,7 @@ export const fetchWellness = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );
@@ -39,7 +39,7 @@ export const addWellness = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );
@@ -56,7 +56,7 @@ export const updateWellness = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );

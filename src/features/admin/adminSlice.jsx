@@ -21,7 +21,7 @@ export const fetchAdmin = createAsyncThunk("auth/fetchAdmin", async (token) => {
     );
     return response?.data;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 });
 
@@ -38,7 +38,7 @@ export const addAdmin = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );
@@ -56,7 +56,7 @@ export const updateAdmin = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );

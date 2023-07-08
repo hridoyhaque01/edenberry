@@ -31,7 +31,7 @@ export const login = createAsyncThunk("auth/login", async (data) => {
     localStorage.setItem("tokenExpiration", expirationDate);
     return response?.data;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 });
 
@@ -46,7 +46,6 @@ export const register = createAsyncThunk("auth/register", async (data) => {
     console.log(response);
     return response?.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 });

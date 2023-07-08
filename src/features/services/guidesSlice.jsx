@@ -20,7 +20,7 @@ export const fetchGuides = createAsyncThunk("course/fetchGuides", async () => {
     );
     return response?.data;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 });
 
@@ -36,7 +36,7 @@ export const addGuide = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );
@@ -53,7 +53,7 @@ export const updateGuide = createAsyncThunk(
       );
       return response?.data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 );
