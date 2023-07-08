@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CoachModal from "../modals/CoachModal";
+import SearchLoader from "../shared/loaders/SearchLoader";
 import { Pagination } from "../shared/pagination/Pagination";
 
 function CoachTable() {
@@ -13,7 +14,7 @@ function CoachTable() {
   const currentRows = coaches?.slice(indexOfFirstRow, indexOfLastRow);
 
   if (isLoading) {
-    return <div>loading...</div>;
+    return <SearchLoader></SearchLoader>;
   }
 
   if (!isLoading && isError) {

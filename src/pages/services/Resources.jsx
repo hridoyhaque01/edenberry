@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
+import SearchLoader from "../../components/shared/loaders/SearchLoader";
 import ResourceTabs from "../../components/shared/tabs/ResourceTabs";
 
 function Resources() {
@@ -19,8 +20,8 @@ function Resources() {
   let prenatal = null;
 
   if (isLoading) {
-    postpartum = <div>loading...</div>;
-    prenatal = <div>loading...</div>;
+    postpartum = <SearchLoader></SearchLoader>;
+    prenatal = <SearchLoader></SearchLoader>;
   } else if (!isLoading && isError) {
     postpartum = <div>Something went wrong!</div>;
     prenatal = <div>Something went wrong!</div>;

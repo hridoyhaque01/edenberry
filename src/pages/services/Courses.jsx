@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
+import SearchLoader from "../../components/shared/loaders/SearchLoader";
 
 function Courses() {
   const { isLoading, isError, courses } = useSelector((state) => state.courses);
@@ -13,7 +14,7 @@ function Courses() {
   let content = null;
 
   if (isLoading) {
-    content = <div>loading...</div>;
+    content = <SearchLoader></SearchLoader>;
   } else if (!isLoading && isError) {
     content = <div>Something went wrong!</div>;
   } else if (!isLoading && !isError && courses?.length === 0) {

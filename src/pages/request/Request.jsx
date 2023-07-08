@@ -4,6 +4,7 @@ import Title from "../../components/shared/titles/Title";
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import SearchLoader from "../../components/shared/loaders/SearchLoader";
 import RequestTable from "../../components/tables/RequestTable";
 import {
   fetchMidWives,
@@ -39,7 +40,7 @@ function Request() {
   let midwiveContent = null;
 
   if (isLoading) {
-    midwiveContent = <div>Loading...</div>;
+    midwiveContent = <SearchLoader></SearchLoader>;
   } else if (!isLoading && isError) {
     midwiveContent = (
       <div className="text-errorColor">Something went wrong!</div>
@@ -64,7 +65,7 @@ function Request() {
     if (isSuccess) {
       dispatch(fetchMidWives());
     }
-  }, [isSuccess]);
+  }, [isSuccess, dispatch]);
 
   return (
     <div className="h-full flex flex-col gap-8 py-8">

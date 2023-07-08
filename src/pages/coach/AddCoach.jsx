@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import { addCoache, fetchCoaches } from "../../features/coach/coachSlice";
 
 function AddCoach() {
@@ -33,7 +34,7 @@ function AddCoach() {
     if (isSuccess) {
       dispatch(fetchCoaches());
     }
-  }, [isSuccess]);
+  }, [isSuccess, dispatch]);
 
   return (
     <section className="pb-10">
@@ -105,6 +106,7 @@ function AddCoach() {
         </div>
         {isResponseError && <div>Something went Wrong!</div>}
       </div>
+      {isRequestLoading && <RequestLoader></RequestLoader>}
     </section>
   );
 }

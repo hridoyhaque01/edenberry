@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   isError: false,
   admins: [],
   isSuccess: false,
@@ -71,7 +71,6 @@ const adminSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAdmin.pending, (state) => {
-      state.isLoading = true;
       state.isError = false;
     });
     builder.addCase(fetchAdmin.fulfilled, (state, action) => {
@@ -82,7 +81,6 @@ const adminSlice = createSlice({
     });
     builder.addCase(fetchAdmin.rejected, (state) => {
       state.isLoading = false;
-      state.isError = true;
     });
 
     builder.addCase(addAdmin.pending, (state) => {

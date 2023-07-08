@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CustomerModal from "../../components/modals/CustomerModal";
 import { Pagination } from "../../components/shared/pagination/Pagination";
 import { setUser } from "../../features/users/usersSlice";
+import SearchLoader from "../shared/loaders/SearchLoader";
 
 function CustomerTable() {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ function CustomerTable() {
   let content = null;
 
   if (isLoading) {
-    content = <div>Loading...</div>;
+    content = <SearchLoader></SearchLoader>;
   } else if (!isLoading && isError) {
     content = <div>Something wen wrong!</div>;
   } else if (!isLoading && !isError && users?.length === 0) {

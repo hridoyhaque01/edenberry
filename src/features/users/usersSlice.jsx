@@ -2,11 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   isError: false,
   users: [],
   isSuccess: false,
   userData: {},
+  isRequestLoading: false,
+  isResponseError: false,
 };
 
 export const addUser = createAsyncThunk("users/add", async (formData) => {
@@ -61,7 +63,6 @@ const usersSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetchUsers.pending, (state) => {
-      state.isLoading = true;
       state.isError = false;
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
@@ -71,7 +72,6 @@ const usersSlice = createSlice({
       state.isSuccess = false;
     });
     builder.addCase(fetchUsers.rejected, (state) => {
-      state.isLoading = false;
       state.isError = true;
       state.users = [];
     });
@@ -79,34 +79,37 @@ const usersSlice = createSlice({
     // update user data
 
     builder.addCase(addUser.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
       state.isSuccess = false;
     });
     builder.addCase(addUser.fulfilled, (state) => {
-      state.isLoading = false;
-      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
       state.isSuccess = true;
     });
 
     builder.addCase(addUser.rejected, (state) => {
-      state.isLoading = false;
-      state.isError = true;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
       state.isSuccess = false;
     });
     // update user data
 
     builder.addCase(updateUser.pending, (state) => {
-      state.isError = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
       state.isSuccess = false;
     });
     builder.addCase(updateUser.fulfilled, (state) => {
-      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
       state.isSuccess = true;
     });
 
     builder.addCase(updateUser.rejected, (state) => {
-      state.isError = true;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
       state.isSuccess = false;
     });
   },

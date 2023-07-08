@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import FormTitle from "../../components/shared/titles/FormTitle";
 
+import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import {
   addWellness,
   fetchWellness,
@@ -78,7 +79,7 @@ function WellnessForm() {
       setThumbnail(null);
       setThumbnailPreview(null);
     }
-  }, [isSuccess]);
+  }, [isSuccess, dispatch]);
 
   return (
     <section className="pt-12 pb-10">
@@ -200,6 +201,7 @@ function WellnessForm() {
           )}
         </form>
       </div>
+      {isRequestLoading && <RequestLoader></RequestLoader>}
     </section>
   );
 }

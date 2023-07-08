@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import { addAdmin, fetchAdmin } from "../../features/admin/adminSlice";
 
 export default function AddStaff() {
@@ -200,6 +201,7 @@ export default function AddStaff() {
       {isResponseError && (
         <div className="text-errorColor">Something went wrong!</div>
       )}
+      {isRequestLoading && <RequestLoader></RequestLoader>}
     </section>
   );
 }

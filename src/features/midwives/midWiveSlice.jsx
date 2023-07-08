@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   isError: false,
   isSuccess: false,
   midwives: [],
@@ -27,11 +27,12 @@ export const fetchMidWives = createAsyncThunk(
 export const updateMidWives = createAsyncThunk(
   "midwives/updateMidWives",
   async ({ id, status }) => {
-    const data = JSON.stringify({ status });
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ status }));
     try {
       const response = await axios.patch(
         `${import.meta.env.VITE_API_BASE_URL}/midwives/edit/${id}`,
-        { data }
+        formData
       );
       return response?.data;
     } catch (error) {
@@ -45,19 +46,17 @@ const midwiveSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(fetchMidWives.pending, (state) => {
-      state.isLoading = true;
       state.isError = false;
     });
     builder.addCase(fetchMidWives.fulfilled, (state, action) => {
-      state.isLoading = false;
       state.isError = false;
       state.isSuccess = false;
       state.midwives = action.payload?.filter(
         (wive) => wive?.status === "active"
       );
+      state.isLoading = false;
     });
     builder.addCase(fetchMidWives.rejected, (state) => {
-      state.isLoading = false;
       state.isError = true;
     });
     //   update status

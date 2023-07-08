@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   isError: false,
   guides: [],
   isRequestLoading: false,
@@ -68,18 +68,15 @@ const guideSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchGuides.pending, (state) => {
-      state.isLoading = true;
       state.isError = false;
-      state.isSuccess = false;
     });
     builder.addCase(fetchGuides.fulfilled, (state, action) => {
-      state.isLoading = false;
       state.isError = false;
       state.guides = action.payload;
       state.isSuccess = false;
+      state.isLoading = false;
     });
     builder.addCase(fetchGuides.rejected, (state) => {
-      state.isLoading = false;
       state.isError = true;
     });
 

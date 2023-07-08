@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchAdmin,
-  updateAdmin,
-  updateStaff,
-} from "../../features/admin/adminSlice";
+import { fetchAdmin, updateAdmin } from "../../features/admin/adminSlice";
+import SearchLoader from "../shared/loaders/SearchLoader";
 import { Pagination } from "../shared/pagination/Pagination";
 
 function StaffTable() {
@@ -32,26 +29,26 @@ function StaffTable() {
     dispatch(updateAdmin({ token: userData?.token, formData, id }));
   };
 
-  // useEffect(() => {
-  //   dispatch(fetchAdmin(userData?.token));
-  // }, [dispatch]);
-
   useEffect(() => {
     if (isSuccess) {
       dispatch(fetchAdmin(userData?.token));
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, dispatch, userData?.token]);
 
   let content = null;
 
   if (isLoading) {
-    content = <div>Loading...</div>;
+    content = <SearchLoader></SearchLoader>;
   } else if (!isLoading && isError) {
     content = <div>Something wen wrong!</div>;
   } else if (!isLoading && !isError && staffs?.length === 0) {
     content = <div>No Data Found!</div>;
   } else if (!isLoading && !isError && staffs?.length > 0) {
-    const currentRows = staffs?.slice(indexOfFirstRow, indexOfLastRow);
+    const filteredStaffs = staffs?.filter(
+      (staff) => staff?._id !== userData?.admin?._id
+    );
+
+    const currentRows = filteredStaffs?.slice(indexOfFirstRow, indexOfLastRow);
     content = (
       <div className="-m-1.5 overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">

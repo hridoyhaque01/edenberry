@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import WellnessModal from "../../components/modals/WellnessModal";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
+import SearchLoader from "../../components/shared/loaders/SearchLoader";
 
 function Wellness() {
   const { isLoading, isError, wellness } = useSelector(
@@ -17,7 +18,7 @@ function Wellness() {
   let content = null;
 
   if (isLoading) {
-    content = <div>loading...</div>;
+    content = <SearchLoader></SearchLoader>;
   } else if (!isLoading && isError) {
     content = <div>Something went wrong!</div>;
   } else if (!isLoading && !isError && wellness?.length === 0) {

@@ -45,7 +45,6 @@ function StaffModal({ staff }) {
       lastName,
       email,
       password,
-      status: "active",
       permissions,
     };
     const formData = new FormData();
@@ -63,7 +62,7 @@ function StaffModal({ staff }) {
     if (isSuccess) {
       dispatch(fetchAdmin(userData?.token));
     }
-  }, [isSuccess]);
+  }, [isSuccess, dispatch, userData?.token]);
 
   return (
     <div

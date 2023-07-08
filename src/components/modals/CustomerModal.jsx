@@ -5,6 +5,7 @@ import { updateUser } from "../../features/users/usersSlice";
 import dateFormater from "../../utils/dateFormater";
 import getIsoDateString from "../../utils/getIsoDateString";
 
+// eslint-disable-next-line react/prop-types
 export default function CustomerModal({ userData }) {
   // const { userData } = useSelector((state) => state.users);
   const [componentDisabled, setComponentDisabled] = useState(false);
@@ -17,7 +18,9 @@ export default function CustomerModal({ userData }) {
   const [mealTwoData, setMealTwoData] = useState([]);
   const [mealThreeData, setMealThreeData] = useState([]);
 
-  const { isLoading, isError } = useSelector((state) => state.users);
+  const { isRequestLoading, isResponseError } = useSelector(
+    (state) => state.users
+  );
 
   const {
     babyName,
@@ -733,7 +736,7 @@ export default function CustomerModal({ userData }) {
 
                   <div className="flex items-center justify-end">
                     <button
-                      disabled={isLoading}
+                      disabled={isRequestLoading}
                       className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                       type="submit"
                     >
@@ -741,7 +744,7 @@ export default function CustomerModal({ userData }) {
                     </button>
                   </div>
 
-                  {isError && (
+                  {isResponseError && (
                     <div className="text-errorColor">Something went wrong!</div>
                   )}
                 </form>

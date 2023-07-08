@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   isError: false,
   wellness: [],
   isSuccess: false,
@@ -66,7 +66,6 @@ const wellnessSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(fetchWellness.pending, (state) => {
-      state.isLoading = true;
       state.isError = false;
     });
     builder.addCase(fetchWellness.fulfilled, (state, action) => {
@@ -75,7 +74,6 @@ const wellnessSlice = createSlice({
       state.wellness = action.payload;
     });
     builder.addCase(fetchWellness.rejected, (state) => {
-      state.isLoading = false;
       state.isError = true;
     });
 
