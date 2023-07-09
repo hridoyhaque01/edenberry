@@ -157,6 +157,7 @@ function StaffModal({ staff }) {
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
                       type="checkbox"
+                      className="checkbox"
                       name="services"
                       id="editservices"
                       onChange={handleCheckbox}
@@ -167,6 +168,7 @@ function StaffModal({ staff }) {
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
                       type="checkbox"
+                      className="checkbox"
                       name="coach"
                       id="editcoach"
                       onChange={handleCheckbox}
@@ -177,6 +179,7 @@ function StaffModal({ staff }) {
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
                       type="checkbox"
+                      className="checkbox"
                       name="products"
                       id="products"
                       onChange={handleCheckbox}
@@ -187,6 +190,7 @@ function StaffModal({ staff }) {
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
                       type="checkbox"
+                      className="checkbox"
                       name="staffs"
                       id="editstaffs"
                       onChange={handleCheckbox}
@@ -197,6 +201,7 @@ function StaffModal({ staff }) {
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
                       type="checkbox"
+                      className="checkbox"
                       name="request"
                       id="editrequest"
                       onChange={handleCheckbox}
@@ -207,6 +212,7 @@ function StaffModal({ staff }) {
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
                       type="checkbox"
+                      className="checkbox"
                       name="additional"
                       id="editadditional"
                       onChange={handleCheckbox}

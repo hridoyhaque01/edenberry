@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAdmin, updateAdmin } from "../../features/admin/adminSlice";
+import {
+  fetchAdmin,
+  updateAdmin,
+  updateStaff,
+} from "../../features/admin/adminSlice";
 import SearchLoader from "../shared/loaders/SearchLoader";
 import { Pagination } from "../shared/pagination/Pagination";
 

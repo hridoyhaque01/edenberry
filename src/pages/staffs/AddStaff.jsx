@@ -24,8 +24,6 @@ export default function AddStaff() {
     }
   };
 
-  console.log(isResponseError);
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -131,6 +129,7 @@ export default function AddStaff() {
                   type="checkbox"
                   name="services"
                   id="services"
+                  className="checkbox"
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("services")}
                 />
@@ -139,6 +138,7 @@ export default function AddStaff() {
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
                   type="checkbox"
+                  className="checkbox"
                   name="coach"
                   id="coach"
                   onChange={handleCheckbox}
@@ -149,6 +149,7 @@ export default function AddStaff() {
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
                   type="checkbox"
+                  className="checkbox"
                   name="products"
                   id="staffProducts"
                   onChange={handleCheckbox}
@@ -159,6 +160,7 @@ export default function AddStaff() {
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
                   type="checkbox"
+                  className="checkbox"
                   name="staffs"
                   id="staffs"
                   onChange={handleCheckbox}
@@ -169,6 +171,7 @@ export default function AddStaff() {
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
                   type="checkbox"
+                  className="checkbox"
                   name="request"
                   id="request"
                   onChange={handleCheckbox}
@@ -179,6 +182,7 @@ export default function AddStaff() {
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
                   type="checkbox"
+                  className="checkbox"
                   name="additional"
                   id="additional"
                   onChange={handleCheckbox}
