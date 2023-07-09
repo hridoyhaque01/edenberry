@@ -10,11 +10,21 @@ import {
   fetchMidWives,
   updateMidWives,
 } from "../../features/midwives/midWiveSlice";
+import {
+  fetchSeekHelps,
+  updateSeekHelp,
+} from "../../features/seekHelps/seekHelpsSlice";
 
 function Request() {
   const { isLoading, isError, midwives, isSuccess } = useSelector(
     (state) => state.midwives
   );
+  const {
+    isLoading: isSeekHelpLoading,
+    isError: isSeekHelpError,
+    seekHelps,
+    isSuccess: isSeekHelpSuccess,
+  } = useSelector((state) => state.seekHelps);
 
   const dispatch = useDispatch();
   const dropdownMenus = {
@@ -38,6 +48,7 @@ function Request() {
   // decide what to do
 
   let midwiveContent = null;
+  let seekHelpContent = null;
 
   if (isLoading) {
     midwiveContent = <SearchLoader></SearchLoader>;
@@ -57,9 +68,33 @@ function Request() {
     );
   }
 
-  // useEffect(() => {
-  //   dispatch(fetchMidWives());
-  // }, []);
+  if (isSeekHelpLoading) {
+    seekHelpContent = <SearchLoader></SearchLoader>;
+  } else if (!isSeekHelpLoading && isSeekHelpError) {
+    midwiveContent = (
+      <div className="text-errorColor">Something went wrong!</div>
+    );
+  } else if (
+    !isSeekHelpLoading &&
+    !isSeekHelpError &&
+    seekHelps?.length === 0
+  ) {
+    seekHelpContent = <div>No data found!</div>;
+  } else if (!isLoading && !isError && seekHelps?.length > 0) {
+    seekHelpContent = (
+      <RequestTable
+        dispatchFun={updateSeekHelp}
+        data={seekHelps}
+        dropdownMenus={dropdownMenus}
+      ></RequestTable>
+    );
+  }
+
+  useEffect(() => {
+    if (isSeekHelpSuccess) {
+      dispatch(fetchSeekHelps());
+    }
+  }, [isSeekHelpSuccess, dispatch]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -85,7 +120,7 @@ function Request() {
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-2"
         >
-          <RequestTable dropdownMenus={dropdownMenus}></RequestTable>
+          {seekHelpContent}
         </div>
       </div>
     </div>

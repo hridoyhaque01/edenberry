@@ -3,6 +3,7 @@ import adminReducer from "../features/admin/adminSlice";
 import authReducer from "../features/auth/authSlice";
 import coachReducer from "../features/coach/coachSlice";
 import midWiveReducer from "../features/midwives/midWiveSlice";
+import seekHelpsReducer from "../features/seekHelps/seekHelpsSlice";
 import courseReducer from "../features/services/courseSlice";
 import guidesReducer from "../features/services/guidesSlice";
 import resourceSlice from "../features/services/resourceSlice";
@@ -22,5 +23,6 @@ export const store = configureStore({
     coaches: coachReducer,
     admins: adminReducer,
     midwives: midWiveReducer,
+    seekHelps: seekHelpsReducer,
   },
 });

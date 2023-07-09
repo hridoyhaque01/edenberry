@@ -6,6 +6,7 @@ import TopNav from "../components/shared/topnav/TopNav";
 import { fetchAdmin } from "../features/admin/adminSlice";
 import { fetchCoaches } from "../features/coach/coachSlice";
 import { fetchMidWives } from "../features/midwives/midWiveSlice";
+import { fetchSeekHelps } from "../features/seekHelps/seekHelpsSlice";
 import { fetchCourses } from "../features/services/courseSlice";
 import { fetchGuides } from "../features/services/guidesSlice";
 import { fetchResources } from "../features/services/resourceSlice";
@@ -24,6 +25,7 @@ const MainLayout = () => {
     dispatch(fetchAdmin(userData?.token));
     dispatch(fetchUsers());
     dispatch(fetchWellness());
+    dispatch(fetchSeekHelps());
   }, [dispatch]);
 
   return (
