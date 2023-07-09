@@ -1,6 +1,6 @@
 import React from "react";
 import "react-quill/dist/quill.snow.css";
-import PrivacyModal from "../../components/modals/PrivacyModal";
+import PrivacyPolicyModal from "../../components/modals/PrivacyPolicyModal";
 import AditionalTabs from "../../components/shared/tabs/AditionalTabs";
 import Title from "../../components/shared/titles/Title";
 import Privacy from "./Privacy";
@@ -10,16 +10,17 @@ function Products() {
     <div className="h-full flex flex-col gap-8 py-8">
       <Title></Title>
       <AditionalTabs></AditionalTabs>
-      <div className="mt-3">
+      <div className="h-full">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
+          className="h-full"
         >
           <Privacy></Privacy>
         </div>
       </div>
-      <PrivacyModal></PrivacyModal>
+      <PrivacyPolicyModal></PrivacyPolicyModal>
     </div>
   );
 }

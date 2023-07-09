@@ -7,6 +7,7 @@ import {
   updateLesson,
 } from "../../features/services/courseSlice";
 import { imageIcon } from "../../utils/getImages";
+import RequestLoader from "../shared/loaders/RequestLoader";
 
 function CourseModal({ id, type, data: lessonData }) {
   const lessonModalRef = useRef();
@@ -238,6 +239,7 @@ function CourseModal({ id, type, data: lessonData }) {
               </div>
             </form>
             {isResponseError && <div>Something went wrong!</div>}
+            {isRequestLoading && <RequestLoader></RequestLoader>}
           </div>
         </div>
       </div>

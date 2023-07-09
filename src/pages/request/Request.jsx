@@ -1,8 +1,9 @@
 import React from "react";
+import ReasonModal from "../../components/modals/ReasonModal";
 import RequestTabs from "../../components/shared/tabs/RequestTabs";
 import Title from "../../components/shared/titles/Title";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SearchLoader from "../../components/shared/loaders/SearchLoader";
 import RequestTable from "../../components/tables/RequestTable";
@@ -19,6 +20,8 @@ function Request() {
   const { isLoading, isError, midwives, isSuccess } = useSelector(
     (state) => state.midwives
   );
+  const [reason, setReason] = useState("");
+
   const {
     isLoading: isSeekHelpLoading,
     isError: isSeekHelpError,
@@ -64,6 +67,7 @@ function Request() {
         dispatchFun={updateMidWives}
         data={midwives}
         dropdownMenus={dropdownMenus}
+        setReason={setReason}
       ></RequestTable>
     );
   }
@@ -86,6 +90,7 @@ function Request() {
         dispatchFun={updateSeekHelp}
         data={seekHelps}
         dropdownMenus={dropdownMenus}
+        setReason={setReason}
       ></RequestTable>
     );
   }
@@ -122,6 +127,9 @@ function Request() {
         >
           {seekHelpContent}
         </div>
+      </div>
+      <div>
+        <ReasonModal reason={reason}></ReasonModal>
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import { updateUserData } from "../../features/users/usersSlice";
-import { updateUser } from "../../features/users/usersSlice";
+import { useEffect } from "react";
+import { fetchUsers, updateUser } from "../../features/users/usersSlice";
 import dateFormater from "../../utils/dateFormater";
 import getIsoDateString from "../../utils/getIsoDateString";
+import RequestLoader from "../shared/loaders/RequestLoader";
 
 // eslint-disable-next-line react/prop-types
 export default function CustomerModal({ userData }) {
@@ -18,7 +20,7 @@ export default function CustomerModal({ userData }) {
   const [mealTwoData, setMealTwoData] = useState([]);
   const [mealThreeData, setMealThreeData] = useState([]);
 
-  const { isRequestLoading, isResponseError } = useSelector(
+  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
     (state) => state.users
   );
 
@@ -38,7 +40,6 @@ export default function CustomerModal({ userData }) {
     productsThree,
     productsTwo,
   } = userData || {};
-  console.log(userData);
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
@@ -182,6 +183,12 @@ export default function CustomerModal({ userData }) {
       }
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(fetchUsers());
+    }
+  });
 
   return (
     <>
@@ -1297,6 +1304,7 @@ export default function CustomerModal({ userData }) {
             </div>
           </div>
         </div>
+        {isRequestLoading && <RequestLoader></RequestLoader>}
       </div>
     </>
   );

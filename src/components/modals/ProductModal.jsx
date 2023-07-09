@@ -1,13 +1,22 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchProducts,
+  updateProduct,
+} from "../../features/products/productSlice";
 import { imageIcon } from "../../utils/getImages";
+import RequestLoader from "../shared/loaders/RequestLoader";
 
 function ProductModal() {
   const [profile, setProfile] = useState(null);
   const profileRef = useRef();
   const [productCount, setProductCount] = useState(1);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
-  const formRef = useRef();
-
+  const { activeProduct, isRequestLoading, isResponseError, isSuccess } =
+    useSelector((state) => state.products);
+  const [isError, setIsError] = useState(false);
+  const dispatch = useDispatch();
+  const [data, setData] = useState();
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
     if (
@@ -40,17 +49,46 @@ function ProductModal() {
     }
   };
 
+  useEffect(() => {
+    if (activeProduct?._id) {
+      setData(activeProduct);
+      setProductCount(activeProduct?.productCount);
+      setThumbnailPreview(activeProduct?.fileUrl);
+    }
+  }, [activeProduct?._id]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
     const productName = form.productname?.value;
-    const description = form.productname?.value;
+    const description = form.description?.value;
     const data = {
       productName,
       description,
       productCount,
     };
+
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
+    if (profile) {
+      formData.append("files", profile);
+      dispatch(updateProduct({ id: activeProduct?._id, formData }));
+    } else {
+      dispatch(updateProduct({ id: activeProduct?._id, formData }));
+    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(fetchProducts());
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isResponseError) {
+      setIsError(isResponseError);
+    }
+  }, [isResponseError]);
 
   return (
     <div
@@ -79,12 +117,12 @@ function ProductModal() {
                 <img
                   src={thumbnailPreview || imageIcon}
                   alt=""
-                  className="w-24 h-24 rounded-md border border-fade"
+                  className="w-24 h-24 rounded-md border border-fade bg-center object-cover"
                 />
               </div>
               <h4 className="text-2xl font-bold text-black">Postpartum Kit</h4>
             </div>
-            <form className="flex flex-col gap-6">
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
               {/* profile  */}
               <div className="flex flex-col gap-5 ">
                 <span className="text-xs font-semibold text-black">
@@ -92,7 +130,6 @@ function ProductModal() {
                 </span>
                 <div className="flex flex-col-reverse">
                   <input
-                    required
                     type="file"
                     className="h-1 w-1 opacity-0  "
                     id="profile"
@@ -145,6 +182,7 @@ function ProductModal() {
                   name="productname"
                   placeholder="Product name here..."
                   required
+                  defaultValue={data?.productName}
                 />
               </div>
 
@@ -159,6 +197,7 @@ function ProductModal() {
                     className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                     placeholder="customer notes here..."
                     required
+                    defaultValue={data?.description}
                   />
                   <div className="text-darkMid text-right">(45/1200)</div>
                 </div>
@@ -195,12 +234,17 @@ function ProductModal() {
                 <button
                   type="submit"
                   className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
+                  disabled={isRequestLoading}
                 >
                   Save & Update
                 </button>
               </div>
             </form>
           </div>
+          {isRequestLoading && <RequestLoader></RequestLoader>}
+          {isError && (
+            <div className="text-errorColor">Something went wrong!</div>
+          )}
         </div>
       </div>
     </div>

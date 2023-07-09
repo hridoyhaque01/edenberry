@@ -6,6 +6,8 @@ import TopNav from "../components/shared/topnav/TopNav";
 import { fetchAdmin } from "../features/admin/adminSlice";
 import { fetchCoaches } from "../features/coach/coachSlice";
 import { fetchMidWives } from "../features/midwives/midWiveSlice";
+import { fetchPrivacy } from "../features/privacy/privacySlice";
+import { fetchProducts } from "../features/products/productSlice";
 import { fetchSeekHelps } from "../features/seekHelps/seekHelpsSlice";
 import { fetchCourses } from "../features/services/courseSlice";
 import { fetchGuides } from "../features/services/guidesSlice";
@@ -26,6 +28,8 @@ const MainLayout = () => {
     dispatch(fetchUsers());
     dispatch(fetchWellness());
     dispatch(fetchSeekHelps());
+    dispatch(fetchPrivacy());
+    dispatch(fetchProducts());
   }, [dispatch]);
 
   return (

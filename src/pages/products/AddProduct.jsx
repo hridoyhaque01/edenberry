@@ -1,4 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import RequestLoader from "../../components/shared/loaders/RequestLoader";
+import {
+  addProduct,
+  fetchProducts,
+} from "../../features/products/productSlice";
 import { imageIcon } from "../../utils/getImages";
 
 function AddProduct() {
@@ -7,6 +13,13 @@ function AddProduct() {
   const [productCount, setProductCount] = useState(1);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const formRef = useRef();
+  const dispatch = useDispatch();
+
+  const [isError, setIsError] = useState(false);
+
+  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
+    (state) => state.products
+  );
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
@@ -44,13 +57,29 @@ function AddProduct() {
     event.preventDefault();
     const form = event.target;
     const productName = form.productname?.value;
-    const description = form.productname?.value;
+    const description = form.description?.value;
     const data = {
       productName,
       description,
       productCount,
     };
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
+    formData.append("files", profile);
+    dispatch(addProduct(data));
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(fetchProducts());
+    }
+  }, [isSuccess, dispatch]);
+
+  useEffect(() => {
+    if (isResponseError) {
+      setIsError(isResponseError);
+    }
+  }, [isResponseError]);
 
   return (
     <section className="pb-10">
@@ -180,11 +209,14 @@ function AddProduct() {
           <button
             type="submit"
             className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
+            disabled={isRequestLoading}
           >
             Save & Update
           </button>
         </div>
       </form>
+      {isRequestLoading && <RequestLoader></RequestLoader>}
+      {isError && <div className="text-errorColor">Something went wrong!</div>}
     </section>
   );
 }

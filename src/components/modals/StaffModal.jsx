@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAdmin, updateAdmin } from "../../features/admin/adminSlice";
+import RequestLoader from "../shared/loaders/RequestLoader";
 
 function StaffModal({ staff }) {
   const {
@@ -234,6 +235,7 @@ function StaffModal({ staff }) {
               </div>
             </form>
           </div>
+          {isRequestLoading && <RequestLoader></RequestLoader>}
           {isResponseError && (
             <div className="text-errorColor">Something went wrong!</div>
           )}

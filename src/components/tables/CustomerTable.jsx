@@ -97,7 +97,7 @@ function CustomerTable() {
                       {customer?.location}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {customer?.dueDate}
+                      {new Date(customer?.dueDate).toLocaleDateString("en-US")}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap text-right">
                       <span

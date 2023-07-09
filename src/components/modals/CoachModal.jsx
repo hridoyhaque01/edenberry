@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCoache } from "../../features/coach/coachSlice";
 import { user } from "../../utils/getImages";
 
 function CoachModal() {
@@ -59,7 +58,7 @@ function CoachModal() {
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     formData.append("files", profile);
-    dispatch(addCoache({ token: userData?.token, formData }));
+    // dispatch(addCoache({ token: userData?.token, formData }));
   };
 
   return (
