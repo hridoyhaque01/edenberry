@@ -23,6 +23,7 @@ function AddProduct() {
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
+    console.log(file);
     if (
       file?.type === "image/jpg" ||
       file?.type === "image/jpeg" ||
@@ -66,7 +67,7 @@ function AddProduct() {
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     formData.append("files", profile);
-    dispatch(addProduct(data));
+    dispatch(addProduct(formData));
   };
 
   useEffect(() => {
