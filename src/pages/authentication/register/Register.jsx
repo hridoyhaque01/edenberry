@@ -52,8 +52,8 @@ const Register = () => {
     <section className="h-screen bg-authBg bg-no-repeat bg-cover bg-whiteSemi flex flex-col items-center justify-center w-full">
       <div className="flex flex-col">
         <div className="text-center mb-10">
-          <h4 className="text-3xl text-primaryMain">Welcome back!</h4>
-          <h1 className="text-5xl text-pureBlackColor font-bold">
+          <h4 className="text-3xl text-primaryColor">Welcome back!</h4>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl text-black font-bold mt-2">
             Register Admin
           </h1>
         </div>
@@ -134,7 +134,7 @@ const Register = () => {
               <p className="text-blackSemi">Remeber me</p>
             </div> */}
             <button
-              className="btn normal-case mt-4 mb-6 rounded-full bg-primaryMain text-whiteHigh border-0 hover:bg-primaryMain"
+              className="mt-4 mb-6 py-3.5 rounded-full bg-primaryColor text-whiteHigh border-0 "
               type="submit"
               disabled={isLoading}
             >
