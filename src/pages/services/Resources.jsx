@@ -30,11 +30,9 @@ function Resources() {
     prenatal = <div>No data found!</div>;
   } else if (!isLoading && !isError && resources?.length > 0) {
     const postpartums = resources?.filter(
-      (item) => item?.postFor === "Postpartum Home Page"
+      (item) => item?.status === "postpartum"
     );
-    const prenatals = resources?.filter(
-      (item) => item?.postFor === "Prenatal Home Page"
-    );
+    const prenatals = resources?.filter((item) => item?.status === "prenatal");
 
     if (postpartums?.length > 0) {
       postpartum = postpartums?.map((item) => (

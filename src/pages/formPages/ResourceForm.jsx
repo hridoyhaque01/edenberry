@@ -45,14 +45,14 @@ function ResourceForm() {
 
     const form = event.target;
     const title = form.title.value;
-    const postFor = form.postFor.value;
+    const status = form.status.value;
     const description = form.description.value;
 
     const formData = new FormData();
 
     const data = {
       title,
-      postFor,
+      status,
       description,
     };
 
@@ -115,17 +115,15 @@ function ResourceForm() {
             <div className="relative col-span-2">
               <select
                 className="w-full bg-transparent p-2.5 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                name="postFor"
+                name="status"
                 required
                 defaultValue={postFor}
               >
                 <option value="select post" disabled>
                   select post
                 </option>
-                <option value="Postpartum Home Page">
-                  Postpartum Home Page
-                </option>
-                <option value="Prenatal Home Page">Prenatal Home Page</option>
+                <option value="postpartum">Postpartum</option>
+                <option value="prenatal">Prenatal</option>
               </select>
               <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
                 <span className="material-symbols-outlined">expand_more</span>
