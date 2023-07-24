@@ -25,12 +25,12 @@ export default function CustomerModal({ userData }) {
   );
 
   const {
-    babyName,
+    babysName,
     customerNote,
     dueDate,
     email,
     fileUrl,
-    fatherName,
+    partnerName,
     firstName,
     lastName,
     apparelSize,
@@ -40,6 +40,8 @@ export default function CustomerModal({ userData }) {
     productsThree,
     productsTwo,
   } = userData || {};
+
+  console.log(fileUrl);
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
@@ -81,8 +83,8 @@ export default function CustomerModal({ userData }) {
     const firstName = form.firstName.value;
     const lastName = form.lastName.value;
     const customerNote = form.customerNote.value;
-    const fatherName = form.fatherName.value;
-    const babyName = form.babyName.value;
+    const partnerName = form.partnerName.value;
+    const babysName = form.babysName.value;
     const email = form.email.value;
     const phoneNumber = form.phone.value;
     const apparelSize = form.apparelSize.value;
@@ -125,8 +127,8 @@ export default function CustomerModal({ userData }) {
       firstName,
       lastName,
       customerNote,
-      fatherName,
-      babyName,
+      partnerName,
+      babysName,
       email,
       apparelSize,
       phoneNumber,
@@ -135,8 +137,7 @@ export default function CustomerModal({ userData }) {
       productsTwo,
       productsThree,
       productsFour,
-
-      status: "active",
+      // status: "active",
     };
     const formData = new FormData();
 
@@ -380,12 +381,12 @@ export default function CustomerModal({ userData }) {
                       </span>
                       <input
                         required
-                        id="fatherName"
+                        id="partnerName"
                         type="text"
                         placeholder="father name here..."
-                        name="fatherName"
+                        name="partnerName"
                         className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-                        defaultValue={fatherName}
+                        defaultValue={partnerName}
                       />
                     </div>
                     <div className="flex flex-col gap-5">
@@ -394,12 +395,12 @@ export default function CustomerModal({ userData }) {
                       </span>
                       <input
                         required
-                        id="babyName"
+                        id="babysName"
                         type="text"
                         placeholder="baby name here..."
-                        name="babyName"
+                        name="babysName"
                         className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-                        defaultValue={babyName}
+                        defaultValue={babysName}
                       />
                     </div>
                   </div>
@@ -451,27 +452,34 @@ export default function CustomerModal({ userData }) {
                         id="dueDate"
                         type="date"
                         name="dueDate"
-                        value={getIsoDateString(dueDate)}
-                        onChange={() => console.log(dueDate)}
+                        // value={getIsoDateString(dueDate)}
+                        // onChange={() => console.log(dueDate)}
                         className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
                       />
                     </div>
-                    <div className="flex flex-col gap-5">
-                      <span
-                        htmlFor="apparelSize"
-                        className="text-xs font-mont font-semibold text-black"
-                      >
+                    <div className="flex flex-col gap-2">
+                      <span className="text-sm font-semibold text-blackHigh">
                         Apparel Size
                       </span>
-                      <input
-                        required
-                        id="apparelSize"
-                        type="number"
-                        placeholder="apparel size here..."
-                        name="apparelSize"
-                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-                        defaultValue={apparelSize}
-                      />
+                      <div className="relative">
+                        <select
+                          className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                          name="asssignmentOne"
+                          required
+                        >
+                          <option value="midwife concierge">
+                            Midwife Concierge
+                          </option>
+                          <option value="medium">medium</option>
+                          <option value="large">large</option>
+                          <option value="XL">XL</option>
+                        </select>
+                        <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                          <span className="material-symbols-outlined">
+                            expand_more
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -1033,270 +1041,6 @@ export default function CustomerModal({ userData }) {
                       >
                         Save & Update
                       </button>
-                    </div>
-                  </div>
-                </form>
-
-                <form>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-4">
-                      <h2 className="text-xl font-semibold text-black">
-                        SHIPPING ADDRESS
-                      </h2>
-                      {/* street name one  */}
-                      <div className="flex flex-col gap-2 mt-1">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Street Name 1
-                        </span>
-                        <div>
-                          <input
-                            className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md"
-                            name="shippingStreetOne"
-                            placeholder="street name here..."
-                          />
-                        </div>
-                      </div>
-                      {/* street name two  */}
-
-                      <div className="flex flex-col gap-2">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Street Name 2
-                        </span>
-
-                        <div className="relative">
-                          <select
-                            className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                            name="shippingStreetTwo"
-                            required
-                          >
-                            <option value="place one">place one</option>
-                            <option value="place two">place two</option>
-                            <option value="place three">place three</option>
-                            <option value="place four">place four</option>
-                          </select>
-                          <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
-                            <span className="material-symbols-outlined">
-                              expand_more
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* city and zip code  */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            City
-                          </span>
-                          <div className="relative">
-                            <select
-                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                              name="shippingCity"
-                              required
-                            >
-                              <option value="demo city one">
-                                demo city one
-                              </option>
-                              <option value="demo city two">
-                                demo city two
-                              </option>
-                              <option value="demo city three">
-                                demo city three
-                              </option>
-                              <option value="demo city four">
-                                demo city four
-                              </option>
-                            </select>
-                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
-                              <span className="material-symbols-outlined">
-                                expand_more
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Zip Code
-                          </span>
-                          <div className="relative">
-                            <select
-                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                              name="shippingZipCode"
-                              required
-                            >
-                              <option value="1200">1200</option>
-                              <option value="1201">1201</option>
-                              <option value="1202">1202</option>
-                              <option value="1203">1203</option>
-                            </select>
-                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
-                              <span className="material-symbols-outlined">
-                                expand_more
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Country  */}
-
-                      <div className="flex flex-col gap-2">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Country
-                        </span>
-                        <div className="relative">
-                          <select
-                            className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                            name="shippingCountry"
-                            required
-                          >
-                            <option value="australia">Australia</option>
-                            <option value="colombia">Colombia</option>
-                            <option value="cuba">Cuba</option>
-                            <option value="canada">Canada</option>
-                          </select>
-                          <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
-                            <span className="material-symbols-outlined">
-                              expand_more
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-4">
-                      <h2 className="text-xl font-semibold text-black">
-                        BILLING ADDRESS
-                      </h2>
-                      {/* street name one  */}
-                      <div className="flex flex-col gap-2 mt-1">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Street Name 1
-                        </span>
-                        <div>
-                          <input
-                            className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md"
-                            name="billingStreetOne"
-                            placeholder="street name here..."
-                          />
-                        </div>
-                      </div>
-                      {/* street name two  */}
-
-                      <div className="flex flex-col gap-2">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Street Name 2
-                        </span>
-                        <div className="relative">
-                          <select
-                            className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                            name="billingStreetTwo"
-                            required
-                          >
-                            <option value="place one">place one</option>
-                            <option value="place two">place two</option>
-                            <option value="place three">place three</option>
-                            <option value="place four">place four</option>
-                          </select>
-                          <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
-                            <span className="material-symbols-outlined">
-                              expand_more
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* city and zip code  */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            City
-                          </span>
-                          <div className="relative">
-                            <select
-                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                              name="billingCity"
-                              required
-                            >
-                              <option value="demo city one">
-                                demo city one
-                              </option>
-                              <option value="demo city two">
-                                demo city two
-                              </option>
-                              <option value="demo city three">
-                                demo city three
-                              </option>
-                              <option value="demo city four">
-                                demo city four
-                              </option>
-                            </select>
-                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
-                              <span className="material-symbols-outlined">
-                                expand_more
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <span className="text-sm font-semibold text-blackHigh">
-                            Zip Code
-                          </span>
-                          <div className="relative">
-                            <select
-                              className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                              name="billingZipCode"
-                              required
-                            >
-                              <option value="1200">1200</option>
-                              <option value="1201">1201</option>
-                              <option value="1202">1202</option>
-                              <option value="1203">1203</option>
-                            </select>
-                            <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
-                              <span className="material-symbols-outlined">
-                                expand_more
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Country  */}
-
-                      <div className="flex flex-col gap-2">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          City
-                        </span>
-                        <div className="relative">
-                          <select
-                            className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
-                            name="billingCountry"
-                            required
-                          >
-                            <option value="australia">Australia</option>
-                            <option value="colombia">Colombia</option>
-                            <option value="cuba">Cuba</option>
-                            <option value="canada">Canada</option>
-                          </select>
-                          <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
-                            <span className="material-symbols-outlined">
-                              expand_more
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* <div className="flex flex-col gap-2 mt-1">
-                        <span className="text-sm font-semibold text-blackHigh">
-                          Country
-                        </span>
-                        <ReactFlagsSelect
-                          selected={billingCountry}
-                          onSelect={(code) => setBillingContry(code)}
-                          countries={["fi", "GB", "IE", "IT", "NL", "SE"]}
-                        ></ReactFlagsSelect>
-                      </div> */}
                     </div>
                   </div>
                 </form>
