@@ -29,6 +29,8 @@ function Request() {
 
   const dispatch = useDispatch();
 
+  console.log(midwives);
+
   // decide what to do
 
   let midwiveContent = null;
