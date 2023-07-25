@@ -49,13 +49,13 @@ function PrivacyPolicyModal() {
           <form action="#" onSubmit={handleSubmit}>
             <div className="w-full p-8">
               <div className="flex flex-col gap-5">
-                <span className="text-xs font-mont font-semibold text-black uppercase">
+                <span className="text-xs font-mont font-semibold text-black capitalize">
                   Privacy policy Link
                 </span>
                 <input
                   required
                   type="text"
-                  placeholder="privacy policy link here..."
+                  placeholder="Enter privacy policy link"
                   name="privacyPolicyLink"
                   className="w-full outline-none border border-fadeMid bg-transparent p-3 rounded-md text-sm placeholder:text-fadeSemi text-black"
                 />

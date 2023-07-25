@@ -40,7 +40,7 @@ function GuideTabs() {
           role="tab"
           onClick={() => handleTab("prenatal")}
         >
-          prenatal
+          Prenatal
         </button>
       </nav>
     </div>

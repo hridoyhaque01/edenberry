@@ -52,16 +52,16 @@ function CourseModal({ id, type, data: lessonData }) {
     if (type === "edit") {
       if (!thumbnail) {
         dispatch(updateLesson({ id, formData }));
-        setData({ ...data, fileUrl: thumbnailPreview });
+        setData({ data, fileUrl: thumbnailPreview });
       } else {
         formData.append("files", thumbnail);
         dispatch(updateLesson({ id, formData }));
-        setData({ ...data, fileUrl: thumbnailPreview });
+        setData({ data, fileUrl: thumbnailPreview });
       }
     } else {
       formData.append("files", thumbnail);
       dispatch(addLesson({ id: id, formData }));
-      setData({ ...data, fileUrl: thumbnailPreview });
+      setData({ data, fileUrl: thumbnailPreview });
     }
   };
 
@@ -134,13 +134,13 @@ function CourseModal({ id, type, data: lessonData }) {
               {/* COURSE NAME */}
               <div className="flex flex-col gap-5">
                 <span className="text-xs font-semibold text-black font-mont capitalize">
-                  LESSON NAME
+                  Lesson name
                 </span>
                 <input
                   required
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
                   name="title"
-                  placeholder="lesson name here..."
+                  placeholder="Enter lesson name"
                   defaultValue={lessonData?.title}
                 />
               </div>
@@ -148,7 +148,7 @@ function CourseModal({ id, type, data: lessonData }) {
               {/* thumbnail  */}
               <div className="flex flex-col gap-5 ">
                 <span className="text-xs font-semibold text-black">
-                  COURSE THUMBNAIL
+                  Thumbnail
                 </span>
 
                 <div className="flex flex-col">
@@ -198,13 +198,13 @@ function CourseModal({ id, type, data: lessonData }) {
               {/* Video Link */}
               <div className="flex flex-col gap-5">
                 <span className="text-xs font-semibold text-black font-mont capitalize">
-                  VIDEO LINK
+                  Video Link
                 </span>
                 <input
                   required
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
                   name="videoUrl"
-                  placeholder="video link here..."
+                  placeholder="Enter video link"
                   defaultValue={lessonData?.videoUrl}
                 />
               </div>
@@ -212,14 +212,14 @@ function CourseModal({ id, type, data: lessonData }) {
               {/* Customer Notes */}
               <div className="">
                 <div className="flex flex-col gap-5">
-                  <span className="text-xs font-semibold text-black font-mont uppercase">
+                  <span className="text-xs font-semibold text-black font-mont capitalize">
                     Description
                   </span>
                   <textarea
                     required
                     name="description"
                     className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-                    placeholder="customer notes here..."
+                    placeholder="Enter lesson description"
                     defaultValue={lessonData?.description}
                     ref={desRef}
                   />

@@ -1,7 +1,6 @@
 import React from "react";
 import ReasonModal from "../../components/modals/ReasonModal";
 import RequestTabs from "../../components/shared/tabs/RequestTabs";
-import Title from "../../components/shared/titles/Title";
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -109,7 +108,6 @@ function Request() {
 
   return (
     <div className="h-full flex flex-col gap-8 py-8">
-      <Title></Title>
       <RequestTabs></RequestTabs>
       <div className="mt-3">
         <div

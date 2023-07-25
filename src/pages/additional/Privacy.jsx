@@ -29,6 +29,7 @@ function Privacy() {
   } else if (!isLoading && !isError && !privacyPolicies?._id) {
     content = <div className="">No data found!</div>;
   } else if (!isLoading && !isError && privacyPolicies?._id) {
+    console.log(privacyPolicies);
     if (showLoader) {
       content = <SearchLoader />;
     } else {

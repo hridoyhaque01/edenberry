@@ -8,10 +8,10 @@ import {
 import { imageIcon } from "../../utils/getImages";
 
 function AddProduct() {
-  const [profile, setProfile] = useState(null);
-  const profileRef = useRef();
-  const [productCount, setProductCount] = useState(1);
-  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [product, setProduct] = useState(null);
+  const productRef = useRef();
+  // const [productCount, setProductCount] = useState(1);
+  const [productPreview, setProductPreview] = useState(null);
   const formRef = useRef();
   const dispatch = useDispatch();
 
@@ -21,38 +21,32 @@ function AddProduct() {
     (state) => state.products
   );
 
-  const handleProfileChange = (event) => {
+  const handleProductChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (
       file?.type === "image/jpg" ||
       file?.type === "image/jpeg" ||
       file?.type === "image/png"
     ) {
-      setProfile(file);
+      setProduct(file);
       const imageURL = URL.createObjectURL(file);
-      setThumbnailPreview(imageURL);
+      setProductPreview(imageURL);
     } else {
-      setProfile(null);
+      setProduct(null);
     }
   };
 
-  const handleProfileDelete = () => {
-    profileRef.current.value = "";
-    setProfile(null);
-  };
+  // const incrementProduct = () => {
+  //   setProductCount((prev) => prev + 1);
+  // };
 
-  const incrementProduct = () => {
-    setProductCount((prev) => prev + 1);
-  };
-
-  const decrementProduct = () => {
-    if (productCount <= 1) {
-      return;
-    } else {
-      setProductCount((prev) => prev - 1);
-    }
-  };
+  // const decrementProduct = () => {
+  //   if (productCount <= 1) {
+  //     return;
+  //   } else {
+  //     setProductCount((prev) => prev - 1);
+  //   }
+  // };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -62,17 +56,20 @@ function AddProduct() {
     const data = {
       productName,
       description,
-      productCount,
+      // productCount,
     };
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
-    formData.append("files", profile);
+    formData.append("files", product);
     dispatch(addProduct(formData));
   };
 
   useEffect(() => {
     if (isSuccess) {
       dispatch(fetchProducts());
+      formRef.current.reset();
+      setProductPreview(null);
+      productRef.current.value = "";
     }
   }, [isSuccess, dispatch]);
 
@@ -85,68 +82,55 @@ function AddProduct() {
   return (
     <section className="pb-10">
       {/* title  */}
-      <div className="flex gap-4 mb-12">
-        <div>
-          <img
-            src={thumbnailPreview || imageIcon}
-            alt=""
-            className="w-24 h-24 rounded-md border border-fade"
-          />
-        </div>
-        {/* <h4 className="text-2xl font-bold text-black">Mom Care Box</h4> */}
-      </div>
+
       <form
         className="flex flex-col gap-6"
         onSubmit={handleSubmit}
         ref={formRef}
       >
-        {/* profile  */}
-        <div className="flex flex-col gap-5 ">
-          <span className="text-xs font-semibold text-black">
-            PROFILE PICTURE
+        {/* product image  */}
+
+        <div className="flex flex-col gap-5">
+          <span className="text-xs font-semibold text-black  capitalize">
+            Product Picture
           </span>
-          <div className="flex flex-col-reverse">
+          <div className="flex flex-col">
             <input
-              required
               type="file"
               className="h-1 w-1 opacity-0  "
-              id="addProduct"
-              ref={profileRef}
-              onChange={handleProfileChange}
-              name="addProduct"
+              id="productImage"
+              ref={productRef}
+              onChange={handleProductChange}
+              name="productImage"
             />
-            <div
-              className={`w-full border border-fadeMid flex justify-between rounded-md bg-transparent overflow-hidden `}
-            >
-              <div className="w-full flex items-center justify-between px-3 text-darkSemi">
-                {profile ? (
-                  <>
-                    <span className="select-none">
-                      {profile?.name?.length > 90
-                        ? profile?.name?.slice(0, 90) + "..."
-                        : profile?.name}
-                    </span>
-                    <button
-                      type="button"
-                      className="flex items-center relative z-50"
-                      onClick={handleProfileDelete}
-                    >
-                      <span className="material-symbols-outlined text-lg text-errorColor">
-                        cancel
-                      </span>
-                    </button>
-                  </>
-                ) : (
-                  <span>Name of the fille</span>
-                )}
-              </div>
+            {!productPreview && (
               <label
-                htmlFor="addProduct"
-                className={`py-3 px-4 inline-flex font-mont text-sm text-black border-l border-fadeSemi cursor-pointer`}
+                htmlFor="productImage"
+                className={`flex flex-col items-center justify-center  w-[30rem] max-w-[30rem] h-60 rounded-xl bg-fade border border-secondaryColor cursor-pointer`}
               >
-                Browse
+                <div>
+                  <img src={imageIcon} alt="" />
+                </div>
+                <h4 className="text-base  font-semibold text-secondaryColor mt-2">
+                  Upload product thumbnail
+                </h4>
+                <p className="text-xs  font-thin"> svg, jpg, png, etc</p>
               </label>
-            </div>
+            )}
+            {productPreview && (
+              <label
+                htmlFor="productImage"
+                className={`  w-[30rem] max-w-[30rem] h-60 rounded-xl cursor-pointer`}
+              >
+                <div className="">
+                  <img
+                    src={productPreview}
+                    alt=""
+                    className=" w-full h-60 rounded-md  bg-center bg-cover object-cover"
+                  />
+                </div>
+              </label>
+            )}
           </div>
         </div>
 
@@ -158,7 +142,7 @@ function AddProduct() {
           <input
             className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
             name="productname"
-            placeholder="Product name here..."
+            placeholder="Enter product name"
             required
           />
         </div>
@@ -166,13 +150,13 @@ function AddProduct() {
         {/* Product Description */}
         <div className="">
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont uppercase">
+            <span className="text-xs font-semibold text-black font-mont capitalize">
               Product Description
             </span>
             <textarea
               name="description"
               className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-              placeholder="customer notes here..."
+              placeholder="Enter product description"
               required
             />
             <div className="text-darkMid text-right">(45/1200)</div>
@@ -180,7 +164,7 @@ function AddProduct() {
         </div>
 
         {/* inventory */}
-        <div className="flex flex-col gap-5">
+        {/* <div className="flex flex-col gap-5">
           <span className="text-xs font-semibold text-black font-mont capitalize">
             Inventory
           </span>
@@ -203,7 +187,7 @@ function AddProduct() {
               <span className="material-symbols-outlined">add</span>
             </button>
           </div>
-        </div>
+        </div> */}
         {/* buttons */}
 
         <div className="flex justify-end mt-8">

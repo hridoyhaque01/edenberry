@@ -48,25 +48,25 @@ function AddCoach() {
             {/* names  */}
             <div className="grid grid-cols-2 items-center gap-6">
               <div className="flex flex-col gap-5">
-                <span className="text-xs font-semibold text-black">
-                  FIRST NAME
+                <span className="text-xs font-semibold text-black capitalize">
+                  first name
                 </span>
                 <input
                   className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                   name="firstName"
                   required
-                  placeholder="first Name here..."
+                  placeholder="Enter first name"
                 />
               </div>
               <div className="flex flex-col gap-5">
-                <span className="text-xs font-semibold text-black">
-                  LAST NAME
+                <span className="text-xs font-semibold text-black capitalize">
+                  last name
                 </span>
                 <input
                   className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                   name="lastName"
                   required
-                  placeholder="last Name here..."
+                  placeholder="Enter last name"
                 />
               </div>
             </div>
@@ -78,7 +78,7 @@ function AddCoach() {
                 className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                 name="email"
                 required
-                placeholder="email here..."
+                placeholder="Enter email address"
               />
             </div>
 
@@ -89,7 +89,7 @@ function AddCoach() {
                 className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
                 name="password"
                 required
-                placeholder="email here..."
+                placeholder="Enter password"
               />
             </div>
 

@@ -29,7 +29,7 @@ function ProductTabs() {
         >
           Add Product
         </button>
-        <button
+        {/* <button
           type="button"
           className="border-b-2 border-transparent hs-tab-active:border-b-primaryColor hs-tab-active:text-primaryColor py-2 px-4 inline-flex items-center"
           data-hs-tab="#tabs-with-underline-2"
@@ -37,7 +37,7 @@ function ProductTabs() {
           role="tab"
         >
           Inventory
-        </button>
+        </button> */}
       </nav>
     </div>
   );

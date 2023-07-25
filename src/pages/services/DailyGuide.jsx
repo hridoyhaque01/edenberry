@@ -73,7 +73,7 @@ function DailyGuide() {
         </div>
       </div>
 
-      <div className="fixed bottom-16 right-12">
+      <div className="fixed bottom-12 right-12">
         <AddButton path="/addGuide" name="add new"></AddButton>
       </div>
     </section>

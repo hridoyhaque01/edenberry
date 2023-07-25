@@ -123,14 +123,14 @@ function CourseForm() {
             onSubmit={handleSubmit}
           >
             <div className="flex flex-col gap-5">
-              <span className="text-xs font-mont font-semibold text-black">
+              <span className="text-xs font-mont font-semibold text-black capitalize">
                 Course Name
               </span>
               <input
                 required
                 id="courseName"
                 type="text"
-                placeholder="course name here..."
+                placeholder="Enter course name"
                 name="title"
                 className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black `}
                 defaultValue={title}
@@ -138,8 +138,8 @@ function CourseForm() {
             </div>
             {/* thumbnail  */}
             <div className="flex flex-col gap-5 ">
-              <span className="text-xs font-semibold text-black">
-                COURSE THUMBNAIL
+              <span className="text-xs font-semibold text-black capitalize">
+                Course Thumbnail
               </span>
 
               <div className="flex flex-col">
@@ -187,7 +187,7 @@ function CourseForm() {
             </div>
             {/* customer notes */}
             <div className="flex flex-col gap-5">
-              <span className="text-xs font-mont font-semibold text-black">
+              <span className="text-xs font-mont font-semibold text-black capitalize">
                 Description
               </span>
               <div>
@@ -196,7 +196,7 @@ function CourseForm() {
                   id="description"
                   name="description"
                   className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md resize-none h-32 text-sm placeholder:text-fadeSemi text-black"
-                  placeholder="description here..."
+                  placeholder="Enter course description"
                   defaultValue={description}
                 ></textarea>
                 <p className="text-darkMid text-xs text-right">(45/12000)</p>

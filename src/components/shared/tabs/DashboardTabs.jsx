@@ -16,7 +16,7 @@ function DashboardTabs() {
           aria-controls="tabs-with-underline-1"
           role="tab"
         >
-          Sales by Date
+          Sales By Date
         </button>
         <button
           type="button"

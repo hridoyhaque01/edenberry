@@ -96,13 +96,13 @@ function WellnessForm() {
         >
           {/* Title */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont uppercase">
-              Wellness NAME
+            <span className="text-xs font-semibold text-black font-mont capitalize">
+              Wellness name
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="title"
-              placeholder="wellness name here..."
+              placeholder="Enter Wellness name"
               required
               defaultValue={title}
             />
@@ -110,8 +110,8 @@ function WellnessForm() {
 
           {/* thumbnail  */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont uppercase">
-              Wellness THUMBNAIL
+            <span className="text-xs font-semibold text-black font-mont capitalize">
+              Wellness thumbnail
             </span>
             <div className="flex flex-col">
               <input
@@ -165,21 +165,21 @@ function WellnessForm() {
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="siteUrl"
-              placeholder="content link here..."
+              placeholder="content link here"
             />
           </div> */}
 
           {/* Customer Notes */}
           <div className="">
             <div className="flex flex-col gap-5">
-              <span className="text-xs font-semibold text-black font-mont uppercase">
+              <span className="text-xs font-semibold text-black font-mont capitalize">
                 Description
               </span>
               <textarea
                 required
                 name="description"
                 className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-                placeholder="wellness description here..."
+                placeholder="Enter wellness description"
                 defaultValue={description}
               />
               <div className="text-darkMid text-right">(45/1200)</div>

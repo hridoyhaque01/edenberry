@@ -97,31 +97,31 @@ function GuideForm() {
         >
           {/* Resource NAME */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont capitalize">
-              Daily Guide NAME
+            <span className="text-xs font-semibold text-black  capitalize">
+              Daily Guide name
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="title"
-              placeholder="Daily Guide name here..."
+              placeholder="Enter daily guide name"
               required
               defaultValue={title}
             />
           </div>
           {/* post is for */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont capitalize">
-              Daily Guide Status
+            <span className="text-xs font-semibold text-black  capitalize">
+              This post is for
             </span>
             <div className="relative col-span-2">
               <select
                 className="w-full bg-transparent p-2.5 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
                 name="status"
                 required
-                defaultValue={status}
+                defaultValue={status || ""}
               >
-                <option value="select post" disabled>
-                  select post
+                <option value="" disabled>
+                  Select post
                 </option>
                 <option value="postpartum">Postpartum</option>
                 <option value="prenatal">Prenatal</option>
@@ -134,8 +134,8 @@ function GuideForm() {
 
           {/* thumbnail  */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont">
-              Daily Guide THUMBNAIL
+            <span className="text-xs font-semibold text-black  capitalize">
+              Daily Guide Thumbnail
             </span>
             <div className="flex flex-col">
               <input
@@ -155,13 +155,10 @@ function GuideForm() {
                   <div>
                     <img src={imageIcon} alt="" />
                   </div>
-                  <h4 className="text-base font-mont font-semibold text-secondaryColor mt-2">
+                  <h4 className="text-base  font-semibold text-secondaryColor mt-2">
                     Upload course thumbnail
                   </h4>
-                  <p className="text-xs font-mont font-thin">
-                    {" "}
-                    svg, jpg, png, etc
-                  </p>
+                  <p className="text-xs  font-thin"> svg, jpg, png, etc</p>
                 </label>
               )}
               {thumbnailPreview && (
@@ -184,14 +181,14 @@ function GuideForm() {
           {/* Customer Notes */}
           <div className="">
             <div className="flex flex-col gap-5">
-              <span className="text-xs font-semibold text-black font-mont uppercase">
+              <span className="text-xs font-semibold text-black capitalize">
                 Description
               </span>
               <textarea
                 required
                 name="description"
                 className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-                placeholder="wellness description here..."
+                placeholder="Enter wellness description"
                 defaultValue={description}
               />
               <div className="text-darkMid text-right">(45/1200)</div>

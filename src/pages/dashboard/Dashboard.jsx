@@ -1,13 +1,11 @@
 import React from "react";
 import DashboardTabs from "../../components/shared/tabs/DashboardTabs";
-import Title from "../../components/shared/titles/Title";
 import CustomerTable from "../../components/tables/CustomerTable";
 import Sales from "./Sales";
 
 function Dashboard() {
   return (
     <div className="h-full flex flex-col gap-8 py-8">
-      <Title></Title>
       <DashboardTabs></DashboardTabs>
       <div className="mt-3">
         <div

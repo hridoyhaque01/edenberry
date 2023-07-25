@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { userLoggedOut } from "../../../features/auth/authSlice";
 import { avater, logo } from "../../../utils/getImages";
 
@@ -32,22 +31,14 @@ const TopNav = () => {
           </label>
           <ul
             tabIndex={3}
-            className="menu menu-compact dropdown-content mt-3 shadow bg-base-100 rounded-box w-28"
+            className="menu menu-compact dropdown-content mt-3 shadow-sm rounded-md w-40 bg-white px-0"
           >
             <li>
-              <Link
-                to="/profile"
-                className="justify-between active:bg-primaryMain"
-              >
-                Profile
-                {/* <span className="badge">New</span> */}
-              </Link>
-            </li>
-            <li>
               <button
+                className="active:bg-primaryMain flex items-center gap-1 text-black hover:text-black "
                 onClick={handleLogout}
-                className="text-white cursor-pointer"
               >
+                <span className="material-symbols-outlined">Logout</span>
                 Logout
               </button>
             </li>

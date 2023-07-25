@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import { addAdmin, fetchAdmin } from "../../features/admin/adminSlice";
 
@@ -24,6 +26,18 @@ export default function AddStaff() {
     }
   };
 
+  const notify = (message) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -31,6 +45,11 @@ export default function AddStaff() {
     const lastName = form.lastName?.value;
     const email = form.email?.value;
     const password = form.password?.value;
+
+    if (permissions?.length === 0) {
+      notify("Please select permissons");
+      return;
+    }
 
     const data = {
       firstName,
@@ -66,25 +85,25 @@ export default function AddStaff() {
           {/* names  */}
           <div className="grid grid-cols-2 gap-6 items-center ">
             <div className="flex flex-col gap-5">
-              <span className="text-xs font-mont font-semibold text-black">
+              <span className="text-xs font-mont font-semibold text-black capitalize">
                 First name
               </span>
               <input
                 required
                 type="text"
-                placeholder="first name here..."
+                placeholder="Enter first name"
                 name="firstName"
                 className={`w-full outline-none border border-fadeMid  bg-transparent p-3 rounded-md text-sm placeholder:text-fadeSemi text-black `}
               />
             </div>
             <div className="flex flex-col gap-5">
-              <span className="text-xs font-mont font-semibold text-black">
+              <span className="text-xs font-mont font-semibold text-black capitalize">
                 last name
               </span>
               <input
                 required
                 type="text"
-                placeholder="last name here..."
+                placeholder="Enter last name"
                 name="lastName"
                 className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black `}
               />
@@ -93,13 +112,13 @@ export default function AddStaff() {
 
           {/* email name  */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-mont font-semibold text-black">
+            <span className="text-xs font-mont font-semibold text-black capitalize">
               email
             </span>
             <input
               required
               type="email"
-              placeholder="email address here..."
+              placeholder="Enter email address"
               name="email"
               className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
             />
@@ -107,13 +126,13 @@ export default function AddStaff() {
 
           {/* phone number  */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-mont font-semibold text-black">
+            <span className="text-xs font-mont font-semibold text-black capitalize">
               password
             </span>
             <input
               required
               type="password"
-              placeholder="password here..."
+              placeholder="Enter password"
               name="password"
               className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
             />
@@ -188,7 +207,7 @@ export default function AddStaff() {
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("additional")}
                 />
-                <label htmlFor="additional">additional</label>
+                <label htmlFor="additional">Additional</label>
               </div>
             </div>
           </div>
@@ -204,6 +223,19 @@ export default function AddStaff() {
           </div>
         </form>
       </div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       {isResponseError && (
         <div className="text-errorColor">Something went wrong!</div>
       )}

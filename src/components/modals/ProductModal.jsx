@@ -8,52 +8,47 @@ import { imageIcon } from "../../utils/getImages";
 import RequestLoader from "../shared/loaders/RequestLoader";
 
 function ProductModal() {
-  const [profile, setProfile] = useState(null);
-  const profileRef = useRef();
-  const [productCount, setProductCount] = useState(1);
-  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [product, setProduct] = useState(null);
+  const productRef = useRef();
+  // const [productCount, setProductCount] = useState(1);
+  const [productPreview, setProductPreview] = useState(null);
   const { activeProduct, isRequestLoading, isResponseError, isSuccess } =
     useSelector((state) => state.products);
   const [isError, setIsError] = useState(false);
   const dispatch = useDispatch();
   const [data, setData] = useState();
-  const handleProfileChange = (event) => {
+  const handleProductChange = (event) => {
     const file = event.target.files[0];
     if (
       file?.type === "image/jpg" ||
       file?.type === "image/jpeg" ||
       file?.type === "image/png"
     ) {
-      setProfile(file);
+      setProduct(file);
       const imageURL = URL.createObjectURL(file);
-      setThumbnailPreview(imageURL);
+      setProductPreview(imageURL);
     } else {
-      setProfile(null);
+      setProduct(null);
     }
   };
 
-  const handleProfileDelete = () => {
-    profileRef.current.value = "";
-    setProfile(null);
-  };
+  // const incrementProduct = () => {
+  //   setProductCount((prev) => prev + 1);
+  // };
 
-  const incrementProduct = () => {
-    setProductCount((prev) => prev + 1);
-  };
-
-  const decrementProduct = () => {
-    if (productCount <= 1) {
-      return;
-    } else {
-      setProductCount((prev) => prev - 1);
-    }
-  };
+  // const decrementProduct = () => {
+  //   if (productCount <= 1) {
+  //     return;
+  //   } else {
+  //     setProductCount((prev) => prev - 1);
+  //   }
+  // };
 
   useEffect(() => {
     if (activeProduct?._id) {
       setData(activeProduct);
-      setProductCount(activeProduct?.productCount);
-      setThumbnailPreview(activeProduct?.fileUrl);
+      // setProductCount(activeProduct?.productCount);
+      setProductPreview(activeProduct?.fileUrl);
     }
   }, [activeProduct?._id]);
 
@@ -65,13 +60,13 @@ function ProductModal() {
     const data = {
       productName,
       description,
-      productCount,
+      // productCount,
     };
 
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
-    if (profile) {
-      formData.append("files", profile);
+    if (product) {
+      formData.append("files", product);
       dispatch(updateProduct({ id: activeProduct?._id, formData }));
     } else {
       dispatch(updateProduct({ id: activeProduct?._id, formData }));
@@ -111,64 +106,50 @@ function ProductModal() {
           </div>
 
           <div className="w-full p-8">
-            {/* title  */}
-            <div className="flex gap-4 mb-12">
-              <div>
-                <img
-                  src={thumbnailPreview || imageIcon}
-                  alt=""
-                  className="w-24 h-24 rounded-md border border-fade bg-center object-cover"
-                />
-              </div>
-              <h4 className="text-2xl font-bold text-black">Postpartum Kit</h4>
-            </div>
             <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-              {/* profile  */}
-              <div className="flex flex-col gap-5 ">
-                <span className="text-xs font-semibold text-black">
-                  PROFILE PICTURE
+              {/* product image  */}
+
+              <div className="flex flex-col gap-5">
+                <span className="text-xs font-semibold text-black  capitalize">
+                  Product Picture
                 </span>
-                <div className="flex flex-col-reverse">
+                <div className="flex flex-col">
                   <input
                     type="file"
                     className="h-1 w-1 opacity-0  "
-                    id="profile"
-                    ref={profileRef}
-                    onChange={handleProfileChange}
-                    name="profile"
+                    id="productImageModal"
+                    ref={productRef}
+                    onChange={handleProductChange}
+                    name="productImageModal"
                   />
-                  <div
-                    className={`w-full border border-fadeMid flex justify-between rounded-md bg-transparent overflow-hidden `}
-                  >
-                    <div className="w-full flex items-center justify-between px-3 text-darkSemi">
-                      {profile ? (
-                        <>
-                          <span className="select-none">
-                            {profile?.name?.length > 90
-                              ? profile?.name?.slice(0, 90) + "..."
-                              : profile?.name}
-                          </span>
-                          <button
-                            type="button"
-                            className="flex items-center relative z-50"
-                            onClick={handleProfileDelete}
-                          >
-                            <span className="material-symbols-outlined text-lg text-errorColor">
-                              cancel
-                            </span>
-                          </button>
-                        </>
-                      ) : (
-                        <span>Name of the fille</span>
-                      )}
-                    </div>
+                  {!productPreview && (
                     <label
-                      htmlFor="profile"
-                      className={`py-3 px-4 inline-flex font-mont text-sm text-black border-l border-fadeSemi cursor-pointer`}
+                      htmlFor="productImageModal"
+                      className={`flex flex-col items-center justify-center  w-[30rem] max-w-[30rem] h-60 rounded-xl bg-fade border border-secondaryColor cursor-pointer`}
                     >
-                      Browse
+                      <div>
+                        <img src={imageIcon} alt="" />
+                      </div>
+                      <h4 className="text-base  font-semibold text-secondaryColor mt-2">
+                        Upload product thumbnail
+                      </h4>
+                      <p className="text-xs  font-thin"> svg, jpg, png, etc</p>
                     </label>
-                  </div>
+                  )}
+                  {productPreview && (
+                    <label
+                      htmlFor="productImageModal"
+                      className={`  w-[30rem] max-w-[30rem] h-60 rounded-xl cursor-pointer`}
+                    >
+                      <div className="">
+                        <img
+                          src={productPreview}
+                          alt=""
+                          className=" w-full h-60 rounded-md  bg-center bg-cover object-cover"
+                        />
+                      </div>
+                    </label>
+                  )}
                 </div>
               </div>
 
@@ -180,7 +161,7 @@ function ProductModal() {
                 <input
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
                   name="productname"
-                  placeholder="Product name here..."
+                  placeholder="Enter product name"
                   required
                   defaultValue={data?.productName}
                 />
@@ -189,13 +170,13 @@ function ProductModal() {
               {/* Product Description */}
               <div className="">
                 <div className="flex flex-col gap-5">
-                  <span className="text-xs font-semibold text-black font-mont uppercase">
+                  <span className="text-xs font-semibold text-black font-mont capitalize">
                     Product Description
                   </span>
                   <textarea
                     name="description"
                     className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-                    placeholder="customer notes here..."
+                    placeholder="Enter product description"
                     required
                     defaultValue={data?.description}
                   />
@@ -204,7 +185,7 @@ function ProductModal() {
               </div>
 
               {/* inventory */}
-              <div className="flex flex-col gap-5">
+              {/* <div className="flex flex-col gap-5">
                 <span className="text-xs font-semibold text-black font-mont capitalize">
                   Inventory
                 </span>
@@ -227,7 +208,7 @@ function ProductModal() {
                     <span className="material-symbols-outlined">add</span>
                   </button>
                 </div>
-              </div>
+              </div> */}
               {/* buttons */}
 
               <div className="flex justify-end mt-8">

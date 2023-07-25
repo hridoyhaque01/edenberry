@@ -49,3 +49,7 @@ body {
   height: 320px !important;
   overflow-y: auto !important;
 }
+
+::-webkit-scrollbar {
+  width: 0 !important;
+}

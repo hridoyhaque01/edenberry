@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import ServiceTabs from "../../components/shared/tabs/ServiceTabs";
-import Title from "../../components/shared/titles/Title";
 import Courses from "./Courses";
 import DailyGuide from "./DailyGuide";
 import Resources from "./Resources";
@@ -12,7 +11,6 @@ function Services() {
 
   return (
     <div className="h-full flex flex-col gap-8 py-8">
-      <Title></Title>
       <ServiceTabs></ServiceTabs>
       <div className="mt-3">
         <div

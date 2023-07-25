@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import StaffModal from "../../components/modals/StaffModal";
 import StaffTabs from "../../components/shared/tabs/StaffTabs";
-import Title from "../../components/shared/titles/Title";
 import StaffTable from "../../components/tables/StaffsTable";
 import AddStaff from "./AddStaff";
 
@@ -11,7 +10,6 @@ function Staffs() {
 
   return (
     <div className="h-full flex flex-col gap-8 py-8">
-      <Title></Title>
       <StaffTabs></StaffTabs>
       <div className="mt-3">
         <div

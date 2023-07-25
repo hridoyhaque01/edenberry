@@ -14,7 +14,7 @@ import { imageIcon } from "../../utils/getImages";
 function ResourceForm() {
   const { state } = useLocation();
   const { data, type } = state || {};
-  const { title, description, postFor, fileUrl, _id: id } = data || {};
+  const { title, description, status, fileUrl, _id: id } = data || {};
   const thumbnailRef = useRef();
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
@@ -96,20 +96,20 @@ function ResourceForm() {
         >
           {/* Resource NAME */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont uppercase">
-              RESOURCE NAME
+            <span className="text-xs font-semibold text-black font-mont capitalize">
+              Resource name
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="title"
-              placeholder="Resource name here..."
+              placeholder="Enter resource name"
               required
               defaultValue={title}
             />
           </div>
           {/* post is for */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont uppercase">
+            <span className="text-xs font-semibold text-black font-mont capitalize">
               This post is for
             </span>
             <div className="relative col-span-2">
@@ -117,10 +117,10 @@ function ResourceForm() {
                 className="w-full bg-transparent p-2.5 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
                 name="status"
                 required
-                defaultValue={postFor}
+                defaultValue={status || ""}
               >
-                <option value="select post" disabled>
-                  select post
+                <option value="" disabled>
+                  Select post
                 </option>
                 <option value="postpartum">Postpartum</option>
                 <option value="prenatal">Prenatal</option>
@@ -133,7 +133,7 @@ function ResourceForm() {
 
           {/* thumbnail  */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont uppercase">
+            <span className="text-xs font-semibold text-black font-mont capitalize">
               Thumbnail
             </span>
             <div className="flex flex-col">
@@ -182,14 +182,14 @@ function ResourceForm() {
 
           {/* Customer Notes */}
           <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont uppercase">
+            <span className="text-xs font-semibold text-black font-mont capitalize">
               Description
             </span>
             <textarea
               required
               name="description"
               className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-              placeholder="wellness description here..."
+              placeholder="Enter wellness description"
               defaultValue={description}
             />
             <div className="text-darkMid text-right">(45/1200)</div>

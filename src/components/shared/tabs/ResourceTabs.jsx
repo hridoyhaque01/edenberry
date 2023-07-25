@@ -40,7 +40,7 @@ function ResourceTabs() {
           role="tab"
           onClick={() => handleTab("prenatal")}
         >
-          prenatal
+          Prenatal
         </button>
       </nav>
     </div>
