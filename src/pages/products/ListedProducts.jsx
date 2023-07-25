@@ -19,9 +19,13 @@ function ListedProducts() {
   } else if (!isLoading && !isError && products?.length === 0) {
     content = <div className="text-errorColor">No data found!</div>;
   } else if (!isLoading && !isError && products?.length > 0) {
-    content = products?.map((item) => (
-      <ProductCard details={item} key={item?._id}></ProductCard>
-    ));
+    content = (
+      <div className="grid grid-cols-3 gap-6">
+        {products?.map((item) => (
+          <ProductCard details={item} key={item?._id}></ProductCard>
+        ))}
+      </div>
+    );
   }
 
   const details = {
@@ -32,8 +36,8 @@ function ListedProducts() {
   };
   return (
     <>
-      <section className="pb-10">
-        <div className="grid grid-cols-3 gap-6">{content}</div>
+      <section className="pb-8">
+        <div>{content}</div>
       </section>
       <ProductModal></ProductModal>
     </>

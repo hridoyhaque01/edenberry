@@ -70,8 +70,8 @@ function CoachTable() {
   }
 
   return (
-    <div className="flex flex-col pb-8">
-      <div className="-m-1.5 overflow-x-auto">
+    <div className="flex flex-col  h-full">
+      <div className="-m-1.5 overflow-x-auto h-full flex flex-col justify-between gap-2">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
             <table className="min-w-full ">
@@ -115,20 +115,20 @@ function CoachTable() {
                     className="hover:bg-whiteSemi text-blackLow text-sm"
                     key={coach?._id}
                   >
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-6 py-2 whitespace-nowrap">
                       {coach?.firstName + " " + coach?.lastName}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-6 py-2 whitespace-nowrap">
                       {coach?.phone}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-6 py-2 whitespace-nowrap">
                       {coach?.email}
                     </td>
 
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-6 py-2 whitespace-nowrap">
                       {coach?.category}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-right">
+                    <td className="px-6 py-2 whitespace-nowrap text-right">
                       <button
                         className="flex items-center bg-secondaryLight rounded-xl max-w-max whitespace-nowrap p-2 text-white capitalize ml-auto"
                         onClick={() => dispatch(setCoach(coach))}
@@ -175,9 +175,9 @@ function CoachTable() {
           setRowsPerPage={setRowsPerPage}
           totalRows={coaches?.length}
         ></Pagination>
-        <div>
-          <CoachModal></CoachModal>
-        </div>
+      </div>
+      <div>
+        <CoachModal></CoachModal>
       </div>
       {isRequestLoading && <RequestLoader></RequestLoader>}
       <div>

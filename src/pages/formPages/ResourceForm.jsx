@@ -24,8 +24,6 @@ function ResourceForm() {
     (state) => state.resources
   );
 
-  console.log(state);
-
   const dispatch = useDispatch();
   const [navigateData, setNavigateData] = useState({});
   const navigate = useNavigate();

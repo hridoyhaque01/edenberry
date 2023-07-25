@@ -24,15 +24,19 @@ function Wellness() {
   } else if (!isLoading && !isError && wellness?.length === 0) {
     content = <div>No data found!</div>;
   } else if (!isLoading && !isError && wellness?.length > 0) {
-    content = wellness?.map((item) => (
-      <Card key={item?._id} item={item} navigateUrl="/editwellness"></Card>
-    ));
+    content = (
+      <div className="grid grid-cols-3 gap-6">
+        {wellness?.map((item) => (
+          <Card key={item?._id} item={item} navigateUrl="/editwellness"></Card>
+        ))}
+      </div>
+    );
   }
 
   return (
     <>
       <section className="pb-10 relative">
-        <div className="grid grid-cols-3 gap-6">{content}</div>
+        <div>{content}</div>
         <div className="fixed bottom-12 right-12">
           <AddButton path="/addwellness" name="add new"></AddButton>
         </div>

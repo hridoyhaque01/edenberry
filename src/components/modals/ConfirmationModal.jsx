@@ -1,16 +1,17 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 
-const ConfirmationModal = ({ actions, item, updateItemStatus }) => {
+const ConfirmationModal = ({ id, status, dispatchFun }) => {
+  const dispatch = useDispatch();
   const handleStatus = () => {
-    const { _id } = item || {};
-    updateItemStatus(_id, actions?.status);
+    dispatch(dispatchFun({ id, status: "active" }));
   };
 
   return (
     <section>
       <input type="checkbox" id="confirmationPopup" className="modal-toggle" />
-      <div className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box flex flex-col items-center justify-center gap-4">
+      <div className="modal modal-bottom sm:modal-middle ">
+        <div className="modal-box flex flex-col items-center justify-center gap-4 bg-white">
           <div>
             <svg
               width="120"
@@ -40,21 +41,20 @@ const ConfirmationModal = ({ actions, item, updateItemStatus }) => {
           </div>
           <div>
             <p className="font-bold text-lg">
-              Do you want to{" "}
-              <span className="capitalize">{actions?.actionName}</span>?
+              Do you want to <span className="capitalize">{status}</span>?
             </p>
           </div>
           <div className="modal-action flex items-center justify-center">
             <label
               htmlFor="confirmationPopup"
-              className="btn rounded-full bg-primaryMain border-primaryMain hover:text-primaryMain hover:bg-whiteHigh hover:border-primaryMain w-full"
+              className="btn rounded-full bg-secondaryColor hover:bg-secondaryColor border-secondaryColor hover:border-secondaryColor text-white  w-full"
               onClick={handleStatus}
             >
               Confirm
             </label>
             <label
               htmlFor="confirmationPopup"
-              className="btn rounded-full bg-whiteHigh text-primaryMain w-full border-primaryMain hover:border-primaryMain hover:bg-whiteHigh"
+              className="btn rounded-full bg-white text-primaryMain w-full border-secondaryColor hover:border-secondaryColor hover:bg-whiteHigh"
             >
               Cancel
             </label>

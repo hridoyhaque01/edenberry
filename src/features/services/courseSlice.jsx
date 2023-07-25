@@ -10,7 +10,8 @@ const initialState = {
   isSuccess: false,
   isRequestLoading: false,
   isResponseError: false,
-  isLessonAddSuccess: null,
+  isLessonAddSuccess: false,
+  isLessonEditSuccess: false,
 };
 
 // fetch course
@@ -116,7 +117,7 @@ const courseSlice = createSlice({
       if (index !== -1) {
         state.lessons[index] = action.payload;
       }
-      state.isLessonAddSuccess = true;
+      state.isLessonEditSuccess = true;
     },
   },
   extraReducers: (builder) => {
@@ -189,17 +190,17 @@ const courseSlice = createSlice({
     builder.addCase(updateLesson.pending, (state) => {
       state.isRequestLoading = true;
       state.isResponseError = false;
-      state.isSuccess = false;
+      state.isLessonEditSuccess = false;
     });
     builder.addCase(updateLesson.fulfilled, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = false;
-      state.isSuccess = true;
+      state.isLessonEditSuccess = true;
     });
     builder.addCase(updateLesson.rejected, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = true;
-      state.isSuccess = false;
+      state.isLessonEditSuccess = false;
     });
   },
 });

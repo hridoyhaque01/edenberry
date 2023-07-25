@@ -1,27 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addLesson,
-  addLocalLessons,
-  editLocalLesson,
-  updateLesson,
-} from "../../features/services/courseSlice";
+import { addLesson, updateLesson } from "../../features/services/courseSlice";
 import { imageIcon } from "../../utils/getImages";
 
 function CourseModal({ id, type, data: lessonData }) {
-  console.log(id);
   const lessonModalRef = useRef();
   const thumbnailRef = useRef();
   const desRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const dispatch = useDispatch();
-  const { isLessonAddSuccess, isRequestLoading, isResponseError, lessons } =
-    useSelector((state) => state.courses);
+  const { isLessonAddSuccess, lessons } = useSelector((state) => state.courses);
   const [data, setData] = useState();
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
-
     if (
       file?.type === "image/jpg" ||
       file?.type === "image/jpeg" ||
@@ -48,59 +40,62 @@ function CourseModal({ id, type, data: lessonData }) {
       videoUrl,
     };
     formData.append("data", JSON.stringify(data));
-
     if (type === "edit") {
       if (!thumbnail) {
         dispatch(updateLesson({ id, formData }));
-        setData({ ...data, fileUrl: thumbnailPreview });
+        setData({ data, fileUrl: thumbnailPreview });
       } else {
         formData.append("files", thumbnail);
         dispatch(updateLesson({ id, formData }));
-        setData({ ...data, fileUrl: thumbnailPreview });
+        setData({ data, fileUrl: thumbnailPreview });
       }
     } else {
       formData.append("files", thumbnail);
       dispatch(addLesson({ id: id, formData }));
-      setData({ ...data, fileUrl: thumbnailPreview });
+      setData({ data, fileUrl: thumbnailPreview });
     }
   };
 
-  useEffect(() => {
-    if (isLessonAddSuccess === true && data && type !== "edit") {
-      console.log(true);
-      dispatch(addLocalLessons(data));
-      lessonModalRef.current.reset();
-      thumbnailRef.current.value = "";
-      setThumbnailPreview(null);
-      setData("");
-    }
-  }, [isLessonAddSuccess, data, type, dispatch]);
+  // useEffect(() => {
+  //   if (isLessonAddSuccess === true && data && type !== "edit") {
+  //     console.log(true);
+  //     dispatch(addLocalLessons(data));
+  //     lessonModalRef.current.reset();
+  //     thumbnailRef.current.value = "";
+  //     setThumbnailPreview(null);
+  //     setData("");
+  //   }
+  // }, [isLessonAddSuccess, data, type, dispatch]);
+
+  // useEffect(() => {
+  //   if (isLessonAddSuccess === true && data && type === "edit") {
+  //     dispatch(editLocalLesson(data));
+  //   }
+  // }, [isLessonAddSuccess, data, type, dispatch]);
+
+  // useEffect(() => {
+  //   if (type === "edit") {
+  //     desRef.current.value = lessonData?.description;
+  //   } else if (type !== "edit" || isLessonAddSuccess) {
+  //     desRef.current.value = "";
+  //   }
+  // }, [type, lessonData?.description, isLessonAddSuccess]);
+
+  // useEffect(() => {
+  //   if (type === "edit" && lessonData?.fileUrl) {
+  //     setThumbnailPreview(lessonData?.fileUrl);
+  //   } else {
+  //     setThumbnailPreview(null);
+  //   }
+  // }, [lessonData?.fileUrl, type]);
 
   useEffect(() => {
-    if (isLessonAddSuccess === true && data && type === "edit") {
-      dispatch(editLocalLesson(data));
-      lessonModalRef.current.reset();
-      thumbnailRef.current.value = "";
-      setThumbnailPreview(null);
-      setData("");
-    }
-  }, [isLessonAddSuccess, data, type, dispatch]);
-
-  useEffect(() => {
-    if (type === "edit") {
-      desRef.current.value = lessonData?.description;
-    } else if (type !== "edit" || isLessonAddSuccess) {
-      desRef.current.value = "";
-    }
-  }, [type, lessonData?.description, isLessonAddSuccess]);
-
-  useEffect(() => {
-    if (type === "edit" && lessonData?.fileUrl) {
+    if (type === "edit" && lessonData?.data?.id) {
       setThumbnailPreview(lessonData?.fileUrl);
-    } else {
-      setThumbnailPreview(null);
     }
-  }, [lessonData?.fileUrl, type]);
+  });
+
+  // })
 
   return (
     <div
@@ -137,7 +132,7 @@ function CourseModal({ id, type, data: lessonData }) {
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
                   name="title"
                   placeholder="Enter lesson name"
-                  defaultValue={lessonData?.title}
+                  defaultValue={lessonData?.data?.title}
                 />
               </div>
 
@@ -201,7 +196,7 @@ function CourseModal({ id, type, data: lessonData }) {
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
                   name="videoUrl"
                   placeholder="Enter video link"
-                  defaultValue={lessonData?.videoUrl}
+                  defaultValue={lessonData?.data?.videoUrl}
                 />
               </div>
 
@@ -216,7 +211,7 @@ function CourseModal({ id, type, data: lessonData }) {
                     name="description"
                     className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                     placeholder="Enter lesson description"
-                    defaultValue={lessonData?.description}
+                    defaultValue={lessonData?.data?.description}
                     ref={desRef}
                   />
                   <div className="text-darkMid text-right">(45/1200)</div>
@@ -226,7 +221,6 @@ function CourseModal({ id, type, data: lessonData }) {
 
               <div className="flex justify-end mt-8">
                 <button
-                  disabled={isRequestLoading}
                   type="submit"
                   className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
                   data-hs-overlay="#course-modal"

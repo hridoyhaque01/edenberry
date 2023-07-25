@@ -1,10 +1,8 @@
-import React from "react";
-import ReasonModal from "../../components/modals/ReasonModal";
-import RequestTabs from "../../components/shared/tabs/RequestTabs";
-
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ReasonModal from "../../components/modals/ReasonModal";
 import SearchLoader from "../../components/shared/loaders/SearchLoader";
+import RequestTabs from "../../components/shared/tabs/RequestTabs";
 import RequestTable from "../../components/tables/RequestTable";
 import {
   fetchMidWives,
@@ -16,10 +14,11 @@ import {
 } from "../../features/seekHelps/seekHelpsSlice";
 
 function Request() {
+  const [reason, setReason] = useState("");
+
   const { isLoading, isError, midwives, isSuccess } = useSelector(
     (state) => state.midwives
   );
-  const [reason, setReason] = useState("");
 
   const {
     isLoading: isSeekHelpLoading,
@@ -29,23 +28,6 @@ function Request() {
   } = useSelector((state) => state.seekHelps);
 
   const dispatch = useDispatch();
-  const dropdownMenus = {
-    activeAction: "pending",
-    bgColor: "bg-secondaryLight",
-    textColor: "text-redColor",
-    actions: [
-      {
-        actionName: "approve",
-        action: "approved",
-        textColor: "text-greenColor",
-      },
-      {
-        actionName: "denied",
-        action: "denied",
-        textColor: "text-redColor",
-      },
-    ],
-  };
 
   // decide what to do
 
@@ -65,7 +47,6 @@ function Request() {
       <RequestTable
         dispatchFun={updateMidWives}
         data={midwives}
-        dropdownMenus={dropdownMenus}
         setReason={setReason}
       ></RequestTable>
     );
@@ -88,7 +69,6 @@ function Request() {
       <RequestTable
         dispatchFun={updateSeekHelp}
         data={seekHelps}
-        dropdownMenus={dropdownMenus}
         setReason={setReason}
       ></RequestTable>
     );
@@ -109,17 +89,18 @@ function Request() {
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <RequestTabs></RequestTabs>
-      <div className="mt-3">
+      <div className="mt-3 h-full">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
+          className="h-full"
         >
           {midwiveContent}
         </div>
         <div
           id="tabs-with-underline-2"
-          className="hidden"
+          className="hidden h-full"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-2"
         >

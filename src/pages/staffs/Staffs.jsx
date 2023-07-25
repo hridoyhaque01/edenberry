@@ -11,11 +11,12 @@ function Staffs() {
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <StaffTabs></StaffTabs>
-      <div className="mt-3">
+      <div className="mt-3 h-full">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
+          className="h-full"
         >
           <StaffTable></StaffTable>
         </div>

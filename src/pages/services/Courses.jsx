@@ -20,15 +20,19 @@ function Courses() {
   } else if (!isLoading && !isError && courses?.length === 0) {
     content = <div>No data found!</div>;
   } else if (!isLoading && !isError && courses?.length > 0) {
-    content = courses?.map((item) => (
-      <Card key={item?._id} item={item} navigateUrl="/editCourse"></Card>
-    ));
+    content = (
+      <div className="grid grid-cols-3 gap-6">
+        {courses?.map((item) => (
+          <Card key={item?._id} item={item} navigateUrl="/editCourse"></Card>
+        ))}
+      </div>
+    );
   }
 
   return (
     <>
       <section className="pb-10 relative">
-        <div className="grid grid-cols-3 gap-6">{content}</div>
+        <div>{content}</div>
         <div className="fixed bottom-12 right-12">
           <AddButton path="/addCourse" name="add new"></AddButton>
         </div>

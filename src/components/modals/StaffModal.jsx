@@ -99,7 +99,7 @@ function StaffModal({ staff }) {
                   <input
                     required
                     type="text"
-                    placeholder="first name here..."
+                    placeholder="Enter first name"
                     name="firstName"
                     className={`w-full outline-none border border-fadeMid  bg-transparent p-3 rounded-md text-sm placeholder:text-fadeSemi text-black `}
                     defaultValue={firstName}
@@ -112,7 +112,7 @@ function StaffModal({ staff }) {
                   <input
                     required
                     type="text"
-                    placeholder="last name here..."
+                    placeholder="Enter last name"
                     name="lastName"
                     className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black `}
                     defaultValue={lastName}
@@ -128,7 +128,7 @@ function StaffModal({ staff }) {
                 <input
                   required
                   type="email"
-                  placeholder="email address here..."
+                  placeholder="Enter email address"
                   name="email"
                   className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
                   defaultValue={email}
@@ -142,7 +142,7 @@ function StaffModal({ staff }) {
                 </span>
                 <input
                   type="password"
-                  placeholder="password here..."
+                  placeholder="Enter password"
                   name="password"
                   className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
                 />
@@ -154,7 +154,7 @@ function StaffModal({ staff }) {
                   Permissions
                 </p>
 
-                <div className="flex items-center gap-10 mt-6">
+                <div className="flex items-center gap-6 mt-6">
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
                       type="checkbox"
@@ -164,7 +164,9 @@ function StaffModal({ staff }) {
                       onChange={handleCheckbox}
                       checked={permissions?.includes("services")}
                     />
-                    <label htmlFor="editservices">Services</label>
+                    <label className="cursor-pointer" htmlFor="editservices">
+                      Services
+                    </label>
                   </div>
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
@@ -175,7 +177,9 @@ function StaffModal({ staff }) {
                       onChange={handleCheckbox}
                       checked={permissions?.includes("coach")}
                     />
-                    <label htmlFor="editcoach">Coach</label>
+                    <label className="cursor-pointer" htmlFor="editcoach">
+                      Coach
+                    </label>
                   </div>
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
@@ -186,7 +190,9 @@ function StaffModal({ staff }) {
                       onChange={handleCheckbox}
                       checked={permissions?.includes("products")}
                     />
-                    <label htmlFor="products">Products</label>
+                    <label className="cursor-pointer" htmlFor="products">
+                      Products
+                    </label>
                   </div>
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
@@ -197,7 +203,9 @@ function StaffModal({ staff }) {
                       onChange={handleCheckbox}
                       checked={permissions?.includes("staffs")}
                     />
-                    <label htmlFor="editstaffs">Staffs</label>
+                    <label className="cursor-pointer" htmlFor="editstaffs">
+                      Staffs
+                    </label>
                   </div>
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
@@ -208,7 +216,9 @@ function StaffModal({ staff }) {
                       onChange={handleCheckbox}
                       checked={permissions?.includes("request")}
                     />
-                    <label htmlFor="editrequest">Request</label>
+                    <label className="cursor-pointer" htmlFor="editrequest">
+                      Request
+                    </label>
                   </div>
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
@@ -219,12 +229,14 @@ function StaffModal({ staff }) {
                       onChange={handleCheckbox}
                       checked={permissions?.includes("additional")}
                     />
-                    <label htmlFor="editadditional">additional</label>
+                    <label className="cursor-pointer" htmlFor="editadditional">
+                      additional
+                    </label>
                   </div>
                 </div>
               </div>
               {/* submit button  */}
-              <div className="flex items-center justify-end">
+              <div className="flex items-center justify-end mt-6">
                 <button
                   disabled={isRequestLoading}
                   className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"

@@ -152,7 +152,9 @@ export default function AddStaff() {
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("services")}
                 />
-                <label htmlFor="services">Services</label>
+                <label className="cursor-pointer" htmlFor="services">
+                  Services
+                </label>
               </div>
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
@@ -163,7 +165,9 @@ export default function AddStaff() {
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("coach")}
                 />
-                <label htmlFor="coach">Coach</label>
+                <label className="cursor-pointer" htmlFor="coach">
+                  Coach
+                </label>
               </div>
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
@@ -174,7 +178,9 @@ export default function AddStaff() {
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("products")}
                 />
-                <label htmlFor="staffProducts">Products</label>
+                <label className="cursor-pointer" htmlFor="staffProducts">
+                  Products
+                </label>
               </div>
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
@@ -185,7 +191,9 @@ export default function AddStaff() {
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("staffs")}
                 />
-                <label htmlFor="staffs">Staffs</label>
+                <label className="cursor-pointer" htmlFor="staffs">
+                  Staffs
+                </label>
               </div>
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
@@ -196,7 +204,9 @@ export default function AddStaff() {
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("request")}
                 />
-                <label htmlFor="request">Request</label>
+                <label className="cursor-pointer" htmlFor="request">
+                  Request
+                </label>
               </div>
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
@@ -207,12 +217,14 @@ export default function AddStaff() {
                   onChange={handleCheckbox}
                   defaultChecked={permissions?.includes("additional")}
                 />
-                <label htmlFor="additional">Additional</label>
+                <label className="cursor-pointer" htmlFor="additional">
+                  Additional
+                </label>
               </div>
             </div>
           </div>
           {/* submit button  */}
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end mt-6">
             <button
               disabled={isRequestLoading}
               className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"

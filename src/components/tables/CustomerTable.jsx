@@ -62,13 +62,13 @@ function CustomerTable() {
   if (isLoading) {
     content = <SearchLoader></SearchLoader>;
   } else if (!isLoading && isError) {
-    content = <div>Something wen wrong!</div>;
+    content = <div className="errorColor">Something wen wrong!</div>;
   } else if (!isLoading && !isError && users?.length === 0) {
     content = <div>No Data Found!</div>;
   } else if (!isLoading && !isError && users?.length > 0) {
     const currentRows = users?.slice(indexOfFirstRow, indexOfLastRow);
     content = (
-      <div className="-m-1.5 overflow-x-auto">
+      <div className="-m-1.5 overflow-x-auto h-full flex flex-col justify-between gap-2">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
             <table className="min-w-full ">
@@ -114,15 +114,15 @@ function CustomerTable() {
                     className="hover:bg-whiteSemi text-blackLow text-sm"
                     key={customer?._id}
                   >
-                    <td className="px-6 py-3 whitespace-nowrap cursor-pointer">
+                    <td className="px-6 py-2 whitespace-nowrap cursor-pointer">
                       {customer?.firstName + " " + customer?.lastName}
                     </td>
 
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-6 py-2 whitespace-nowrap">
                       {customer?.email}
                     </td>
 
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-6 py-2 whitespace-nowrap">
                       {new Date(customer?.dueDate).toLocaleDateString(
                         "en-US"
                       ) === "Invalid Date"
@@ -131,7 +131,7 @@ function CustomerTable() {
                             "en-US"
                           )}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-6 py-2 whitespace-nowrap">
                       {new Date(customer?.babysBirthday).toLocaleDateString(
                         "en-US"
                       ) === "Invalid Date"
@@ -140,7 +140,7 @@ function CustomerTable() {
                             "en-US"
                           )}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-right">
+                    <td className="px-6 py-2 whitespace-nowrap text-right">
                       <button
                         className="flex items-center bg-secondaryLight rounded-xl max-w-max whitespace-nowrap p-2 text-white capitalize ml-auto"
                         data-hs-overlay="#hs-scroll-inside-body-modal"
@@ -187,16 +187,13 @@ function CustomerTable() {
           setRowsPerPage={setRowsPerPage}
           totalRows={users?.length}
         ></Pagination>
-        <div>
-          <CustomerModal userData={user}></CustomerModal>
-        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col pb-8">
-      <div>{content}</div>
+    <div className="flex flex-col h-full">
+      <div className="h-full">{content}</div>
 
       {isRequestLoading && <RequestLoader></RequestLoader>}
       <div>
@@ -212,6 +209,9 @@ function CustomerTable() {
           pauseOnHover
           theme="light"
         />
+      </div>
+      <div>
+        <CustomerModal userData={user}></CustomerModal>
       </div>
     </div>
   );

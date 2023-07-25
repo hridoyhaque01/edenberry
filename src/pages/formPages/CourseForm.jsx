@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import CourseModal from "../../components/modals/CourseModal";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import FormTitle from "../../components/shared/titles/FormTitle";
@@ -29,6 +31,9 @@ function CourseForm() {
     courseId,
     lessons: initialLesson,
     isLessonAddSuccess,
+    isResponseError,
+    isRequestLoading,
+    isLessonEditSuccess,
   } = useSelector((state) => state.courses);
 
   const dispatch = useDispatch();
@@ -39,6 +44,8 @@ function CourseForm() {
   const [lesson, setLesson] = useState({});
   const [lessonType, setLessonType] = useState("add");
   const [isDisabled, setIsDisabled] = useState(false);
+  const [navigateData, setNavigateData] = useState({});
+  const navigate = useNavigate();
 
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
@@ -55,6 +62,30 @@ function CourseForm() {
     }
   };
 
+  const errorNotify = (message) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = (message) =>
+    toast.info(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -65,6 +96,7 @@ function CourseForm() {
       title,
       description,
     };
+    setNavigateData({ title, description, fileUrl: thumbnailPreview, _id: id });
     formData.append("data", JSON.stringify(data));
     if (type === "edit") {
       if (!thumbnail) {
@@ -85,7 +117,7 @@ function CourseForm() {
   };
 
   useEffect(() => {
-    if (isLessonAddSuccess) {
+    if (isLessonAddSuccess || isLessonEditSuccess) {
       setLessons(initialLesson);
     }
   }, [isLessonAddSuccess, initialLesson]);
@@ -104,10 +136,12 @@ function CourseForm() {
       if (type !== "edit") {
         setIsDisabled(true);
       }
+      infoNotify(`course ${type === "edit" ? "update" : "add"} successfull`);
+    } else if (isResponseError) {
+      errorNotify("Something went wrong!");
     }
-  }, [isSuccess, dispatch, type]);
+  }, [isSuccess, dispatch, type, isResponseError]);
 
-  console.log(lessons);
   return (
     <>
       <section className="pt-12 pb-10">
@@ -299,7 +333,21 @@ function CourseForm() {
         type={lessonType}
         data={lesson}
       ></CourseModal>
-      {isLoading && <RequestLoader></RequestLoader>}
+      {isRequestLoading && <RequestLoader></RequestLoader>}
+      <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </div>
     </>
   );
 }
