@@ -7,7 +7,6 @@ import {
   updateLesson,
 } from "../../features/services/courseSlice";
 import { imageIcon } from "../../utils/getImages";
-import RequestLoader from "../shared/loaders/RequestLoader";
 
 function CourseModal({ id, type, data: lessonData }) {
   const lessonModalRef = useRef();
@@ -101,10 +100,6 @@ function CourseModal({ id, type, data: lessonData }) {
       setThumbnailPreview(null);
     }
   }, [lessonData?.fileUrl, type]);
-
-  // useEffect(() => {
-
-  // })
 
   return (
     <div
@@ -238,8 +233,6 @@ function CourseModal({ id, type, data: lessonData }) {
                 </button>
               </div>
             </form>
-            {isResponseError && <div>Something went wrong!</div>}
-            {isRequestLoading && <RequestLoader></RequestLoader>}
           </div>
         </div>
       </div>

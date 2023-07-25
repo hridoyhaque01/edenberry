@@ -1,16 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { updateCoach } from "../../features/coach/coachSlice";
 import { user } from "../../utils/getImages";
 
 function CoachModal() {
   const [profile, setProfile] = useState(null);
   const profileRef = useRef();
-  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [profilePreview, setProfilePreview] = useState(null);
+  const bioRef = useRef();
+  const categoryRef = useRef();
   const { isLoading, isSuccess, isError } = useSelector(
     (state) => state.coaches
   );
-  const { userData } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const { coachData } = useSelector((state) => state.coaches);
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
@@ -21,15 +24,18 @@ function CoachModal() {
     ) {
       setProfile(file);
       const imageURL = URL.createObjectURL(file);
-      setThumbnailPreview(imageURL);
+      setProfilePreview(imageURL);
     } else {
       setProfile(null);
     }
   };
 
+  console.log(coachData);
+
   const handleProfileDelete = () => {
     profileRef.current.value = "";
     setProfile(null);
+    setProfilePreview(null);
   };
 
   const handleSubmit = (event) => {
@@ -38,28 +44,35 @@ function CoachModal() {
     const form = event.target;
     const firstName = form.firstName.value;
     const lastName = form.lastName.value;
-    const speciality = form.speciality.value;
+    const category = form.category.value;
     const bio = form.bio.value;
     const email = form.email.value;
-    const password = form.password.value;
-    const phoneNumber = form.phoneNumber.value;
+    const phone = form.phone.value;
     const dialpadNumber = form.dialpadNumber.value;
-
     const data = {
       firstName,
       lastName,
-      speciality,
+      category,
       bio,
       email,
-      phoneNumber,
+      phone,
       dialpadNumber,
-      password,
     };
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     formData.append("files", profile);
+    dispatch(updateCoach({ formData, id: coachData?._id }));
     // dispatch(addCoache({ token: userData?.token, formData }));
   };
+
+  useEffect(() => {
+    if (coachData?._id) {
+      setProfilePreview(coachData?.fileUrl);
+      bioRef.current.value = coachData?.bio || "";
+      categoryRef.current.value = coachData?.category || "";
+      console.log(coachData?.category);
+    }
+  }, [coachData?._id]);
 
   return (
     <div
@@ -102,14 +115,16 @@ function CoachModal() {
               <div className="flex items-center justify-between my-11">
                 <div className="flex items-center gap-4">
                   <img
-                    src={thumbnailPreview || user}
+                    src={profilePreview || user}
                     alt=""
                     className="w-16 h-16 rounded-full"
                   />
                   <div>
-                    <h4 className="text-black leading-5">Walter White</h4>
+                    <h4 className="text-black leading-5">
+                      {coachData?.firstName + " " + coachData?.lastName}
+                    </h4>
                     <p className="text-xs text-blackHigh mt-2">
-                      walterwhite@mail.com
+                      {coachData?.email}
                     </p>
                   </div>
                 </div>
@@ -178,6 +193,7 @@ function CoachModal() {
                         name="firstName"
                         required
                         placeholder="Enter first name"
+                        defaultValue={coachData?.firstName}
                       />
                     </div>
                     <div className="flex flex-col gap-5">
@@ -189,26 +205,42 @@ function CoachModal() {
                         name="lastName"
                         required
                         placeholder="Enter last Name"
+                        defaultValue={coachData?.lastName}
                       />
                     </div>
                   </div>
-                  {/* Add Coach Speciality */}
+                  {/* Add Coach category */}
                   <div className="flex flex-col gap-5">
                     <span className="text-xs font-semibold text-black capitalize">
                       Add Coach Speciality
                     </span>
-                    <select
-                      required
-                      className="py-3 px-4 pr-9 block w-full border border-fadeMid bg-transparent rounded-md text-sm outline-none text-black"
-                      name="speciality"
-                    >
-                      <option value="selected" disabled>
-                        Select product
-                      </option>
-                      <option value="Belly Wrap">Location coach</option>
-                      <option value="Postpartum kit">Democratic coach</option>
-                      <option value="Mommy Care">Autocratic coach</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                        name="category"
+                        ref={categoryRef}
+                        defaultValue={coachData?.category}
+                      >
+                        <option value="" disabled>
+                          Select coach category
+                        </option>
+                        <option value="Midwife Concierge">
+                          Midwife Concierge
+                        </option>
+                        <option value="Lactation Coach">Lactation Coach</option>
+                        <option value="Postpartum Mental Health Coach">
+                          Postpartum Mental Health Coach
+                        </option>
+                        <option value="Baby Sleep Coach">
+                          Baby Sleep Coach
+                        </option>
+                      </select>
+                      <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                        <span className="material-symbols-outlined">
+                          expand_more
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Customer Notes */}
@@ -219,9 +251,10 @@ function CoachModal() {
                       </span>
                       <textarea
                         name="bio"
-                        required
                         className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                         placeholder="Enter bio"
+                        ref={bioRef}
+                        defaultValue={coachData?.bio}
                       />
                       <div className="text-darkMid text-right">(45/1200)</div>
                     </div>
@@ -235,23 +268,22 @@ function CoachModal() {
                     <input
                       className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                       name="email"
-                      required
                       placeholder="Enter email address"
+                      defaultValue={coachData?.email}
                     />
                   </div>
 
                   {/* password  */}
-                  <div className="flex flex-col gap-5">
+                  {/* <div className="flex flex-col gap-5">
                     <span className="text-xs font-semibold text-black capitalize">
                       Password
                     </span>
                     <input
                       className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                       name="password"
-                      required
                       placeholder="Enter password"
                     />
-                  </div>
+                  </div> */}
                   {/* phone number  */}
                   <div className="flex flex-col gap-5">
                     <span className="text-xs font-semibold text-black capitalize">
@@ -260,9 +292,9 @@ function CoachModal() {
                     <input
                       className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                       type="number"
-                      name="phoneNumber"
-                      required
+                      name="phone"
                       placeholder="Enter phone number"
+                      defaultValue={coachData?.phone}
                     />
                   </div>
                   {/* phone number  */}
@@ -273,9 +305,9 @@ function CoachModal() {
                     <input
                       className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                       type="number"
-                      required
                       name="dialpadNumber"
                       placeholder="Enter dialpad number"
+                      defaultValue={coachData?.dialpadNumber}
                     />
                   </div>
 
@@ -284,13 +316,13 @@ function CoachModal() {
                       disabled={isLoading}
                       type="submit"
                       className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
+                      data-hs-overlay="#coach-modal"
                     >
                       Save & Update
                     </button>
                   </div>
                 </form>
               </div>
-              {isError && <div>Something went Wrong!</div>}
             </div>
           </div>
         </div>

@@ -53,7 +53,7 @@ function Resources() {
 
   return (
     <section className="pb-10 relative">
-      <div className="mt-12 mb-8">
+      <div className="mb-8">
         <ResourceTabs></ResourceTabs>
       </div>
       <div className="mt-3">

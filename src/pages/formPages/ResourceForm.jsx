@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
-import FormTitle from "../../components/shared/titles/FormTitle";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
+import FormTitle from "../../components/shared/titles/FormTitle";
 import {
   addResource,
   fetchResources,
@@ -23,7 +24,12 @@ function ResourceForm() {
     (state) => state.resources
   );
 
+  console.log(state);
+
   const dispatch = useDispatch();
+  const [navigateData, setNavigateData] = useState({});
+  const navigate = useNavigate();
+
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
     if (
@@ -39,6 +45,30 @@ function ResourceForm() {
       setThumbnailPreview(null);
     }
   };
+
+  const errorNotify = (message) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = (message) =>
+    toast.info(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -57,7 +87,7 @@ function ResourceForm() {
     };
 
     formData.append("data", JSON.stringify(data));
-
+    setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
     if (type === "edit") {
       if (!thumbnail) {
         dispatch(updateResource({ id, formData }));
@@ -74,12 +104,36 @@ function ResourceForm() {
   useEffect(() => {
     if (isSuccess) {
       dispatch(fetchResources());
-      formRef.current.reset();
-      thumbnailRef.current.value = "";
-      setThumbnail(null);
-      setThumbnailPreview(null);
+      if (type !== "edit") {
+        formRef.current.reset();
+        thumbnailRef.current.value = "";
+        setThumbnail(null);
+        setThumbnailPreview(null);
+      }
+      if (type === "edit") {
+        infoNotify("Resource update successfull");
+      } else {
+        infoNotify("Resource add successfull");
+      }
+    } else if (isResponseError) {
+      if (type === "edit") {
+        errorNotify("Resource update failed");
+      } else {
+        errorNotify("Resource add failed");
+      }
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, dispatch, type]);
+
+  useEffect(() => {
+    if (isSuccess && type === "edit") {
+      navigate("/editResource", {
+        state: {
+          type: "edit",
+          data: navigateData,
+        },
+      });
+    }
+  }, [isSuccess, type]);
 
   return (
     <section className="pt-12 pb-10">
@@ -211,6 +265,20 @@ function ResourceForm() {
         </form>
       </div>
       {isRequestLoading && <RequestLoader></RequestLoader>}
+      <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </div>
     </section>
   );
 }

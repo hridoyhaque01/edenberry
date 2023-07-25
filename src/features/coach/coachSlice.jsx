@@ -8,6 +8,7 @@ const initialState = {
   isRequestLoading: false,
   isResponseError: false,
   isSuccess: false,
+  coachData: {},
 };
 
 export const fetchCoaches = createAsyncThunk("coach/fetchCoaches", async () => {
@@ -36,13 +37,32 @@ export const addCoache = createAsyncThunk(
   }
 );
 
+export const updateCoach = createAsyncThunk(
+  "coach/updateCoach",
+  async ({ formData, id }) => {
+    try {
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/coach/edit/${id}`,
+        formData
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const coachSlice = createSlice({
   name: "coachSlice",
   initialState,
+  reducers: {
+    setCoach: (state, action) => {
+      state.coachData = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchCoaches.pending, (state) => {
       state.isError = false;
-      state.coaches = [];
     });
     builder.addCase(fetchCoaches.fulfilled, (state, action) => {
       state.isLoading = false;
@@ -52,7 +72,7 @@ const coachSlice = createSlice({
     });
     builder.addCase(fetchCoaches.rejected, (state) => {
       state.isError = true;
-      state.coaches = [];
+      state.isLoading = false;
     });
 
     builder.addCase(addCoache.pending, (state) => {
@@ -70,7 +90,24 @@ const coachSlice = createSlice({
       state.isResponseError = true;
       state.isSuccess = false;
     });
+
+    builder.addCase(updateCoach.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(updateCoach.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = true;
+    });
+    builder.addCase(updateCoach.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = true;
+      state.isSuccess = false;
+    });
   },
 });
 
 export default coachSlice.reducer;
+export const { setCoach } = coachSlice.actions;

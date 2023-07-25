@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { fetchCoaches, setCoach } from "../../features/coach/coachSlice";
 import CoachModal from "../modals/CoachModal";
+import RequestLoader from "../shared/loaders/RequestLoader";
 import SearchLoader from "../shared/loaders/SearchLoader";
 import { Pagination } from "../shared/pagination/Pagination";
 
 function CoachTable() {
-  const { isLoading, isError, coaches } = useSelector((state) => state.coaches);
+  const {
+    isLoading,
+    isError,
+    coaches,
+    isRequestLoading,
+    isResponseError,
+    isSuccess,
+  } = useSelector((state) => state.coaches);
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -13,16 +24,49 @@ function CoachTable() {
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = coaches?.slice(indexOfFirstRow, indexOfLastRow);
 
+  const errorNotify = () =>
+    toast.error("Coach update failed!", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = () =>
+    toast.info("Coach update successfull", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  useEffect(() => {
+    if (isResponseError) {
+      errorNotify();
+    } else if (isSuccess) {
+      infoNotify();
+      dispatch(fetchCoaches());
+    }
+  }, [isRequestLoading, isSuccess]);
+
   if (isLoading) {
     return <SearchLoader></SearchLoader>;
   }
 
   if (!isLoading && isError) {
-    return <div>Something went wrong!</div>;
+    return <div className="p-6 text-errorColor">Something went wrong!</div>;
   }
 
   if (!isLoading && !isError && coaches?.length === 0) {
-    return <div>No coaches found</div>;
+    return <div className="p-6">No coaches found</div>;
   }
 
   return (
@@ -59,35 +103,35 @@ function CoachTable() {
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-5 text-left text-base font-normal"
+                    className="px-6 py-5  text-base font-normal text-right"
                   >
                     Action
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-aquaHigh">
-                {currentRows?.map((coaches) => (
+                {currentRows?.map((coach) => (
                   <tr
                     className="hover:bg-whiteSemi text-blackLow text-sm"
-                    key={coaches?._id}
+                    key={coach?._id}
                   >
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {coaches?.firstName + " " + coaches?.lastName}
+                      {coach?.firstName + " " + coach?.lastName}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {coaches?.phone}
+                      {coach?.phone}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {coaches?.email}
+                      {coach?.email}
                     </td>
 
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {coaches?.category}
+                      {coach?.category}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap text-right">
                       <button
                         className="flex items-center bg-secondaryLight rounded-xl max-w-max whitespace-nowrap p-2 text-white capitalize ml-auto"
-                        // onClick={() => dispatch(setUser(customer))}
+                        onClick={() => dispatch(setCoach(coach))}
                         data-hs-overlay="#coach-modal"
                       >
                         <svg
@@ -134,6 +178,21 @@ function CoachTable() {
         <div>
           <CoachModal></CoachModal>
         </div>
+      </div>
+      {isRequestLoading && <RequestLoader></RequestLoader>}
+      <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
     </div>
   );

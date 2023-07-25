@@ -2,10 +2,9 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import { updateUserData } from "../../features/users/usersSlice";
 import { useEffect } from "react";
-import { fetchUsers, updateUser } from "../../features/users/usersSlice";
+import { updateUser } from "../../features/users/usersSlice";
 import dateFormater from "../../utils/dateFormater";
 import getIsoDateString from "../../utils/getIsoDateString";
-import RequestLoader from "../shared/loaders/RequestLoader";
 
 // eslint-disable-next-line react/prop-types
 export default function CustomerModal({ userData }) {
@@ -34,9 +33,7 @@ export default function CustomerModal({ userData }) {
   const sizeRef = useRef();
   const dispatch = useDispatch();
 
-  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
-    (state) => state.users
-  );
+  const { isSuccess } = useSelector((state) => state.users);
 
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
@@ -99,12 +96,6 @@ export default function CustomerModal({ userData }) {
       setCustomerNote(value);
     }
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(fetchUsers());
-    }
-  });
 
   useEffect(() => {
     if (userData?._id) {
@@ -363,7 +354,7 @@ export default function CustomerModal({ userData }) {
                       />
                     </div>
                     {/* apparelSize */}
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-5">
                       <span className="text-xs font-mont font-semibold text-black capitalize">
                         Apparel Size
                       </span>
@@ -393,9 +384,9 @@ export default function CustomerModal({ userData }) {
 
                   <div className="flex items-center justify-end">
                     <button
-                      disabled={isRequestLoading}
                       className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                       type="submit"
+                      data-hs-overlay="#hs-scroll-inside-body-modal"
                     >
                       Save & Update
                     </button>
@@ -489,7 +480,6 @@ export default function CustomerModal({ userData }) {
             </div>
           </div>
         </div>
-        {isRequestLoading && <RequestLoader></RequestLoader>}
       </div>
     </>
   );

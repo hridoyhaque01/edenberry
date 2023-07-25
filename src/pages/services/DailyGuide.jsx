@@ -51,7 +51,7 @@ function DailyGuide() {
 
   return (
     <section className="pb-10 relative">
-      <div className="mt-12 mb-8">
+      <div className="mb-8">
         <GuideTabs></GuideTabs>
       </div>
       <div className="mt-3">

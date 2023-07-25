@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FormTitle from "../../components/shared/titles/FormTitle";
 
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
@@ -15,6 +17,8 @@ function GuideForm() {
   const { state } = useLocation();
   const { data, type } = state || {};
 
+  console.log(state);
+
   const { title, description, status, fileUrl, _id: id } = data || {};
   const thumbnailRef = useRef();
   const formRef = useRef();
@@ -23,7 +27,34 @@ function GuideForm() {
   const { isRequestLoading, isResponseError, isSuccess } = useSelector(
     (state) => state.guides
   );
+  const [navigateData, setNavigateData] = useState({});
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
+
+  const errorNotify = (message) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = (message) =>
+    toast.info(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
@@ -57,6 +88,8 @@ function GuideForm() {
       description,
     };
 
+    setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
+
     formData.append("data", JSON.stringify(data));
 
     if (type === "edit") {
@@ -75,12 +108,36 @@ function GuideForm() {
   useEffect(() => {
     if (isSuccess) {
       dispatch(fetchGuides());
-      formRef.current.reset();
-      thumbnailRef.current.value = "";
-      setThumbnail(null);
-      setThumbnailPreview(null);
+      if (type !== "edit") {
+        formRef.current.reset();
+        thumbnailRef.current.value = "";
+        setThumbnail(null);
+        setThumbnailPreview(null);
+      }
+      if (type === "edit") {
+        infoNotify("Daily guide update successfull");
+      } else {
+        infoNotify("Daily guide add successfull");
+      }
+    } else if (isResponseError) {
+      if (type === "edit") {
+        errorNotify("Daily guide update failed");
+      } else {
+        errorNotify("Daily guide add failed");
+      }
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, dispatch, type]);
+
+  useEffect(() => {
+    if (isSuccess && type === "edit") {
+      navigate("/editGuide", {
+        state: {
+          type: "edit",
+          data: navigateData,
+        },
+      });
+    }
+  }, [isSuccess, type]);
 
   return (
     <section className="pt-12 pb-10">
@@ -211,6 +268,21 @@ function GuideForm() {
         </form>
       </div>
       {isRequestLoading && <RequestLoader></RequestLoader>}
+
+      <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </div>
     </section>
   );
 }
