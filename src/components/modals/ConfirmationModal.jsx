@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 const ConfirmationModal = ({ id, status, dispatchFun }) => {
   const dispatch = useDispatch();
   const handleStatus = () => {
-    dispatch(dispatchFun({ id, status: "active" }));
+    dispatch(dispatchFun({ id, status }));
   };
 
   return (

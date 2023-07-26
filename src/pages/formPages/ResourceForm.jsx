@@ -10,19 +10,28 @@ import {
   fetchResources,
   updateResource,
 } from "../../features/services/resourceSlice";
+import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
 
 function ResourceForm() {
   const { state } = useLocation();
   const { data, type } = state || {};
-  const { title, description, status, fileUrl, _id: id } = data || {};
+  const {
+    title,
+    description: initialDesciption,
+    status,
+    fileUrl,
+    _id: id,
+  } = data || {};
+
+  console.log(data);
   const thumbnailRef = useRef();
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
-    (state) => state.resources
-  );
+  const { isRequestLoading, isResponseError, isSuccess, handleReset } =
+    useSelector((state) => state.resources);
+  const [description, setDescription] = useState(initialDesciption);
 
   const dispatch = useDispatch();
   const [navigateData, setNavigateData] = useState({});
@@ -68,7 +77,14 @@ function ResourceForm() {
       theme: "light",
     });
 
-  const handleSubmit = (event) => {
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 1200) {
+      setDescription(value);
+    }
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const form = event.target;
@@ -85,16 +101,26 @@ function ResourceForm() {
     };
 
     formData.append("data", JSON.stringify(data));
+    let file = null;
+
+    try {
+      if (thumbnail) {
+        file = await getCompressedImage(thumbnail);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
     if (type === "edit") {
-      if (!thumbnail) {
+      if (!file) {
         dispatch(updateResource({ id, formData }));
       } else {
-        formData.append("files", thumbnail);
+        formData.append("files", file);
         dispatch(updateResource({ id, formData }));
       }
     } else {
-      formData.append("files", thumbnail);
+      formData.append("files", file);
       dispatch(addResource(formData));
     }
   };
@@ -105,6 +131,7 @@ function ResourceForm() {
       if (type !== "edit") {
         formRef.current.reset();
         thumbnailRef.current.value = "";
+        setDescription("");
         setThumbnail(null);
         setThumbnailPreview(null);
       }
@@ -114,6 +141,7 @@ function ResourceForm() {
         infoNotify("Resource add successfull");
       }
     } else if (isResponseError) {
+      dispatch(handleReset());
       if (type === "edit") {
         errorNotify("Resource update failed");
       } else {
@@ -123,7 +151,7 @@ function ResourceForm() {
   }, [isSuccess, dispatch, type]);
 
   useEffect(() => {
-    if (isSuccess && type === "edit") {
+    if (isSuccess && type === "edit" && navigateData?._id) {
       navigate("/editResource", {
         state: {
           type: "edit",
@@ -131,7 +159,7 @@ function ResourceForm() {
         },
       });
     }
-  }, [isSuccess, type]);
+  }, [isSuccess, type, navigateData?._id]);
 
   return (
     <section className="pt-12 pb-10">
@@ -149,12 +177,12 @@ function ResourceForm() {
           {/* Resource NAME */}
           <div className="flex flex-col gap-5">
             <span className="text-xs font-semibold text-black font-mont capitalize">
-              Resource name
+              Title
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="title"
-              placeholder="Enter resource name"
+              placeholder="Enter resource title"
               required
               defaultValue={title}
             />
@@ -241,10 +269,13 @@ function ResourceForm() {
               required
               name="description"
               className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-              placeholder="Enter wellness description"
-              defaultValue={description}
+              placeholder="Enter resource description"
+              value={description}
+              onChange={(e) => handleChange(e)}
             />
-            <div className="text-darkMid text-right">(45/1200)</div>
+            <p className="text-darkMid text-xs text-right">
+              ({description?.length || 0}/1200)
+            </p>
           </div>
           {/* buttons */}
 
@@ -254,12 +285,9 @@ function ResourceForm() {
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
               disabled={isRequestLoading}
             >
-              Publish
+              {type === "edit" ? "Add Resource" : "Update Resource"}
             </button>
           </div>
-          {isResponseError && (
-            <p className="text-errorColor">Something went wrong!</p>
-          )}
         </form>
       </div>
       {isRequestLoading && <RequestLoader></RequestLoader>}

@@ -57,6 +57,8 @@ const privacySlice = createSlice({
     });
     builder.addCase(fetchPrivacy.rejected, (state) => {
       state.isError = true;
+      state.isLoading = false;
+      state.isSuccess = false;
     });
 
     builder.addCase(updatePrivacy.pending, (state) => {

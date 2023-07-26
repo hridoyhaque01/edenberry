@@ -6,15 +6,11 @@ import SearchLoader from "../../components/shared/loaders/SearchLoader";
 import ResourceTabs from "../../components/shared/tabs/ResourceTabs";
 
 function Resources() {
-  const { isLoading, isError, resources, activeTab } = useSelector(
+  const { isLoading, isError, resources, activeTab, handleReset } = useSelector(
     (state) => state.resources
   );
 
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(fetchResources());
-  // }, []);
 
   let postpartum = null;
   let prenatal = null;

@@ -65,6 +65,14 @@ const guideSlice = createSlice({
     changeTab: (state, action) => {
       state.activeTab = action.payload;
     },
+
+    handleReset: (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchGuides.pending, (state) => {
@@ -75,6 +83,8 @@ const guideSlice = createSlice({
       state.guides = action.payload;
       state.isSuccess = false;
       state.isLoading = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
     });
     builder.addCase(fetchGuides.rejected, (state) => {
       state.isError = true;
@@ -117,4 +127,4 @@ const guideSlice = createSlice({
 });
 
 export default guideSlice.reducer;
-export const { changeTab } = guideSlice.actions;
+export const { changeTab, handleReset } = guideSlice.actions;

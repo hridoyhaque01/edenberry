@@ -67,7 +67,9 @@ function RequestTable({ data, dispatchFun, setReason }) {
                       {request?.firstName + " " + request?.lastName}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {new Date(request?.timestamp).toLocaleDateString("en-US")}
+                      {new Date(
+                        parseInt(request?.timestamp)
+                      ).toLocaleDateString("en-US")}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
                       {request?.email}

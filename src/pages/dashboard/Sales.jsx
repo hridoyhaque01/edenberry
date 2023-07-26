@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Area,
   CartesianGrid,
@@ -9,76 +10,30 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import SearchLoader from "../../components/shared/loaders/SearchLoader";
 
 const Sales = () => {
-  // const convertTime = (unixTimestamp) => {
-  //   const dateObject = new Date(unixTimestamp * 1000);
-  //   const day = dateObject.getDate();
-  //   return day;
-  // };
+  const {
+    data: chartData,
+    isLoading,
+    isError,
+  } = useSelector((state) => state.charts);
+  const [data, setData] = useState(null);
 
-  const data = [
-    {
-      email: "khobor1@gmail.com",
-      price: 171,
-      timestamp: "1690202171717",
-    },
-    {
-      email: "khobor2@gmail.com",
-      price: 132,
-      timestamp: "1690302171717",
-    },
-    {
-      email: "khobor3@gmail.com",
-      price: 170,
-      timestamp: "1630202174717",
-    },
-    {
-      email: "khobor4@gmail.com",
-      price: 100,
-      timestamp: "1690202175717",
-    },
-    {
-      email: "khobor5@gmail.com",
-      price: 110,
-      timestamp: "169502176717",
-    },
-    {
-      email: "khobor6@gmail.com",
-      price: 74,
-      timestamp: "1690202171717",
-    },
-    {
-      email: "khobor7@gmail.com",
-      price: 141,
-      timestamp: "1690202171717",
-    },
-    {
-      email: "khobor8@gmail.com",
-      price: 132,
-      timestamp: "1690202171717",
-    },
-    {
-      email: "khobor9@gmail.com",
-      price: 50,
-      timestamp: "1690202171717",
-    },
-    {
-      email: "khobor11@gmail.com",
-      price: 180,
-      timestamp: "1690202171717",
-    },
-    {
-      email: "khobor12@gmail.com",
-      price: 101,
-      timestamp: "1690202171717",
-    },
-    {
-      email: "khobor13@gmail.com",
-      price: 121,
-      timestamp: "1690202171717",
-    },
-  ];
+  useEffect(() => {
+    if (!isLoading && !isError && chartData?.length > 0) {
+      console.log(chartData);
+      setData(chartData);
+    }
+  }, [chartData?.length > 0]);
+
+  if (isLoading) {
+    return <SearchLoader></SearchLoader>;
+  } else if (!isLoading && isError) {
+    return <div>Something went wrong!</div>;
+  } else if (!isLoading && !isError && chartData?.length === 0) {
+    return <div>No data found</div>;
+  }
 
   const convertTime = (unixTimestamp) => {
     const dateObject = new Date(parseInt(unixTimestamp));
@@ -88,7 +43,7 @@ const Sales = () => {
     return formattedDate;
   };
 
-  const revenue = data.reduce((accumulator, currentData) => {
+  const revenue = data?.reduce((accumulator, currentData) => {
     const convertedTime = convertTime(currentData.timestamp);
 
     const existingEntry = accumulator.find(
@@ -107,7 +62,7 @@ const Sales = () => {
     return accumulator;
   }, []);
 
-  const users = data.reduce((accumulator, currentData) => {
+  const users = data?.reduce((accumulator, currentData) => {
     const convertedTime = convertTime(currentData.timestamp);
 
     const existingEntry = accumulator.find(
@@ -125,9 +80,6 @@ const Sales = () => {
     }
     return accumulator;
   }, []);
-
-  console.log(revenue);
-  console.log(users);
 
   return (
     <section>

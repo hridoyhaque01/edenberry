@@ -6,15 +6,10 @@ import SearchLoader from "../../components/shared/loaders/SearchLoader";
 import GuideTabs from "../../components/shared/tabs/GuideTabs";
 
 function DailyGuide() {
-  const { isLoading, isError, guides, activeTab } = useSelector(
+  const { isLoading, isError, guides, activeTab, handleReset } = useSelector(
     (state) => state.guides
   );
-
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(fetchGuides());
-  // }, []);
 
   let postpartum = null;
   let prenatal = null;

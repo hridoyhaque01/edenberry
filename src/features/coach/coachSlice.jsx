@@ -6,8 +6,10 @@ const initialState = {
   isError: false,
   coaches: [],
   isRequestLoading: false,
-  isResponseError: false,
-  isSuccess: false,
+  isUpdateError: false,
+  isUpdateSuccess: false,
+  isAddError: false,
+  isAddSuccess: false,
   coachData: {},
 };
 
@@ -27,7 +29,7 @@ export const addCoache = createAsyncThunk(
   async (formData) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/coach/add`,
+        `${import.meta.env.VITE_API_BASE_URL}/approveCoach/add`,
         formData
       );
       return response?.data;
@@ -68,7 +70,11 @@ const coachSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.coaches = action.payload;
-      state.isSuccess = false;
+      state.isRequestLoading = false;
+      state.isUpdateError = false;
+      state.isUpdateSuccess = false;
+      state.isAddError = false;
+      state.isAddSuccess = false;
     });
     builder.addCase(fetchCoaches.rejected, (state) => {
       state.isError = true;
@@ -77,34 +83,34 @@ const coachSlice = createSlice({
 
     builder.addCase(addCoache.pending, (state) => {
       state.isRequestLoading = true;
-      state.isResponseError = false;
-      state.isSuccess = false;
+      state.isAddError = false;
+      state.isAddSuccess = false;
     });
     builder.addCase(addCoache.fulfilled, (state) => {
       state.isRequestLoading = false;
-      state.isResponseError = false;
-      state.isSuccess = true;
+      state.isAddError = false;
+      state.isAddSuccess = true;
     });
     builder.addCase(addCoache.rejected, (state) => {
       state.isRequestLoading = false;
-      state.isResponseError = true;
-      state.isSuccess = false;
+      state.isAddError = true;
+      state.isAddSuccess = false;
     });
 
     builder.addCase(updateCoach.pending, (state) => {
       state.isRequestLoading = true;
-      state.isResponseError = false;
-      state.isSuccess = false;
+      state.isUpdateError = false;
+      state.isUpdateSuccess = false;
     });
     builder.addCase(updateCoach.fulfilled, (state) => {
       state.isRequestLoading = false;
-      state.isResponseError = false;
-      state.isSuccess = true;
+      state.isUpdateError = false;
+      state.isUpdateSuccess = true;
     });
     builder.addCase(updateCoach.rejected, (state) => {
       state.isRequestLoading = false;
-      state.isResponseError = true;
-      state.isSuccess = false;
+      state.isUpdateError = true;
+      state.isUpdateSuccess = false;
     });
   },
 });

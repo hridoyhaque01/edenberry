@@ -4,7 +4,7 @@ import PrivacyPolicyModal from "../../components/modals/PrivacyPolicyModal";
 import AditionalTabs from "../../components/shared/tabs/AditionalTabs";
 import Privacy from "./Privacy";
 
-function Products() {
+function Additional() {
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <AditionalTabs></AditionalTabs>
@@ -23,4 +23,4 @@ function Products() {
   );
 }
 
-export default Products;
+export default Additional;

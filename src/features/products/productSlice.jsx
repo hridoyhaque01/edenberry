@@ -60,6 +60,13 @@ const productSlice = createSlice({
     changeActiveProduct: (state, action) => {
       state.activeProduct = action.payload;
     },
+    resetState: (state) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchProducts.pending, (state) => {
@@ -111,4 +118,4 @@ const productSlice = createSlice({
 });
 
 export default productSlice.reducer;
-export const { changeActiveProduct } = productSlice.actions;
+export const { changeActiveProduct, resetState } = productSlice.actions;

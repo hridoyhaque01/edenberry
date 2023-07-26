@@ -14,8 +14,9 @@ function CoachTable() {
     isError,
     coaches,
     isRequestLoading,
-    isResponseError,
-    isSuccess,
+    isUpdateError,
+    isUpdateSuccess,
+    isAddSuccess,
   } = useSelector((state) => state.coaches);
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,13 +50,14 @@ function CoachTable() {
     });
 
   useEffect(() => {
-    if (isResponseError) {
+    if (isUpdateError) {
       errorNotify();
-    } else if (isSuccess) {
+    } else if (isUpdateSuccess) {
       infoNotify();
       dispatch(fetchCoaches());
+      console.log(isAddSuccess, isUpdateSuccess);
     }
-  }, [isRequestLoading, isSuccess]);
+  }, [isRequestLoading, isUpdateSuccess]);
 
   if (isLoading) {
     return <SearchLoader></SearchLoader>;

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchAdmin,
-  updateAdmin,
-  updateStaff,
-} from "../../features/admin/adminSlice";
+import { fetchAdmin, updateStaff } from "../../features/admin/adminSlice";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import RequestLoader from "../shared/loaders/RequestLoader";
 import SearchLoader from "../shared/loaders/SearchLoader";
 import { Pagination } from "../shared/pagination/Pagination";
 
@@ -16,28 +17,59 @@ function StaffTable() {
     isRequestLoading,
     isError,
     admins: staffs,
-    isSuccess,
+    isUpdateSuccess,
+    isResponseError,
+    handleReset,
+    isAddSuccess,
   } = useSelector((state) => state.admins);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
-  const handleStatusChange = (value, id) => {
-    let status = "inactive";
-    if (value === "inactive") {
-      status = "active";
-    }
-    const formData = new FormData();
-    formData.append("data", JSON.stringify({ status }));
-    dispatch(updateAdmin({ token: userData?.token, formData, id }));
-  };
+  const notify = (message) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = (message) =>
+    toast.info(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  // const handleStatusChange = (value, id) => {
+  //   let status = "inactive";
+  //   if (value === "inactive") {
+  //     status = "active";
+  //   }
+  //   const formData = new FormData();
+  //   formData.append("data", JSON.stringify({ status }));
+  //   dispatch(updateAdmin({ token: userData?.token, formData, id }));
+  // };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
+      dispatch(fetchAdmin(userData?.token));
+      infoNotify("Staff Add Successfull");
+    } else if (isResponseError) {
+      notify("Staff update failed");
       dispatch(fetchAdmin(userData?.token));
     }
-  }, [isSuccess, dispatch, userData?.token]);
+  }, [isUpdateSuccess, dispatch, userData?.token]);
 
   let content = null;
 
@@ -170,13 +202,33 @@ function StaffTable() {
           setCurrentPage={setCurrentPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
-          totalRows={staffs?.length}
+          totalRows={filteredStaffs?.length}
         ></Pagination>
       </div>
     );
   }
 
-  return <div className="flex flex-col h-full">{content}</div>;
+  return (
+    <div className="flex flex-col h-full">
+      {content}
+
+      <div>{isRequestLoading && <RequestLoader></RequestLoader>}</div>
+      <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </div>
+    </div>
+  );
 }
 
 export default StaffTable;

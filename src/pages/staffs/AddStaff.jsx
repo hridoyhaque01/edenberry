@@ -7,13 +7,18 @@ import { addAdmin, fetchAdmin } from "../../features/admin/adminSlice";
 
 export default function AddStaff() {
   const dispatch = useDispatch();
-  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
-    (state) => state.admins
-  );
+  const {
+    isRequestLoading,
+    isResponseError,
+    isAddSuccess,
+    handleReset,
+    isUpdateSuccess,
+  } = useSelector((state) => state.admins);
 
   const { userData } = useSelector((state) => state.auth);
   const formRef = useRef();
   const [permissions, setPermissions] = useState([]);
+  const [isStrong, setIsStrong] = useState(false);
 
   const handleCheckbox = (event) => {
     if (event?.target?.checked) {
@@ -26,8 +31,41 @@ export default function AddStaff() {
     }
   };
 
+  function checkPasswordStrength(event) {
+    const password = event.target.value;
+    console.log(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasLength = password.length >= 8;
+    const hasSpecialSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    if (
+      hasUppercase &&
+      hasLowercase &&
+      hasNumber &&
+      hasLength &&
+      hasSpecialSymbol
+    ) {
+      setIsStrong(true);
+    } else {
+      setIsStrong(false);
+    }
+  }
+
   const notify = (message) =>
     toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = (message) =>
+    toast.info(message, {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -45,6 +83,7 @@ export default function AddStaff() {
     const lastName = form.lastName?.value;
     const email = form.email?.value;
     const password = form.password?.value;
+    const timestamp = Date.now().toString();
 
     if (permissions?.length === 0) {
       notify("Please select permissons");
@@ -58,23 +97,30 @@ export default function AddStaff() {
       password,
       status: "active",
       permissions,
+      timestamp,
     };
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
-    dispatch(addAdmin({ token: userData?.token, data }));
+    dispatch(addAdmin({ token: userData?.token, formData }));
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       formRef.current.reset();
       dispatch(fetchAdmin(userData?.token));
+      dispatch(handleReset);
+      infoNotify("Add staff successfull");
+      setPermissions([]);
+    } else if (isResponseError) {
+      notify("Add staff failed!");
+      dispatch(handleReset);
     }
-  }, [dispatch, isSuccess, userData?.token]);
+  }, [dispatch, isAddSuccess, userData?.token]);
 
   return (
     <section className="pb-10">
       <div className="p-8 border border-blueLight rounded-xl shadow-sm">
-        <h4 className="text-xl font-mont font-bold text-black">Add users</h4>
+        <h4 className="text-xl font-mont font-bold text-black">Add Staff</h4>
 
         <form
           action=""
@@ -129,13 +175,22 @@ export default function AddStaff() {
             <span className="text-xs font-mont font-semibold text-black capitalize">
               password
             </span>
-            <input
-              required
-              type="password"
-              placeholder="Enter password"
-              name="password"
-              className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-            />
+            <div>
+              <input
+                required
+                type="password"
+                placeholder="Enter password"
+                name="password"
+                className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                onChange={(e) => checkPasswordStrength(e)}
+              />
+              {!isStrong && (
+                <p className="text-[12px] mt-1">
+                  must contain more than 7 character with uppercase, lowercase,
+                  symble and number
+                </p>
+              )}
+            </div>
           </div>
 
           {/* role  */}
@@ -230,7 +285,7 @@ export default function AddStaff() {
               className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
               type="submit"
             >
-              Save & Update
+              Add Staff
             </button>
           </div>
         </form>
@@ -248,9 +303,7 @@ export default function AddStaff() {
         pauseOnHover
         theme="light"
       />
-      {isResponseError && (
-        <div className="text-errorColor">Something went wrong!</div>
-      )}
+
       {isRequestLoading && <RequestLoader></RequestLoader>}
     </section>
   );

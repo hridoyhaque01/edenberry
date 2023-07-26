@@ -2,9 +2,9 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import Additional from "../pages/additional/Additional";
 import ForgetPasword from "../pages/authentication/forgetPassword/ForgetPassword";
+import ResetPasword from "../pages/authentication/forgetPassword/PasswordReset";
 import Login from "../pages/authentication/login/Login";
 import Register from "../pages/authentication/register/Register";
-import UserForgetPasword from "../pages/authentication/userForgetPassword/UserForgetPassword";
 import Coach from "../pages/coach/Coach";
 import Dashboard from "../pages/dashboard/Dashboard";
 import CourseForm from "../pages/formPages/CourseForm";
@@ -98,13 +98,14 @@ export const routes = createBrowserRouter([
     element: <Login></Login>,
   },
   {
-    path: "/forget-password",
+    path: "/forgot-password",
     element: <ForgetPasword></ForgetPasword>,
   },
   {
-    path: "/forget-password/:email",
-    element: <UserForgetPasword></UserForgetPasword>,
+    path: "/forgot-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/:email",
+    element: <ResetPasword></ResetPasword>,
   },
+
   {
     path: "*",
     element: (

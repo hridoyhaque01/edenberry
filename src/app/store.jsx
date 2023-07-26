@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import adminReducer from "../features/admin/adminSlice";
 import authReducer from "../features/auth/authSlice";
+import chartReducer from "../features/chart/ChartSlice";
 import coachReducer from "../features/coach/coachSlice";
 import midWiveReducer from "../features/midwives/midWiveSlice";
 import privacyReducer from "../features/privacy/privacySlice";
@@ -28,5 +29,6 @@ export const store = configureStore({
     seekHelps: seekHelpsReducer,
     privacyPolicies: privacyReducer,
     products: productReducr,
+    charts: chartReducer,
   },
 });

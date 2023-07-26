@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchProducts,
-  updateProduct,
-} from "../../features/products/productSlice";
+import { updateProduct } from "../../features/products/productSlice";
 import { imageIcon } from "../../utils/getImages";
-import RequestLoader from "../shared/loaders/RequestLoader";
 
 function ProductModal() {
   const [product, setProduct] = useState(null);
@@ -14,7 +10,9 @@ function ProductModal() {
   const [productPreview, setProductPreview] = useState(null);
   const { activeProduct, isRequestLoading, isResponseError, isSuccess } =
     useSelector((state) => state.products);
-  const [isError, setIsError] = useState(false);
+
+  console.log(isRequestLoading);
+  const [description, setDescription] = useState("");
   const dispatch = useDispatch();
   const [data, setData] = useState();
   const handleProductChange = (event) => {
@@ -32,21 +30,17 @@ function ProductModal() {
     }
   };
 
-  // const incrementProduct = () => {
-  //   setProductCount((prev) => prev + 1);
-  // };
-
-  // const decrementProduct = () => {
-  //   if (productCount <= 1) {
-  //     return;
-  //   } else {
-  //     setProductCount((prev) => prev - 1);
-  //   }
-  // };
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 1200) {
+      setDescription(value);
+    }
+  };
 
   useEffect(() => {
     if (activeProduct?._id) {
       setData(activeProduct);
+      setDescription(activeProduct?.description);
       // setProductCount(activeProduct?.productCount);
       setProductPreview(activeProduct?.fileUrl);
     }
@@ -72,18 +66,6 @@ function ProductModal() {
       dispatch(updateProduct({ id: activeProduct?._id, formData }));
     }
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(fetchProducts());
-    }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    if (isResponseError) {
-      setIsError(isResponseError);
-    }
-  }, [isResponseError]);
 
   return (
     <div
@@ -168,19 +150,22 @@ function ProductModal() {
               </div>
 
               {/* Product Description */}
-              <div className="">
-                <div className="flex flex-col gap-5">
-                  <span className="text-xs font-semibold text-black font-mont capitalize">
-                    Product Description
-                  </span>
+              <div className="flex flex-col gap-5">
+                <span className="text-xs font-semibold text-black font-mont capitalize">
+                  Product Description
+                </span>
+                <div className="w-full">
                   <textarea
                     name="description"
-                    className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
+                    className="p-3 h-32 w-full text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                     placeholder="Enter product description"
                     required
-                    defaultValue={data?.description}
+                    value={description}
+                    onChange={(e) => handleChange(e)}
                   />
-                  <div className="text-darkMid text-right">(45/1200)</div>
+                  <p className="text-darkMid text-xs text-right">
+                    ({description?.length || 0}/1200)
+                  </p>
                 </div>
               </div>
 
@@ -215,17 +200,14 @@ function ProductModal() {
                 <button
                   type="submit"
                   className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-                  disabled={isRequestLoading}
+                  data-hs-overlay="#product-modal"
                 >
-                  Save & Update
+                  Update Product
                 </button>
               </div>
             </form>
           </div>
-          {isRequestLoading && <RequestLoader></RequestLoader>}
-          {isError && (
-            <div className="text-errorColor">Something went wrong!</div>
-          )}
+          <div></div>
         </div>
       </div>
     </div>

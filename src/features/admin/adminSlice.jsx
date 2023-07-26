@@ -5,7 +5,8 @@ const initialState = {
   isLoading: true,
   isError: false,
   admins: [],
-  isSuccess: false,
+  isUpdateSuccess: false,
+  isAddSuccess: false,
   isRequestLoading: false,
   isResponseError: false,
   activeStaff: {},
@@ -28,6 +29,7 @@ export const fetchAdmin = createAsyncThunk("auth/fetchAdmin", async (token) => {
 export const addAdmin = createAsyncThunk(
   "auth/addAdmin",
   async ({ token, formData }) => {
+    console.log(formData, token);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/admin/add`,
@@ -68,6 +70,14 @@ const adminSlice = createSlice({
     updateStaff: (state, action) => {
       state.activeStaff = action.payload;
     },
+    handleReset: (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isUpdateSuccess = false;
+      state.isAddSuccess = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAdmin.pending, (state) => {
@@ -77,7 +87,10 @@ const adminSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.admins = action.payload;
-      state.isSuccess = false;
+      state.isAddSuccess = false;
+      state.isUpdateSuccess = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
     });
     builder.addCase(fetchAdmin.rejected, (state) => {
       state.isLoading = false;
@@ -86,36 +99,36 @@ const adminSlice = createSlice({
     builder.addCase(addAdmin.pending, (state) => {
       state.isRequestLoading = true;
       state.isResponseError = false;
-      state.isSuccess = false;
+      state.isAddSuccess = false;
     });
     builder.addCase(addAdmin.fulfilled, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = false;
-      state.isSuccess = true;
+      state.isAddSuccess = true;
     });
     builder.addCase(addAdmin.rejected, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = true;
-      state.isSuccess = false;
+      state.isAddSuccess = false;
     });
 
     builder.addCase(updateAdmin.pending, (state) => {
       state.isRequestLoading = true;
-      state.isSuccess = false;
+      state.isUpdateSuccess = false;
       state.isResponseError = false;
     });
     builder.addCase(updateAdmin.fulfilled, (state) => {
       state.isRequestLoading = false;
-      state.isSuccess = true;
+      state.isUpdateSuccess = true;
       state.isResponseError = false;
     });
     builder.addCase(updateAdmin.rejected, (state) => {
       state.isRequestLoading = false;
-      state.isSuccess = false;
+      state.isUpdateSuccess = false;
       state.isResponseError = true;
     });
   },
 });
 
 export default adminSlice.reducer;
-export const { updateStaff } = adminSlice.actions;
+export const { updateStaff, handleReset } = adminSlice.actions;

@@ -13,6 +13,7 @@ const initialState = {
   error: "",
   userData: isTokenValid ? storedUserData : "",
   isRegisterSuccess: false,
+  isRegisterError: false,
   isSuccess: false,
   admins: [],
 };
@@ -43,12 +44,28 @@ export const register = createAsyncThunk("auth/register", async (data) => {
       `${import.meta.env.VITE_API_BASE_URL}/admin/register`,
       formData
     );
-    console.log(response);
     return response?.data;
   } catch (error) {
     throw error;
   }
 });
+
+export const sendEmailRequest = createAsyncThunk(
+  "auth/sendEmailRequest",
+  async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/admin/register`,
+        formData
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "authSlice",
@@ -68,32 +85,28 @@ const authSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isError = false;
-      state.error = "";
       state.userData = action.payload;
     });
     builder.addCase(login.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
-      state.error = "there was an error!";
       state.userData = "";
     });
 
     builder.addCase(register.pending, (state) => {
       state.isLoading = true;
-      state.isError = false;
+      state.isRegisterError = false;
       state.isRegisterSuccess = false;
     });
     builder.addCase(register.fulfilled, (state) => {
       state.isLoading = false;
-      state.isError = true;
-      state.error = "there was an error!";
+      state.isRegisterError = false;
       state.isRegisterSuccess = true;
       state.userData = "";
     });
     builder.addCase(register.rejected, (state) => {
       state.isLoading = false;
-      state.isError = true;
-      state.error = "there was an error!";
+      state.isRegisterError = true;
       state.isRegisterSuccess = false;
       state.userData = "";
     });

@@ -1,31 +1,54 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { login } from "../../../features/auth/authSlice";
+import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import RequestLoader from "../../../components/shared/loaders/RequestLoader";
 
 const ForgetPasword = () => {
-  const dispatch = useDispatch();
-  const { isLoading, isError, error, userData } = useSelector(
-    (state) => state.auth
-  );
-  const navigate = useNavigate();
-  const handleLogin = (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const email = form.email.value;
-    const password = form.password.value;
-    const data = {
-      email,
-      password,
-    };
-    dispatch(login(data));
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (userData?.token) {
-      navigate("/");
+  const errorNotify = (message) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = (message) =>
+    toast.info(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const email = event.target.email.value;
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ email }));
+    setIsLoading(true);
+    try {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/reset`, {
+        method: "POST",
+        body: formData,
+      });
+      setIsLoading(false);
+      infoNotify("Request sent successfully");
+      event.target.reset();
+    } catch (error) {
+      setIsLoading(false);
+      errorNotify("Request failed");
     }
-  }, [userData?.token]);
+  };
 
   return (
     <section className="h-screen bg-authBg bg-no-repeat bg-cover bg-whiteSemi w-full px-6">
@@ -40,7 +63,7 @@ const ForgetPasword = () => {
           <div className=" w-full max-w-[30rem] py-12 px-10 rounded-lg bg-white shadow-sm mx-auto">
             <form
               className="flex flex-col w-full gap-4 "
-              onSubmit={handleLogin}
+              onSubmit={handleSubmit}
             >
               <div>
                 <p className="text-sm text-pureBlackColor font-bold mb-2">
@@ -54,52 +77,30 @@ const ForgetPasword = () => {
                   className="input bg-transparent border border-fadeReg focus:outline-none w-full"
                 />
               </div>
-              <div>
-                <p className="text-sm text-pureBlackColor font-bold mb-2">
-                  New Password
-                </p>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  required
-                  className="input bg-transparent border border-fadeReg focus:outline-none w-full"
-                  autoComplete="off"
-                />
-              </div>
-              <div>
-                <p className="text-sm text-pureBlackColor font-bold mb-2">
-                  Confirm Password
-                </p>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="Confirm password"
-                  required
-                  className="input bg-transparent border border-fadeReg focus:outline-none w-full"
-                  autoComplete="off"
-                />
-              </div>
-              {/* <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="remember"
-                  placeholder="Password"
-                  className=" bg-whiteLow "
-                />
-                <p className="text-blackSemi">Remeber me</p>
-              </div> */}
               <button
                 className="mt-4 mb-6 py-3.5 rounded-full bg-primaryColor text-whiteHigh border-0 "
                 type="submit"
                 disabled={isLoading}
               >
-                Reset Password
+                Send Reset Link
               </button>
-
-              {isError && <p>{error}</p>}
             </form>
           </div>
+        </div>
+        {isLoading && <RequestLoader></RequestLoader>}
+        <div>
+          <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </div>
       </div>
     </section>

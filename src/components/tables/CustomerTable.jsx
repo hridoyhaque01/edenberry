@@ -123,13 +123,13 @@ function CustomerTable() {
                     </td>
 
                     <td className="px-6 py-2 whitespace-nowrap">
-                      {new Date(customer?.dueDate).toLocaleDateString(
+                      {new Date(customer?.pregnancyDueDate).toLocaleDateString(
                         "en-US"
                       ) === "Invalid Date"
                         ? "Postpartum"
-                        : new Date(customer?.dueDate).toLocaleDateString(
-                            "en-US"
-                          )}
+                        : new Date(
+                            customer?.pregnancyDueDate
+                          ).toLocaleDateString("en-US")}
                     </td>
                     <td className="px-6 py-2 whitespace-nowrap">
                       {new Date(customer?.babysBirthday).toLocaleDateString(

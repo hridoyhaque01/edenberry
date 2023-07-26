@@ -64,6 +64,15 @@ export const updateWellness = createAsyncThunk(
 const wellnessSlice = createSlice({
   name: "wellnessSlice",
   initialState,
+  reducers: {
+    handleReset: (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchWellness.pending, (state) => {
       state.isError = false;
@@ -72,6 +81,9 @@ const wellnessSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.wellness = action.payload;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = false;
     });
     builder.addCase(fetchWellness.rejected, (state) => {
       state.isError = true;
@@ -113,3 +125,4 @@ const wellnessSlice = createSlice({
 });
 
 export default wellnessSlice.reducer;
+export const { handleReset } = wellnessSlice.actions;

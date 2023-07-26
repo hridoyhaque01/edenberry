@@ -11,6 +11,7 @@ import {
   fetchWellness,
   updateWellness,
 } from "../../features/services/wellnessSlice";
+import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
 
 function WellnessForm() {
@@ -18,15 +19,20 @@ function WellnessForm() {
 
   const { data, type } = state || {};
 
-  const { title, description, fileUrl, _id: id } = data || {};
+  const {
+    title,
+    description: initialDesciption,
+    fileUrl,
+    _id: id,
+  } = data || {};
 
   const thumbnailRef = useRef();
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
+  const [description, setDescription] = useState(initialDesciption);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
-    (state) => state.wellness
-  );
+  const { isRequestLoading, isResponseError, isSuccess, handleReset } =
+    useSelector((state) => state.wellness);
   const dispatch = useDispatch();
 
   const [navigateData, setNavigateData] = useState({});
@@ -45,6 +51,13 @@ function WellnessForm() {
     } else {
       setThumbnail(null);
       setThumbnailPreview(null);
+    }
+  };
+
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 1200) {
+      setDescription(value);
     }
   };
 
@@ -72,31 +85,39 @@ function WellnessForm() {
       theme: "light",
     });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const form = event.target;
     const title = form.title.value;
     const description = form.description.value;
-
     const formData = new FormData();
-
     const data = {
       title,
       description,
     };
-
     formData.append("data", JSON.stringify(data));
+
+    let file = null;
+
+    try {
+      if (thumbnail) {
+        file = await getCompressedImage(thumbnail);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
     if (type === "edit") {
-      if (!thumbnail) {
+      if (!file) {
         dispatch(updateWellness({ id, formData }));
       } else {
-        formData.append("files", thumbnail);
+        formData.append("files", file);
         dispatch(updateWellness({ id, formData }));
       }
     } else {
-      formData.append("files", thumbnail);
+      formData.append("files", file);
       dispatch(addWellness(formData));
     }
   };
@@ -109,6 +130,7 @@ function WellnessForm() {
         thumbnailRef.current.value = "";
         setThumbnail(null);
         setThumbnailPreview(null);
+        setDescription("");
       }
       if (type === "edit") {
         infoNotify("Wellness update successfull");
@@ -116,6 +138,7 @@ function WellnessForm() {
         infoNotify("Wellness add successfull");
       }
     } else if (isResponseError) {
+      dispatch(handleReset());
       if (type === "edit") {
         errorNotify("Wellness update failed");
       } else {
@@ -125,7 +148,7 @@ function WellnessForm() {
   }, [isSuccess, dispatch, type]);
 
   useEffect(() => {
-    if (isSuccess && type === "edit") {
+    if (isSuccess && type === "edit" && navigateData?._id) {
       navigate("/editWellness", {
         state: {
           type: "edit",
@@ -133,7 +156,7 @@ function WellnessForm() {
         },
       });
     }
-  }, [isSuccess, type]);
+  }, [isSuccess, type, navigateData?._id]);
 
   return (
     <section className="pt-12 pb-10">
@@ -234,9 +257,12 @@ function WellnessForm() {
                 name="description"
                 className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                 placeholder="Enter wellness description"
-                defaultValue={description}
+                value={description}
+                onChange={(e) => handleChange(e)}
               />
-              <div className="text-darkMid text-right">(45/1200)</div>
+              <p className="text-darkMid text-xs text-right">
+                ({description?.length || 0}/1200)
+              </p>
             </div>
           </div>
           {/* buttons */}
@@ -247,7 +273,7 @@ function WellnessForm() {
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
               disabled={isRequestLoading}
             >
-              Save & Update
+              {type === "edit" ? "Update Wellness" : "Add Wellness"}
             </button>
           </div>
           {isResponseError && (

@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import SideNav from "../components/shared/sidenav/SideNav";
 import TopNav from "../components/shared/topnav/TopNav";
 import { fetchAdmin } from "../features/admin/adminSlice";
+import { fetchChart } from "../features/chart/ChartSlice";
 import { fetchCoaches } from "../features/coach/coachSlice";
 import { fetchMidWives } from "../features/midwives/midWiveSlice";
 import { fetchPrivacy } from "../features/privacy/privacySlice";
@@ -30,6 +31,7 @@ const MainLayout = () => {
     dispatch(fetchSeekHelps());
     dispatch(fetchPrivacy());
     dispatch(fetchProducts());
+    dispatch(fetchChart());
   }, [dispatch]);
 
   return (

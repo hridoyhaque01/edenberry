@@ -3,15 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RequestLoader from "../../../components/shared/loaders/RequestLoader";
 import { login } from "../../../features/auth/authSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { isLoading, isError, error, userData } = useSelector(
-    (state) => state.auth
-  );
-
-  console.log(isError);
+  const { isLoading, isError, userData } = useSelector((state) => state.auth);
 
   const notify = () =>
     toast.error("Invalid credentials!", {
@@ -99,7 +96,7 @@ const Login = () => {
 
               <div className="text-center">
                 <Link
-                  to="/forget-password"
+                  to="/forgot-password"
                   className="text-base text-primaryMain underline"
                 >
                   Forget Password?
@@ -121,6 +118,7 @@ const Login = () => {
         pauseOnHover
         theme="light"
       />
+      {isLoading && <RequestLoader></RequestLoader>}
     </section>
   );
 };

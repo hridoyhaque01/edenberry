@@ -1,17 +1,18 @@
 import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 // import { updateUserData } from "../../features/users/usersSlice";
 import { useEffect } from "react";
 import { updateUser } from "../../features/users/usersSlice";
-import dateFormater from "../../utils/dateFormater";
-import getIsoDateString from "../../utils/getIsoDateString";
+import getCompresedImage from "../../utils/getCompresedImage";
+import { avater } from "../../utils/getImages";
+import { default as getFormattedDate } from "../../utils/getIsoDateString";
 
 // eslint-disable-next-line react/prop-types
 export default function CustomerModal({ userData }) {
   const {
     babysName,
     customerNote: initialNote,
-    dueDate: initialDate,
+    pregnancyDueDate,
     email,
     fileUrl,
     partnerName,
@@ -26,15 +27,14 @@ export default function CustomerModal({ userData }) {
   } = userData || {};
 
   const [profile, setProfile] = useState(null);
+  const [profilePreview, setProfilePreview] = useState(null);
   const [dueDate, setDueDate] = useState(null);
+  const [coachName, setCoachName] = useState("");
   const [customerNote, setCustomerNote] = useState("");
   const profileRef = useRef();
   const noteRef = useRef();
   const sizeRef = useRef();
   const dispatch = useDispatch();
-
-  const { isSuccess } = useSelector((state) => state.users);
-
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
     if (
@@ -43,6 +43,8 @@ export default function CustomerModal({ userData }) {
       file?.type === "image/png"
     ) {
       setProfile(file);
+      const imageURL = URL.createObjectURL(file);
+      setProfilePreview(imageURL);
     } else {
       setProfile(null);
     }
@@ -51,6 +53,7 @@ export default function CustomerModal({ userData }) {
   const handleProfileDelete = () => {
     profileRef.current.value = "";
     setProfile(null);
+    setProfilePreview(null);
   };
 
   const handleSubmitProfile = async (event) => {
@@ -61,10 +64,8 @@ export default function CustomerModal({ userData }) {
     const partnerName = form.partnerName.value;
     const babysName = form.babysName.value;
     const email = form.email.value;
-
     const apparelSize = form.apparelSize.value;
     const phoneNumber = form.phone.value;
-
     const data = {
       firstName,
       lastName,
@@ -74,11 +75,17 @@ export default function CustomerModal({ userData }) {
       email,
       apparelSize,
       phoneNumber,
-      dueDate,
+      pregnancyDueDate: dueDate,
     };
     const formData = new FormData();
-    if (profile) {
-      formData.append(`files`, profile);
+    let file = null;
+    try {
+      if (profile) {
+        file = await getCompresedImage(profile);
+        formData.append(`files`, file);
+      }
+    } catch (error) {
+      console.log(error);
     }
     formData.append("data", JSON.stringify(data));
     dispatch(updateUser({ id: userData?._id, formData }));
@@ -86,14 +93,46 @@ export default function CustomerModal({ userData }) {
 
   const handleDate = (event) => {
     const value = event.target.value;
-    const dueDate = dateFormater(value);
-    setDueDate(dueDate);
+    setDueDate(value);
   };
 
   const handleChange = (event) => {
     const { value } = event.target;
-    if (value.length <= 12000) {
+    if (value.length <= 1200) {
       setCustomerNote(value);
+    }
+  };
+
+  const fetchCoach = async (id) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/bookings`, {
+        method: "GET",
+      });
+      const data = await res.json();
+      if (data?.length > 0) {
+        console.log(id);
+        const bookedData = data?.find((item) => item?.userId === id);
+        console.log(bookedData?._id);
+        console.log(bookedData);
+        if (bookedData?._id) {
+          const result = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/coach/find/${
+              bookedData?.coachId
+            }`,
+            {
+              method: "GET",
+            }
+          );
+          const coachData = await result.json();
+          setCoachName(coachData?.firstName + " " + coachData?.lastName);
+        } else {
+          setCoachName("");
+        }
+      } else {
+        setCoachName("");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -102,7 +141,9 @@ export default function CustomerModal({ userData }) {
       noteRef.current.value = initialNote || "";
       sizeRef.current.value = apparelSize || "";
       setCustomerNote(initialNote);
-      setDueDate(initialDate);
+      setDueDate(pregnancyDueDate);
+      setProfilePreview(fileUrl);
+      fetchCoach(userData?._id);
     }
   }, [userData?._id]);
 
@@ -149,7 +190,7 @@ export default function CustomerModal({ userData }) {
               <div className="flex items-center justify-between my-11">
                 <div className="flex items-center gap-4">
                   <img
-                    src={fileUrl}
+                    src={profilePreview || avater}
                     alt=""
                     className="w-16 h-16 rounded-full"
                   />
@@ -268,7 +309,7 @@ export default function CustomerModal({ userData }) {
                         ref={noteRef}
                       ></textarea>
                       <p className="text-darkMid text-xs text-right">
-                        ({customerNote?.length || 0}/12000)
+                        ({customerNote?.length || 0}/1200)
                       </p>
                     </div>
                   </div>
@@ -348,8 +389,9 @@ export default function CustomerModal({ userData }) {
                         id="dueDate"
                         type="date"
                         name="dueDate"
-                        value={getIsoDateString(dueDate)}
+                        value={getFormattedDate(dueDate)}
                         onChange={(e) => handleDate(e)}
+                        disabled={!pregnancyDueDate ? true : false}
                         className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
                       />
                     </div>
@@ -380,9 +422,24 @@ export default function CustomerModal({ userData }) {
                         </div>
                       </div>
                     </div>
+                    {/* apparelSize */}
+                  </div>
+                  <div className="flex flex-col gap-5">
+                    <span className="text-xs font-mont font-semibold text-black capitalize">
+                      Assigned Midwife
+                    </span>
+                    <div className="relative w-full">
+                      <input
+                        type="text"
+                        defaultValue={coachName}
+                        placeholder="No coach assigned"
+                        readOnly
+                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                      />
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-end">
+                  <div className="flex items-center justify-end mt-6">
                     <button
                       className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                       type="submit"

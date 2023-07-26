@@ -4,14 +4,11 @@ import {
   fetchPrivacy,
   updatePrivacy,
 } from "../../features/privacy/privacySlice";
-import RequestLoader from "../shared/loaders/RequestLoader";
 
 function PrivacyPolicyModal() {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
-  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
-    (state) => state.privacyPolicies
-  );
+  const { isSuccess } = useSelector((state) => state.privacyPolicies);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -20,6 +17,7 @@ function PrivacyPolicyModal() {
     const formData = new FormData();
     formData.append("data", JSON.stringify({ privacyPolicyLink }));
     dispatch(updatePrivacy({ token: userData?.token, formData }));
+    form.reset();
   };
 
   useEffect(() => {
@@ -64,7 +62,7 @@ function PrivacyPolicyModal() {
                 <button
                   type="submit"
                   className="bg-secondaryColor px-6 py-3 text-white font-semibold capitalize rounded-md"
-                  disabled={isRequestLoading}
+                  data-hs-overlay="#privacy-modal"
                 >
                   submit
                 </button>
@@ -73,10 +71,6 @@ function PrivacyPolicyModal() {
           </form>
         </div>
       </div>
-      {isRequestLoading && <RequestLoader></RequestLoader>}
-      {isResponseError && (
-        <div className="text-errorColor">Something went wrong</div>
-      )}
     </div>
   );
 }

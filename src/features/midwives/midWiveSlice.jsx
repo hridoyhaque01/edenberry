@@ -51,6 +51,7 @@ const midwiveSlice = createSlice({
     builder.addCase(fetchMidWives.fulfilled, (state, action) => {
       state.isError = false;
       state.isSuccess = false;
+
       state.midwives = action.payload?.filter(
         (wive) => wive?.status === "active"
       );

@@ -11,24 +11,35 @@ import {
   fetchGuides,
   updateGuide,
 } from "../../features/services/guidesSlice";
+import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
 
 function GuideForm() {
   const { state } = useLocation();
   const { data, type } = state || {};
-
-  console.log(state);
-
-  const { title, description, status, fileUrl, _id: id } = data || {};
+  const {
+    title,
+    description: initialDesciption,
+    status,
+    fileUrl,
+    _id: id,
+  } = data || {};
+  const [description, setDescription] = useState(initialDesciption);
   const thumbnailRef = useRef();
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
-    (state) => state.guides
-  );
+  const { isRequestLoading, isResponseError, isSuccess, handleReset } =
+    useSelector((state) => state.guides);
   const [navigateData, setNavigateData] = useState({});
   const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 1200) {
+      setDescription(value);
+    }
+  };
 
   const dispatch = useDispatch();
 
@@ -72,9 +83,8 @@ function GuideForm() {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
     const form = event.target;
     const title = form.title.value;
     const status = form.status.value;
@@ -92,15 +102,27 @@ function GuideForm() {
 
     formData.append("data", JSON.stringify(data));
 
+    let file = null;
+
+    try {
+      if (thumbnail) {
+        file = await getCompressedImage(thumbnail);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log(file);
+
     if (type === "edit") {
-      if (!thumbnail) {
+      if (!file) {
         dispatch(updateGuide({ id, formData }));
       } else {
-        formData.append("files", thumbnail);
+        formData.append("files", file);
         dispatch(updateGuide({ id, formData }));
       }
     } else {
-      formData.append("files", thumbnail);
+      formData.append("files", file);
       dispatch(addGuide(formData));
     }
   };
@@ -113,6 +135,7 @@ function GuideForm() {
         thumbnailRef.current.value = "";
         setThumbnail(null);
         setThumbnailPreview(null);
+        setDescription("");
       }
       if (type === "edit") {
         infoNotify("Daily guide update successfull");
@@ -120,6 +143,7 @@ function GuideForm() {
         infoNotify("Daily guide add successfull");
       }
     } else if (isResponseError) {
+      dispatch(handleReset());
       if (type === "edit") {
         errorNotify("Daily guide update failed");
       } else {
@@ -155,12 +179,12 @@ function GuideForm() {
           {/* Resource NAME */}
           <div className="flex flex-col gap-5">
             <span className="text-xs font-semibold text-black  capitalize">
-              Daily Guide name
+              Title
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="title"
-              placeholder="Enter daily guide name"
+              placeholder="Enter daily guide title"
               required
               defaultValue={title}
             />
@@ -245,10 +269,13 @@ function GuideForm() {
                 required
                 name="description"
                 className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
-                placeholder="Enter wellness description"
-                defaultValue={description}
+                placeholder="Enter daily description"
+                value={description}
+                onChange={(e) => handleChange(e)}
               />
-              <div className="text-darkMid text-right">(45/1200)</div>
+              <p className="text-darkMid text-xs text-right">
+                ({description?.length || 0}/1200)
+              </p>
             </div>
           </div>
           {/* buttons */}
@@ -257,14 +284,10 @@ function GuideForm() {
             <button
               type="submit"
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-              disabled={isRequestLoading}
             >
-              Publish
+              {type === "edit" ? "Update Daily Guide" : "Add Daily Guide"}
             </button>
           </div>
-          {isResponseError && (
-            <p className="text-errorColor">Something went wrong!</p>
-          )}
         </form>
       </div>
       {isRequestLoading && <RequestLoader></RequestLoader>}

@@ -7,6 +7,7 @@ function CoachModal() {
   const [profile, setProfile] = useState(null);
   const profileRef = useRef();
   const [profilePreview, setProfilePreview] = useState(null);
+  const [bio, setBio] = useState("");
   const bioRef = useRef();
   const categoryRef = useRef();
   const { isLoading, isSuccess, isError } = useSelector(
@@ -30,7 +31,12 @@ function CoachModal() {
     }
   };
 
-  console.log(coachData);
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 1200) {
+      setBio(value);
+    }
+  };
 
   const handleProfileDelete = () => {
     profileRef.current.value = "";
@@ -69,6 +75,7 @@ function CoachModal() {
     if (coachData?._id) {
       setProfilePreview(coachData?.fileUrl);
       bioRef.current.value = coachData?.bio || "";
+      setBio(coachData?.bio || "");
       categoryRef.current.value = coachData?.category || "";
       console.log(coachData?.category);
     }
@@ -254,9 +261,12 @@ function CoachModal() {
                         className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                         placeholder="Enter bio"
                         ref={bioRef}
-                        defaultValue={coachData?.bio}
+                        value={bio}
+                        onChange={(e) => handleChange(e)}
                       />
-                      <div className="text-darkMid text-right">(45/1200)</div>
+                      <p className="text-darkMid text-xs text-right">
+                        ({bio?.length || 0}/1200)
+                      </p>
                     </div>
                   </div>
 

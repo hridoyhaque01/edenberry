@@ -10,6 +10,8 @@ export default function SideNav() {
 
   const [services, coach, products, staffs, request, additional] =
     permissions || [];
+  console.log(permissions);
+  console.log(services, coach, products, staffs, request, additional);
 
   return (
     <header className="bg-primaryColor shrink-0  w-52 h-[calc(100%-90px)] relative overflow-auto text-white font-semibold pt-8">
@@ -62,7 +64,7 @@ export default function SideNav() {
           </NavLink>
 
           {/* Services */}
-          {services === "services" && (
+          {permissions.includes("services") && (
             <NavLink
               to="/services"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -85,7 +87,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Coach */}
-          {coach === "coach" && (
+          {permissions.includes("coach") && (
             <NavLink
               to="/coach"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -108,7 +110,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Products */}
-          {products === "products" && (
+          {permissions.includes("products") && (
             <NavLink
               to="/products"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -131,7 +133,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Users */}
-          {staffs === "staffs" && (
+          {permissions.includes("staffs") && (
             <NavLink
               to="/staffs"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -155,7 +157,7 @@ export default function SideNav() {
           )}
 
           {/* Request */}
-          {request === "request" && (
+          {permissions.includes("request") && (
             <NavLink
               to="/request"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -178,7 +180,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Additional  */}
-          {additional === "additional" && (
+          {permissions.includes("additional") && (
             <NavLink
               to="/additional"
               className="w-full flex items-center py-2 px-4 gap-2"

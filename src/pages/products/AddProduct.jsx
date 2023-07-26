@@ -1,21 +1,55 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import {
   addProduct,
   fetchProducts,
+  resetState,
 } from "../../features/products/productSlice";
+import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
 
 function AddProduct() {
   const [product, setProduct] = useState(null);
   const productRef = useRef();
+  const [description, setDescription] = useState("");
   // const [productCount, setProductCount] = useState(1);
   const [productPreview, setProductPreview] = useState(null);
   const formRef = useRef();
   const dispatch = useDispatch();
 
-  const [isError, setIsError] = useState(false);
+  const errorNotify = (message) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = (message) =>
+    toast.info(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 1200) {
+      setDescription(value);
+    }
+  };
 
   const { isRequestLoading, isResponseError, isSuccess } = useSelector(
     (state) => state.products
@@ -36,19 +70,7 @@ function AddProduct() {
     }
   };
 
-  // const incrementProduct = () => {
-  //   setProductCount((prev) => prev + 1);
-  // };
-
-  // const decrementProduct = () => {
-  //   if (productCount <= 1) {
-  //     return;
-  //   } else {
-  //     setProductCount((prev) => prev - 1);
-  //   }
-  // };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const productName = form.productname?.value;
@@ -58,26 +80,32 @@ function AddProduct() {
       description,
       // productCount,
     };
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(data));
-    formData.append("files", product);
-    dispatch(addProduct(formData));
+    try {
+      const file = await getCompressedImage(product);
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      formData.append("files", file);
+      dispatch(addProduct(formData));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     if (isSuccess) {
       dispatch(fetchProducts());
+      dispatch(resetState());
       formRef.current.reset();
       setProductPreview(null);
       productRef.current.value = "";
+      setDescription("");
+      infoNotify("Add product successfull");
+    } else if (isResponseError) {
+      errorNotify("Add product failed");
+      dispatch(fetchProducts());
+      dispatch(resetState());
     }
-  }, [isSuccess, dispatch]);
-
-  useEffect(() => {
-    if (isResponseError) {
-      setIsError(isResponseError);
-    }
-  }, [isResponseError]);
+  }, [isSuccess, dispatch, isResponseError]);
 
   return (
     <section className="pb-10">
@@ -148,18 +176,22 @@ function AddProduct() {
         </div>
 
         {/* Product Description */}
-        <div className="">
-          <div className="flex flex-col gap-5">
-            <span className="text-xs font-semibold text-black font-mont capitalize">
-              Product Description
-            </span>
+        <div className="flex flex-col gap-5">
+          <span className="text-xs font-semibold text-black font-mont capitalize">
+            Product Description
+          </span>
+          <div className="w-full">
             <textarea
               name="description"
-              className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
+              className="p-3 h-32 w-full text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
               placeholder="Enter product description"
               required
+              value={description}
+              onChange={(e) => handleChange(e)}
             />
-            <div className="text-darkMid text-right">(45/1200)</div>
+            <p className="text-darkMid text-xs text-right">
+              ({description?.length || 0}/1200)
+            </p>
           </div>
         </div>
 
@@ -196,12 +228,25 @@ function AddProduct() {
             className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
             disabled={isRequestLoading}
           >
-            Save & Update
+            Add Product
           </button>
         </div>
       </form>
       {isRequestLoading && <RequestLoader></RequestLoader>}
-      {isError && <div className="text-errorColor">Something went wrong!</div>}
+      <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </div>
     </section>
   );
 }

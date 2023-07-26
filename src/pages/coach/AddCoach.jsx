@@ -1,14 +1,39 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import { addCoache, fetchCoaches } from "../../features/coach/coachSlice";
 
 function AddCoach() {
-  const { isRequestLoading, isSuccess, isResponseError } = useSelector(
-    (state) => state.coaches
-  );
+  const { isRequestLoading, isAddSuccess, isAddError, isUpdateSuccess } =
+    useSelector((state) => state.coaches);
 
   const dispatch = useDispatch();
+
+  const errorNotify = () =>
+    toast.error("Coach add failed!", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = () =>
+    toast.info("Coach add successfull", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -16,25 +41,26 @@ function AddCoach() {
     const firstName = form.firstName.value;
     const lastName = form.lastName.value;
     const email = form.email.value;
-    const password = form.password.value;
-
     const data = {
       firstName,
       lastName,
       email,
-      password,
     };
-
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     dispatch(addCoache(formData));
+    form.reset();
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       dispatch(fetchCoaches());
+      infoNotify();
+    } else if (isAddError) {
+      errorNotify();
+      console.log(isAddSuccess, isUpdateSuccess);
     }
-  }, [isSuccess, dispatch]);
+  }, [isAddSuccess, dispatch, isAddError]);
 
   return (
     <section className="pb-10">
@@ -52,7 +78,7 @@ function AddCoach() {
                   first name
                 </span>
                 <input
-                  className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
+                  className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                   name="firstName"
                   required
                   placeholder="Enter first name"
@@ -63,7 +89,7 @@ function AddCoach() {
                   last name
                 </span>
                 <input
-                  className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
+                  className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                   name="lastName"
                   required
                   placeholder="Enter last name"
@@ -75,38 +101,38 @@ function AddCoach() {
             <div className="flex flex-col gap-5">
               <span className="text-xs font-semibold text-black">Email</span>
               <input
-                className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
+                className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                 name="email"
                 required
                 placeholder="Enter email address"
               />
             </div>
 
-            {/* password  */}
-            <div className="flex flex-col gap-5">
-              <span className="text-xs font-semibold text-black">Password</span>
-              <input
-                className="p-3 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md"
-                name="password"
-                required
-                placeholder="Enter password"
-              />
-            </div>
-
             <div className="flex justify-end mt-8">
               <button
-                disabled={isRequestLoading}
                 type="submit"
                 className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
               >
-                Save & Update
+                Add Coach
               </button>
             </div>
           </form>
         </div>
-        {isResponseError && <div>Something went Wrong!</div>}
       </div>
       {isRequestLoading && <RequestLoader></RequestLoader>}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </section>
   );
 }

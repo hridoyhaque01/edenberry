@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAdmin, updateAdmin } from "../../features/admin/adminSlice";
-import RequestLoader from "../shared/loaders/RequestLoader";
+import { updateAdmin } from "../../features/admin/adminSlice";
 
 function StaffModal({ staff }) {
   const {
@@ -12,9 +11,6 @@ function StaffModal({ staff }) {
     permissions: staffPermissions,
   } = staff || {};
   const dispatch = useDispatch();
-  const { isSuccess, isRequestLoading, isResponseError } = useSelector(
-    (state) => state.admins
-  );
 
   const { userData } = useSelector((state) => state.auth);
 
@@ -58,12 +54,6 @@ function StaffModal({ staff }) {
       setPermissions(staffPermissions);
     }
   }, [staffPermissions]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(fetchAdmin(userData?.token));
-    }
-  }, [isSuccess, dispatch, userData?.token]);
 
   return (
     <div
@@ -238,19 +228,15 @@ function StaffModal({ staff }) {
               {/* submit button  */}
               <div className="flex items-center justify-end mt-6">
                 <button
-                  disabled={isRequestLoading}
                   className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                   type="submit"
+                  data-hs-overlay="#staff-modal"
                 >
                   Save & Update
                 </button>
               </div>
             </form>
           </div>
-          {isRequestLoading && <RequestLoader></RequestLoader>}
-          {isResponseError && (
-            <div className="text-errorColor">Something went wrong!</div>
-          )}
         </div>
       </div>
     </div>

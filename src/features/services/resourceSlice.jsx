@@ -68,6 +68,14 @@ const resourceSlice = createSlice({
     changeTab: (state, action) => {
       state.activeTab = action.payload;
     },
+
+    handleReset: (state) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchResources.pending, (state) => {
@@ -76,6 +84,9 @@ const resourceSlice = createSlice({
     builder.addCase(fetchResources.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isError = false;
+      state.isSuccess = false;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
       state.resources = action.payload;
     });
     builder.addCase(fetchResources.rejected, (state) => {
@@ -119,4 +130,4 @@ const resourceSlice = createSlice({
 });
 
 export default resourceSlice.reducer;
-export const { changeTab } = resourceSlice.actions;
+export const { changeTab, handleReset } = resourceSlice.actions;
