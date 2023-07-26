@@ -1,63 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { fetchCoaches, setCoach } from "../../features/coach/coachSlice";
+import { setCoach } from "../../features/coach/coachSlice";
 import CoachModal from "../modals/CoachModal";
 import RequestLoader from "../shared/loaders/RequestLoader";
 import SearchLoader from "../shared/loaders/SearchLoader";
 import { Pagination } from "../shared/pagination/Pagination";
 
-function CoachTable() {
-  const {
-    isLoading,
-    isError,
-    coaches,
-    isRequestLoading,
-    isUpdateError,
-    isUpdateSuccess,
-    isAddSuccess,
-  } = useSelector((state) => state.coaches);
+function CoachTable({ infoNotify, errorNotify }) {
+  const { isLoading, isError, coaches } = useSelector((state) => state.coaches);
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = coaches?.slice(indexOfFirstRow, indexOfLastRow);
-
-  const errorNotify = () =>
-    toast.error("Coach update failed!", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  const infoNotify = () =>
-    toast.info("Coach update successfull", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  useEffect(() => {
-    if (isUpdateError) {
-      errorNotify();
-    } else if (isUpdateSuccess) {
-      infoNotify();
-      dispatch(fetchCoaches());
-      console.log(isAddSuccess, isUpdateSuccess);
-    }
-  }, [isRequestLoading, isUpdateSuccess]);
+  const [isRequestLoading, setIsRequestLoading] = useState();
 
   if (isLoading) {
     return <SearchLoader></SearchLoader>;
@@ -179,23 +137,13 @@ function CoachTable() {
         ></Pagination>
       </div>
       <div>
-        <CoachModal></CoachModal>
+        <CoachModal
+          setIsRequestLoading={setIsRequestLoading}
+          infoNotify={infoNotify}
+          errorNotify={errorNotify}
+        ></CoachModal>
       </div>
       {isRequestLoading && <RequestLoader></RequestLoader>}
-      <div>
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-      </div>
     </div>
   );
 }

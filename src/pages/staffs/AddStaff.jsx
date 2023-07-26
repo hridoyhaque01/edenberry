@@ -1,24 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import { addAdmin, fetchAdmin } from "../../features/admin/adminSlice";
 
-export default function AddStaff() {
+export default function AddStaff({ infoNotify, errorNotify }) {
   const dispatch = useDispatch();
-  const {
-    isRequestLoading,
-    isResponseError,
-    isAddSuccess,
-    handleReset,
-    isUpdateSuccess,
-  } = useSelector((state) => state.admins);
 
   const { userData } = useSelector((state) => state.auth);
   const formRef = useRef();
   const [permissions, setPermissions] = useState([]);
   const [isStrong, setIsStrong] = useState(false);
+  const [isLoading, setIsLaoding] = useState(false);
 
   const handleCheckbox = (event) => {
     if (event?.target?.checked) {
@@ -52,31 +45,7 @@ export default function AddStaff() {
     }
   }
 
-  const notify = (message) =>
-    toast.error(message, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  const infoNotify = (message) =>
-    toast.info(message, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const firstName = form.firstName?.value;
@@ -99,23 +68,22 @@ export default function AddStaff() {
       permissions,
       timestamp,
     };
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(data));
-    dispatch(addAdmin({ token: userData?.token, formData }));
-  };
-
-  useEffect(() => {
-    if (isAddSuccess) {
-      formRef.current.reset();
-      dispatch(fetchAdmin(userData?.token));
-      dispatch(handleReset);
-      infoNotify("Add staff successfull");
+    setIsLaoding(true);
+    try {
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      await dispatch(addAdmin({ token: userData?.token, formData }));
+      await dispatch(fetchAdmin(userData?.token));
+      form.reset();
       setPermissions([]);
-    } else if (isResponseError) {
-      notify("Add staff failed!");
-      dispatch(handleReset);
+      infoNotify("Add staff successfull");
+      setIsLaoding(false);
+    } catch (error) {
+      setIsLaoding(false);
+      console.log(error);
+      errorNotify("Add staff failed");
     }
-  }, [dispatch, isAddSuccess, userData?.token]);
+  };
 
   return (
     <section className="pb-10">
@@ -281,7 +249,7 @@ export default function AddStaff() {
           {/* submit button  */}
           <div className="flex items-center justify-end mt-6">
             <button
-              disabled={isRequestLoading}
+              disabled={isLoading}
               className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
               type="submit"
             >
@@ -291,20 +259,7 @@ export default function AddStaff() {
         </form>
       </div>
 
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-
-      {isRequestLoading && <RequestLoader></RequestLoader>}
+      {isLoading && <RequestLoader></RequestLoader>}
     </section>
   );
 }

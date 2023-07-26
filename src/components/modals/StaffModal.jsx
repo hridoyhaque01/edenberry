@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateAdmin } from "../../features/admin/adminSlice";
+import { fetchAdmin, updateAdmin } from "../../features/admin/adminSlice";
 
-function StaffModal({ staff }) {
+function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
   const {
     _id: id,
     email,
@@ -11,9 +11,9 @@ function StaffModal({ staff }) {
     permissions: staffPermissions,
   } = staff || {};
   const dispatch = useDispatch();
-
+  const [isStrong, setIsStrong] = useState(false);
   const { userData } = useSelector((state) => state.auth);
-
+  const [password, setPassword] = useState();
   const [permissions, setPermissions] = useState([]);
 
   const handleCheckbox = (event) => {
@@ -29,7 +29,29 @@ function StaffModal({ staff }) {
     }
   };
 
-  const handleSubmit = (event) => {
+  function checkPasswordStrength(event) {
+    const password = event.target.value;
+    console.log(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasLength = password.length >= 8;
+    const hasSpecialSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    setPassword(password);
+    if (
+      hasUppercase &&
+      hasLowercase &&
+      hasNumber &&
+      hasLength &&
+      hasSpecialSymbol
+    ) {
+      setIsStrong(true);
+    } else {
+      setIsStrong(false);
+    }
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const firstName = form.firstName?.value;
@@ -41,12 +63,30 @@ function StaffModal({ staff }) {
       firstName,
       lastName,
       email,
-      password,
+
       permissions,
     };
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(data));
-    dispatch(updateAdmin({ token: userData?.token, formData, id }));
+
+    if (password && !isStrong) {
+      return errorNotify("Password not strong");
+    } else if (password && isStrong) {
+      data.password = password;
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      await dispatch(updateAdmin({ token: userData?.token, formData, id }));
+      await dispatch(fetchAdmin(userData?.token));
+      infoNotify("Update staff successfull");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorNotify("Update staff failed");
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -130,12 +170,21 @@ function StaffModal({ staff }) {
                 <span className="text-xs font-mont font-semibold text-black">
                   password
                 </span>
-                <input
-                  type="password"
-                  placeholder="Enter password"
-                  name="password"
-                  className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-                />
+                <div>
+                  <input
+                    type="password"
+                    placeholder="Enter password"
+                    name="password"
+                    className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
+                    onChange={(e) => checkPasswordStrength(e)}
+                  />
+                  {!isStrong && (
+                    <p className="text-[12px] mt-1">
+                      must contain more than 7 character with uppercase,
+                      lowercase, symble and number
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Permissions  */}
@@ -230,7 +279,9 @@ function StaffModal({ staff }) {
                 <button
                   className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                   type="submit"
-                  data-hs-overlay="#staff-modal"
+                  data-hs-overlay={
+                    password && !isStrong ? "edsds" : "#staff-modal"
+                  }
                 >
                   Save & Update
                 </button>

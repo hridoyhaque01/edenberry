@@ -1,20 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateProduct } from "../../features/products/productSlice";
+import {
+  fetchProducts,
+  updateProduct,
+} from "../../features/products/productSlice";
+import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
 
-function ProductModal() {
+function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
   const [product, setProduct] = useState(null);
   const productRef = useRef();
   // const [productCount, setProductCount] = useState(1);
   const [productPreview, setProductPreview] = useState(null);
-  const { activeProduct, isRequestLoading, isResponseError, isSuccess } =
-    useSelector((state) => state.products);
+  const { activeProduct, isRequestLoading } = useSelector(
+    (state) => state.products
+  );
 
   console.log(isRequestLoading);
   const [description, setDescription] = useState("");
   const dispatch = useDispatch();
   const [data, setData] = useState();
+
   const handleProductChange = (event) => {
     const file = event.target.files[0];
     if (
@@ -41,12 +47,11 @@ function ProductModal() {
     if (activeProduct?._id) {
       setData(activeProduct);
       setDescription(activeProduct?.description);
-      // setProductCount(activeProduct?.productCount);
       setProductPreview(activeProduct?.fileUrl);
     }
-  }, [activeProduct?._id]);
+  }, [activeProduct]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const productName = form.productname?.value;
@@ -59,11 +64,31 @@ function ProductModal() {
 
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
-    if (product) {
-      formData.append("files", product);
-      dispatch(updateProduct({ id: activeProduct?._id, formData }));
-    } else {
-      dispatch(updateProduct({ id: activeProduct?._id, formData }));
+    setIsRequestLoading(true);
+    try {
+      if (product) {
+        const file = await getCompressedImage(product);
+        formData.append("files", file);
+        dispatch(updateProduct({ id: activeProduct?._id, formData }))
+          .unwrap()
+          .then((res) => {
+            dispatch(fetchProducts());
+            infoNotify("Product update successfull");
+          })
+          .catch((err) => errorNotify("Product update failed"));
+      } else {
+        dispatch(updateProduct({ id: activeProduct?._id, formData }))
+          .unwrap()
+          .then((res) => {
+            infoNotify("Product update successfull");
+            dispatch(fetchProducts());
+          })
+          .catch((err) => errorNotify("Product update failed"));
+      }
+      setIsRequestLoading(false);
+    } catch (error) {
+      errorNotify("Something went wrong");
+      setIsRequestLoading(false);
     }
   };
 

@@ -1,41 +1,13 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
-import { addCoache, fetchCoaches } from "../../features/coach/coachSlice";
+import { addCoache } from "../../features/coach/coachSlice";
 
-function AddCoach() {
-  const { isRequestLoading, isAddSuccess, isAddError, isUpdateSuccess } =
-    useSelector((state) => state.coaches);
-
+function AddCoach({ errorNotify, infoNotify }) {
   const dispatch = useDispatch();
-
-  const errorNotify = () =>
-    toast.error("Coach add failed!", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  const infoNotify = () =>
-    toast.info("Coach add successfull", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  const handleSubmit = (event) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const firstName = form.firstName.value;
@@ -46,21 +18,20 @@ function AddCoach() {
       lastName,
       email,
     };
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(data));
-    dispatch(addCoache(formData));
-    form.reset();
-  };
-
-  useEffect(() => {
-    if (isAddSuccess) {
-      dispatch(fetchCoaches());
-      infoNotify();
-    } else if (isAddError) {
-      errorNotify();
-      console.log(isAddSuccess, isUpdateSuccess);
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      dispatch(addCoache(formData));
+      form.reset();
+      setIsLoading(false);
+      infoNotify("Coach add successfull");
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+      errorNotify("Coach add failed");
     }
-  }, [isAddSuccess, dispatch, isAddError]);
+  };
 
   return (
     <section className="pb-10">
@@ -119,20 +90,7 @@ function AddCoach() {
           </form>
         </div>
       </div>
-      {isRequestLoading && <RequestLoader></RequestLoader>}
-
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      {isLoading && <RequestLoader></RequestLoader>}
     </section>
   );
 }

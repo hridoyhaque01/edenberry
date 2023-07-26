@@ -1,9 +1,35 @@
 import React from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import CoachTabs from "../../components/shared/tabs/CoachTabs";
 import CoachTable from "../../components/tables/CoachTable";
 import AddCoach from "./AddCoach";
 
 function Coach() {
+  const errorNotify = (message) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const infoNotify = (message) =>
+    toast.info(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <CoachTabs></CoachTabs>
@@ -14,7 +40,10 @@ function Coach() {
           aria-labelledby="tabs-with-underline-item-1"
           className="h-full"
         >
-          <CoachTable></CoachTable>
+          <CoachTable
+            infoNotify={infoNotify}
+            errorNotify={errorNotify}
+          ></CoachTable>
         </div>
 
         <div
@@ -23,9 +52,24 @@ function Coach() {
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-3"
         >
-          <AddCoach></AddCoach>
+          <AddCoach
+            errorNotify={errorNotify}
+            infoNotify={infoNotify}
+          ></AddCoach>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

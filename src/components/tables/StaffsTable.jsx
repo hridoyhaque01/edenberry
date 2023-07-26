@@ -1,75 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAdmin, updateStaff } from "../../features/admin/adminSlice";
+import { updateStaff } from "../../features/admin/adminSlice";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
+import StaffModal from "../modals/StaffModal";
 import RequestLoader from "../shared/loaders/RequestLoader";
 import SearchLoader from "../shared/loaders/SearchLoader";
 import { Pagination } from "../shared/pagination/Pagination";
 
-function StaffTable() {
+function StaffTable({ infoNotify, errorNotify }) {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
   const {
     isLoading,
-    isRequestLoading,
     isError,
     admins: staffs,
-    isUpdateSuccess,
-    isResponseError,
-    handleReset,
-    isAddSuccess,
+    activeStaff,
   } = useSelector((state) => state.admins);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-
-  const notify = (message) =>
-    toast.error(message, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  const infoNotify = (message) =>
-    toast.info(message, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  // const handleStatusChange = (value, id) => {
-  //   let status = "inactive";
-  //   if (value === "inactive") {
-  //     status = "active";
-  //   }
-  //   const formData = new FormData();
-  //   formData.append("data", JSON.stringify({ status }));
-  //   dispatch(updateAdmin({ token: userData?.token, formData, id }));
-  // };
-
-  useEffect(() => {
-    if (isUpdateSuccess) {
-      dispatch(fetchAdmin(userData?.token));
-      infoNotify("Staff Add Successfull");
-    } else if (isResponseError) {
-      notify("Staff update failed");
-      dispatch(fetchAdmin(userData?.token));
-    }
-  }, [isUpdateSuccess, dispatch, userData?.token]);
+  const [isResponseLoading, setResponseLoading] = useState(false);
 
   let content = null;
 
@@ -212,20 +163,14 @@ function StaffTable() {
     <div className="flex flex-col h-full">
       {content}
 
-      <div>{isRequestLoading && <RequestLoader></RequestLoader>}</div>
+      <div>{isResponseLoading && <RequestLoader></RequestLoader>}</div>
       <div>
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
+        <StaffModal
+          infoNotify={infoNotify}
+          errorNotify={errorNotify}
+          staff={activeStaff}
+          setLoading={setResponseLoading}
+        ></StaffModal>
       </div>
     </div>
   );

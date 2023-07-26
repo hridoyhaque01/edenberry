@@ -1,15 +1,11 @@
 import React, { memo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
 import SearchLoader from "../../components/shared/loaders/SearchLoader";
 
 function Courses() {
   const { isLoading, isError, courses } = useSelector((state) => state.courses);
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  // }, [dispatch]);
 
   let content = null;
 

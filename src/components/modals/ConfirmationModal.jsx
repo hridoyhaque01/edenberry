@@ -1,12 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 
-const ConfirmationModal = ({ id, status, dispatchFun }) => {
-  const dispatch = useDispatch();
-  const handleStatus = () => {
-    dispatch(dispatchFun({ id, status }));
-  };
-
+const ConfirmationModal = ({ handleStatus, status }) => {
   return (
     <section>
       <input type="checkbox" id="confirmationPopup" className="modal-toggle" />

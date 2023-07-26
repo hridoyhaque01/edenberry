@@ -1,48 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import {
   addProduct,
   fetchProducts,
-  resetState,
 } from "../../features/products/productSlice";
 import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
 
-function AddProduct() {
+function AddProduct({ errorNotify, infoNotify }) {
   const [product, setProduct] = useState(null);
   const productRef = useRef();
   const [description, setDescription] = useState("");
-  // const [productCount, setProductCount] = useState(1);
   const [productPreview, setProductPreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef();
   const dispatch = useDispatch();
-
-  const errorNotify = (message) =>
-    toast.error(message, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  const infoNotify = (message) =>
-    toast.info(message, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
 
   const handleChange = (event) => {
     const { value } = event.target;
@@ -50,10 +23,6 @@ function AddProduct() {
       setDescription(value);
     }
   };
-
-  const { isRequestLoading, isResponseError, isSuccess } = useSelector(
-    (state) => state.products
-  );
 
   const handleProductChange = (event) => {
     const file = event.target.files[0];
@@ -70,6 +39,19 @@ function AddProduct() {
     }
   };
 
+  const handleProductAdded = () => {
+    infoNotify("Add product successful");
+    dispatch(fetchProducts());
+    formRef.current.reset();
+    setProductPreview(null);
+    productRef.current.value = "";
+    setDescription("");
+  };
+
+  const handleProductFailed = () => {
+    errorNotify("Add product failed");
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
@@ -78,34 +60,24 @@ function AddProduct() {
     const data = {
       productName,
       description,
-      // productCount,
     };
+    setIsLoading(true);
     try {
       const file = await getCompressedImage(product);
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
       formData.append("files", file);
-      dispatch(addProduct(formData));
+      dispatch(addProduct(formData))
+        .unwrap()
+        .then(handleProductAdded)
+        .catch(handleProductFailed);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      handleProductFailed();
+      setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(fetchProducts());
-      dispatch(resetState());
-      formRef.current.reset();
-      setProductPreview(null);
-      productRef.current.value = "";
-      setDescription("");
-      infoNotify("Add product successfull");
-    } else if (isResponseError) {
-      errorNotify("Add product failed");
-      dispatch(fetchProducts());
-      dispatch(resetState());
-    }
-  }, [isSuccess, dispatch, isResponseError]);
 
   return (
     <section className="pb-10">
@@ -195,58 +167,18 @@ function AddProduct() {
           </div>
         </div>
 
-        {/* inventory */}
-        {/* <div className="flex flex-col gap-5">
-          <span className="text-xs font-semibold text-black font-mont capitalize">
-            Inventory
-          </span>
-          <div className="flex items-center px-8 py-2 gap-5 max-w-max border border-fadeSemi rounded-xl">
-            <button
-              type="button"
-              className="flex items-center justify-center text-fadeReg"
-              onClick={decrementProduct}
-            >
-              <span className="material-symbols-outlined">remove</span>
-            </button>
-            <span className="text-black font-mont font-semibold">
-              {productCount}
-            </span>
-            <button
-              type="button"
-              className="flex items-center justify-center text-secondaryColor"
-              onClick={incrementProduct}
-            >
-              <span className="material-symbols-outlined">add</span>
-            </button>
-          </div>
-        </div> */}
-        {/* buttons */}
-
         <div className="flex justify-end mt-8">
           <button
             type="submit"
             className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-            disabled={isRequestLoading}
+            disabled={isLoading}
           >
             Add Product
           </button>
         </div>
       </form>
-      {isRequestLoading && <RequestLoader></RequestLoader>}
-      <div>
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-      </div>
+      {isLoading && <RequestLoader></RequestLoader>}
+      <div></div>
     </section>
   );
 }

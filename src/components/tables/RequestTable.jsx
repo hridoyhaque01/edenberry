@@ -1,16 +1,21 @@
 import React, { Fragment, useState } from "react";
 // import { setUserData } from "../../features/users/usersSlice";
-import ConfirmationModal from "../modals/ConfirmationModal";
 import { Pagination } from "../shared/pagination/Pagination";
 
-function RequestTable({ data, dispatchFun, setReason }) {
+function RequestTable({
+  data,
+  dispatchFun,
+  setReason,
+  errorNotify,
+  infoNotify,
+  setData,
+  type,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = data?.slice(indexOfFirstRow, indexOfLastRow);
-
-  const [requestData, setRequestData] = useState("");
 
   return (
     <div className="flex flex-col h-full">
@@ -102,9 +107,10 @@ function RequestTable({ data, dispatchFun, setReason }) {
                             <label
                               // onClick={() => handleEdit(item)}
                               onClick={() =>
-                                setRequestData({
+                                setData({
                                   id: request?._id,
                                   status: "approve",
+                                  type,
                                 })
                               }
                               htmlFor="confirmationPopup"
@@ -120,9 +126,10 @@ function RequestTable({ data, dispatchFun, setReason }) {
                             <hr className="text-disabledColor opacity-10" />
                             <label
                               onClick={() =>
-                                setRequestData({
+                                setData({
                                   id: request?._id,
                                   status: "denied",
+                                  type,
                                 })
                               }
                               htmlFor="confirmationPopup"
@@ -152,13 +159,6 @@ function RequestTable({ data, dispatchFun, setReason }) {
           setRowsPerPage={setRowsPerPage}
           totalRows={data?.length}
         ></Pagination>
-      </div>
-      <div>
-        <ConfirmationModal
-          id={requestData?.id}
-          status={requestData?.status}
-          dispatchFun={dispatchFun}
-        ></ConfirmationModal>
       </div>
     </div>
   );

@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCoach } from "../../features/coach/coachSlice";
+import { fetchCoaches, updateCoach } from "../../features/coach/coachSlice";
+import getCompressedImage from "../../utils/getCompresedImage";
 import { user } from "../../utils/getImages";
 
-function CoachModal() {
+function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
   const [profile, setProfile] = useState(null);
   const profileRef = useRef();
   const [profilePreview, setProfilePreview] = useState(null);
   const [bio, setBio] = useState("");
   const bioRef = useRef();
   const categoryRef = useRef();
-  const { isLoading, isSuccess, isError } = useSelector(
-    (state) => state.coaches
-  );
+  const { isLoading } = useSelector((state) => state.coaches);
   const dispatch = useDispatch();
   const { coachData } = useSelector((state) => state.coaches);
 
@@ -44,7 +43,7 @@ function CoachModal() {
     setProfilePreview(null);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const form = event.target;
@@ -64,11 +63,24 @@ function CoachModal() {
       phone,
       dialpadNumber,
     };
+    setIsRequestLoading(true);
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
-    formData.append("files", profile);
-    dispatch(updateCoach({ formData, id: coachData?._id }));
-    // dispatch(addCoache({ token: userData?.token, formData }));
+
+    try {
+      if (profile) {
+        const file = await getCompressedImage(profile);
+        formData.append("files", file);
+      }
+      await dispatch(updateCoach({ formData, id: coachData?._id }));
+      dispatch(fetchCoaches()); // Assuming this action fetches the coaches after the update.
+      infoNotify("Coach update successful");
+    } catch (error) {
+      console.log(error);
+      errorNotify("Coach update failed");
+    } finally {
+      setIsRequestLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -79,7 +91,7 @@ function CoachModal() {
       categoryRef.current.value = coachData?.category || "";
       console.log(coachData?.category);
     }
-  }, [coachData?._id]);
+  }, [coachData]);
 
   return (
     <div
