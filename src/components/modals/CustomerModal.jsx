@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { updateUserData } from "../../features/users/usersSlice";
 import axios from "axios";
 import { useEffect } from "react";
-import { updateUser } from "../../features/users/usersSlice";
+import { fetchUsers, updateUser } from "../../features/users/usersSlice";
 import getCompresedImage from "../../utils/getCompresedImage";
 import { avater } from "../../utils/getImages";
 import { default as getFormattedDate } from "../../utils/getIsoDateString";
@@ -30,6 +30,7 @@ export default function CustomerModal({
     phoneNumber,
     shippingAddress1,
     shippingAddress2,
+    babysBirthday,
   } = userData || {};
 
   const { isLoading, isError, coaches } = useSelector((state) => state.coaches);
@@ -37,6 +38,7 @@ export default function CustomerModal({
   const [profile, setProfile] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [dueDate, setDueDate] = useState(null);
+  const [babyBirthDate, setBabyBirthDate] = useState(null);
   const [coachId, setCoachId] = useState("");
   const [customerNote, setCustomerNote] = useState("");
   const profileRef = useRef();
@@ -84,6 +86,7 @@ export default function CustomerModal({
       apparelSize,
       phoneNumber,
       pregnancyDueDate: dueDate,
+      babysBirthday: babyBirthDate,
     };
     const formData = new FormData();
     let file = null;
@@ -97,6 +100,7 @@ export default function CustomerModal({
       }
       formData.append("data", JSON.stringify(data));
       await dispatch(updateUser({ id: userData?._id, formData }));
+      await dispatch(fetchUsers());
       setIsReuestLoading(false);
       infoNotify("User update successfull");
     } catch (error) {
@@ -119,7 +123,6 @@ export default function CustomerModal({
         (item) => item?.userId === userData?._id
       );
       // Create a new FormData instance
-
       const formData = new FormData();
       formData.append("data", JSON.stringify({ coachId })); // Append data to the formData instance
       const bookingId = bookedData?._id;
@@ -142,6 +145,11 @@ export default function CustomerModal({
   const handleDate = (event) => {
     const value = event.target.value;
     setDueDate(value);
+  };
+
+  const handleBabyBirthday = (event) => {
+    const value = event.target.value;
+    setBabyBirthDate(value);
   };
 
   const handleChange = (event) => {
@@ -189,6 +197,7 @@ export default function CustomerModal({
       sizeRef.current.value = apparelSize || "";
       setCustomerNote(initialNote);
       setDueDate(pregnancyDueDate);
+      setBabyBirthDate(babysBirthday);
       setProfilePreview(fileUrl);
       fetchCoach(userData?._id);
     }
@@ -430,20 +439,36 @@ export default function CustomerModal({
 
                   {/* Due Date  */}
                   <div className="grid grid-cols-2 gap-6 items-center  ">
-                    <div className="flex flex-col gap-5">
-                      <span className="text-xs font-mont font-semibold text-black capitalize">
-                        Due Date
-                      </span>
-                      <input
-                        id="dueDate"
-                        type="date"
-                        name="dueDate"
-                        value={getFormattedDate(dueDate)}
-                        onChange={(e) => handleDate(e)}
-                        disabled={!pregnancyDueDate ? true : false}
-                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
-                      />
-                    </div>
+                    {dueDate ? (
+                      <div className="flex flex-col gap-5">
+                        <span className="text-xs font-mont font-semibold text-black capitalize">
+                          Due Date
+                        </span>
+                        <input
+                          id="dueDate"
+                          type="date"
+                          name="dueDate"
+                          value={getFormattedDate(dueDate)}
+                          onChange={(e) => handleDate(e)}
+                          className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black`}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-5">
+                        <span className="text-xs font-mont font-semibold text-black capitalize">
+                          Baby's Birthday
+                        </span>
+                        <input
+                          id="dueDate"
+                          type="date"
+                          name="dueDate"
+                          value={getFormattedDate(babyBirthDate)}
+                          onChange={(e) => handleBabyBirthday(e)}
+                          className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black`}
+                        />
+                      </div>
+                    )}
+
                     {/* apparelSize */}
                     <div className="flex flex-col gap-5">
                       <span className="text-xs font-mont font-semibold text-black capitalize">
@@ -511,13 +536,18 @@ export default function CustomerModal({
                         <select
                           className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
                           name="apparelSize"
-                          value={coachId}
+                          value={coachId || ""}
                           onChange={(e) => setCoachId(e.target.value)}
                         >
                           <option value="" disabled>
-                            Select midwife coach
+                            {!coachId
+                              ? "No midwife coach assigned"
+                              : "Select midwife coach"}
                           </option>
-                          {!isLoading && !isError && coaches?.length > 0
+                          {!isLoading &&
+                          !isError &&
+                          coaches?.length &&
+                          coachId > 0
                             ? coaches?.map((coach, i) => (
                                 <option value={coach?._id} key={i}>
                                   {coach?.firstName + " " + coach?.lastName}
@@ -539,9 +569,12 @@ export default function CustomerModal({
                     </div>
                     <div className="flex items-center justify-end mt-6">
                       <button
-                        className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
+                        className={`w-60 py-4  text-white text-sm font-mont font-semibold rounded-xl ${
+                          coachId ? "bg-secondaryColor" : "bg-secondaryLight"
+                        }`}
                         type="submit"
                         data-hs-overlay="#hs-scroll-inside-body-modal"
+                        disabled={coachId ? false : true}
                       >
                         Save & Update
                       </button>
