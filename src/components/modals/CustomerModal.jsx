@@ -119,23 +119,23 @@ export default function CustomerModal({
         (item) => item?.userId === userData?._id
       );
       // Create a new FormData instance
+
       const formData = new FormData();
       formData.append("data", JSON.stringify({ coachId })); // Append data to the formData instance
       const bookingId = bookedData?._id;
       console.log(userData?._id);
       await axios.patch(
         `${import.meta.env.VITE_API_BASE_URL}/bookings/edit/${bookingId}`,
-
         formData
       );
       // console.log(update);
 
       setIsReuestLoading(false);
-      infoNotify("Add coach successfully");
+      infoNotify("Assign coach successfull");
     } catch (error) {
       console.log(error);
       setIsReuestLoading(false);
-      errorNotify("Add coach failed");
+      errorNotify("Assign coach failed");
     }
   };
 
