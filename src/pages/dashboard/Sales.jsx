@@ -113,7 +113,7 @@ const Sales = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="#ffffff" />
-                <XAxis dataKey="timestamp">
+                <XAxis dataKey="timestamp" tick={{ angle: 0, dy: 10 }}>
                   <Label angle={-45} position="insideBottom" />
                 </XAxis>
                 <YAxis dataKey="price">
@@ -159,7 +159,7 @@ const Sales = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="#ffffff" />
-                <XAxis dataKey="timestamp">
+                <XAxis dataKey="timestamp" tick={{ angle: 0, dy: 10 }}>
                   <Label angle={-45} position="insideBottom" />
                 </XAxis>
                 <YAxis dataKey="count">
