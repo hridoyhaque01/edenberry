@@ -85,7 +85,6 @@ export const updateCourse = createAsyncThunk(
 export const updateLesson = createAsyncThunk(
   "course/updateLesson",
   async ({ id, formData }) => {
-    console.log(id, formData);
     try {
       const response = await axios.patch(
         `${import.meta.env.VITE_API_BASE_URL}/courses/editlesson/${id}`,

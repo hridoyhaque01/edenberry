@@ -17,7 +17,6 @@ export const addUser = createAsyncThunk("users/add", async (formData) => {
       `${import.meta.env.VITE_API_BASE_URL}/users/add`,
       formData
     );
-    console.log(response);
     return response?.data;
   } catch (error) {
     throw error;
@@ -32,7 +31,6 @@ export const updateUser = createAsyncThunk(
         `${import.meta.env.VITE_API_BASE_URL}/users/edit/${id}`,
         formData
       );
-      console.log(response);
       return response?.data;
     } catch (error) {
       throw error;
@@ -46,8 +44,8 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
       `${import.meta.env.VITE_API_BASE_URL}/users`
     );
     return response?.data;
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    throw error;
   }
 });
 

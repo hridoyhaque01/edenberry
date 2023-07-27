@@ -10,8 +10,6 @@ export default function SideNav() {
 
   const [services, coach, products, staffs, request, additional] =
     permissions || [];
-  console.log(permissions);
-  console.log(services, coach, products, staffs, request, additional);
 
   return (
     <header className="bg-primaryColor shrink-0  w-52 h-[calc(100%-90px)] relative overflow-auto text-white font-semibold pt-8">

@@ -31,7 +31,6 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
 
   function checkPasswordStrength(event) {
     const password = event.target.value;
-    console.log(password);
     const hasUppercase = /[A-Z]/.test(password);
     const hasLowercase = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);

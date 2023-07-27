@@ -89,7 +89,6 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
       bioRef.current.value = coachData?.bio || "";
       setBio(coachData?.bio || "");
       categoryRef.current.value = coachData?.category || "";
-      console.log(coachData?.category);
     }
   }, [coachData]);
 

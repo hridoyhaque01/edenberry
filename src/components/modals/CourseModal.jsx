@@ -16,8 +16,6 @@ function CourseModal({
 }) {
   const [lessondData, setLessonData] = useState({});
 
-  console.log(lessonIndex);
-
   const courseId = courseData?._id;
   const lessonModalRef = useRef();
   const thumbnailRef = useRef();

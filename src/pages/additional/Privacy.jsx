@@ -50,8 +50,6 @@ function Privacy() {
     }
   }, [isResponseError, isSuccess]);
 
-  console.log(isSuccess);
-
   useEffect(() => {
     if (showLoader) {
       const timeout = setTimeout(() => {
@@ -71,7 +69,6 @@ function Privacy() {
   } else if (!isLoading && !isError && !privacyPolicies?._id) {
     content = <div className="p-3">No data found!</div>;
   } else if (!isLoading && !isError && privacyPolicies?._id) {
-    console.log(privacyPolicies);
     if (showLoader) {
       content = <SearchLoader />;
     } else {

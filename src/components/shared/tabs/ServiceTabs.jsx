@@ -6,8 +6,6 @@ function ServiceTabs() {
   const dispatch = useDispatch();
   const { activeTab } = useSelector((state) => state.services);
 
-  console.log(activeTab);
-
   const handleTab = (tabValue) => {
     dispatch(changeTab(tabValue));
   };

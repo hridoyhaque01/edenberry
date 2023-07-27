@@ -7,7 +7,6 @@ const TopNav = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    console.log("hello");
     dispatch(userLoggedOut());
   };
 

@@ -21,8 +21,6 @@ export const Pagination = ({
     }
   };
 
-  // console.log(totalRows);
-
   const handleItemsPerPage = (value) => {
     setCurrentPage(1);
     setRowsPerPage(value);

@@ -24,7 +24,6 @@ function ResourceForm() {
     _id: id,
   } = data || {};
 
-  console.log(data);
   const thumbnailRef = useRef();
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);

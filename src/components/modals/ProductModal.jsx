@@ -15,8 +15,6 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
   const { activeProduct, isRequestLoading } = useSelector(
     (state) => state.products
   );
-
-  console.log(isRequestLoading);
   const [description, setDescription] = useState("");
   const dispatch = useDispatch();
   const [data, setData] = useState();

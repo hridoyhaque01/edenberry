@@ -29,7 +29,6 @@ export const fetchAdmin = createAsyncThunk("auth/fetchAdmin", async (token) => {
 export const addAdmin = createAsyncThunk(
   "auth/addAdmin",
   async ({ token, formData }) => {
-    console.log(formData, token);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/admin/add`,

@@ -22,7 +22,6 @@ const Sales = () => {
 
   useEffect(() => {
     if (!isLoading && !isError && chartData?.length > 0) {
-      console.log(chartData);
       setData(chartData);
     }
   }, [chartData?.length > 0]);

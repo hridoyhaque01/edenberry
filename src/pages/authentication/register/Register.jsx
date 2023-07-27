@@ -29,7 +29,6 @@ const Register = () => {
 
   function checkPasswordStrength(event) {
     const password = event.target.value;
-    console.log(password);
     const hasUppercase = /[A-Z]/.test(password);
     const hasLowercase = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);
@@ -78,7 +77,6 @@ const Register = () => {
         ],
         timestamp,
       };
-      console.log(data);
       dispatch(register(data));
     }
   };

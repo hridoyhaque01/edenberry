@@ -21,9 +21,6 @@ import {
 function Request() {
   const [isRequestLoading, setIsRequestLoading] = useState(false);
   const [data, setData] = useState({});
-
-  console.log(data);
-
   const errorNotify = (message) =>
     toast.error(message, {
       position: "top-right",

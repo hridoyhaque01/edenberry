@@ -126,12 +126,10 @@ export default function CustomerModal({
       const formData = new FormData();
       formData.append("data", JSON.stringify({ coachId })); // Append data to the formData instance
       const bookingId = bookedData?._id;
-      console.log(userData?._id);
       await axios.patch(
         `${import.meta.env.VITE_API_BASE_URL}/bookings/edit/${bookingId}`,
         formData
       );
-      // console.log(update);
 
       setIsReuestLoading(false);
       infoNotify("Assign coach successfull");
@@ -158,8 +156,6 @@ export default function CustomerModal({
       setCustomerNote(value);
     }
   };
-
-  // console.log(coachId);
 
   const fetchCoach = async (id) => {
     try {
@@ -202,8 +198,6 @@ export default function CustomerModal({
       fetchCoach(userData?._id);
     }
   }, [userData?._id]);
-
-  console.log(coachId);
 
   return (
     <>
