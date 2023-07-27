@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CustomerModal from "../../components/modals/CustomerModal";
 import { Pagination } from "../../components/shared/pagination/Pagination";
-import { fetchUsers, setUser } from "../../features/users/usersSlice";
+import { setUser } from "../../features/users/usersSlice";
 import RequestLoader from "../shared/loaders/RequestLoader";
 import SearchLoader from "../shared/loaders/SearchLoader";
 
@@ -15,17 +15,16 @@ function CustomerTable() {
     isError,
     users,
     userData: user,
-    isRequestLoading,
-    isResponseError,
-    isSuccess,
   } = useSelector((state) => state.users);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
-  const errorNotify = () =>
-    toast.error("User update failed!", {
+  const [isRequestLoading, setIsReuestLoading] = useState(false);
+
+  const errorNotify = (message) =>
+    toast.error(message, {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -36,8 +35,8 @@ function CustomerTable() {
       theme: "light",
     });
 
-  const infoNotify = () =>
-    toast.info("User update successfull", {
+  const infoNotify = (message) =>
+    toast.info(message, {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -48,14 +47,14 @@ function CustomerTable() {
       theme: "light",
     });
 
-  useEffect(() => {
-    if (isResponseError) {
-      errorNotify();
-    } else if (isSuccess) {
-      infoNotify();
-      dispatch(fetchUsers());
-    }
-  }, [isRequestLoading, isSuccess]);
+  // useEffect(() => {
+  //   if (isResponseError) {
+  //     errorNotify();
+  //   } else if (isSuccess) {
+  //     infoNotify();
+  //     dispatch(fetchUsers());
+  //   }
+  // }, [isRequestLoading, isSuccess]);
 
   let content = null;
 
@@ -211,7 +210,12 @@ function CustomerTable() {
         />
       </div>
       <div>
-        <CustomerModal userData={user}></CustomerModal>
+        <CustomerModal
+          userData={user}
+          errorNotify={errorNotify}
+          infoNotify={infoNotify}
+          setIsReuestLoading={setIsReuestLoading}
+        ></CustomerModal>
       </div>
     </div>
   );

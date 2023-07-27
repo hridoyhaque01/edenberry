@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { updateUserData } from "../../features/users/usersSlice";
+import axios from "axios";
 import { useEffect } from "react";
 import { updateUser } from "../../features/users/usersSlice";
 import getCompresedImage from "../../utils/getCompresedImage";
@@ -8,7 +9,12 @@ import { avater } from "../../utils/getImages";
 import { default as getFormattedDate } from "../../utils/getIsoDateString";
 
 // eslint-disable-next-line react/prop-types
-export default function CustomerModal({ userData }) {
+export default function CustomerModal({
+  userData,
+  errorNotify,
+  infoNotify,
+  setIsReuestLoading,
+}) {
   const {
     babysName,
     customerNote: initialNote,
@@ -26,10 +32,12 @@ export default function CustomerModal({ userData }) {
     shippingAddress2,
   } = userData || {};
 
+  const { isLoading, isError, coaches } = useSelector((state) => state.coaches);
+
   const [profile, setProfile] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [dueDate, setDueDate] = useState(null);
-  const [coachName, setCoachName] = useState("");
+  const [coachId, setCoachId] = useState("");
   const [customerNote, setCustomerNote] = useState("");
   const profileRef = useRef();
   const noteRef = useRef();
@@ -79,16 +87,56 @@ export default function CustomerModal({ userData }) {
     };
     const formData = new FormData();
     let file = null;
+
+    setIsReuestLoading(true);
+
     try {
       if (profile) {
         file = await getCompresedImage(profile);
         formData.append(`files`, file);
       }
+      formData.append("data", JSON.stringify(data));
+      await dispatch(updateUser({ id: userData?._id, formData }));
+      setIsReuestLoading(false);
+      infoNotify("User update successfull");
     } catch (error) {
       console.log(error);
+      setIsReuestLoading(false);
+      errorNotify("User update successfull");
     }
-    formData.append("data", JSON.stringify(data));
-    dispatch(updateUser({ id: userData?._id, formData }));
+  };
+
+  const handleAssignedMidwife = async (event) => {
+    event.preventDefault();
+
+    setIsReuestLoading(true);
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/bookings`
+      );
+      const bookings = await res?.data;
+      const bookedData = bookings?.find(
+        (item) => item?.userId === userData?._id
+      );
+      // Create a new FormData instance
+      const formData = new FormData();
+      formData.append("data", JSON.stringify({ coachId })); // Append data to the formData instance
+      const bookingId = bookedData?._id;
+      console.log(userData?._id);
+      await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/bookings/edit/${bookingId}`,
+
+        formData
+      );
+      // console.log(update);
+
+      setIsReuestLoading(false);
+      infoNotify("Add coach successfully");
+    } catch (error) {
+      console.log(error);
+      setIsReuestLoading(false);
+      errorNotify("Add coach failed");
+    }
   };
 
   const handleDate = (event) => {
@@ -103,6 +151,8 @@ export default function CustomerModal({ userData }) {
     }
   };
 
+  // console.log(coachId);
+
   const fetchCoach = async (id) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/bookings`, {
@@ -110,10 +160,7 @@ export default function CustomerModal({ userData }) {
       });
       const data = await res.json();
       if (data?.length > 0) {
-        console.log(id);
         const bookedData = data?.find((item) => item?.userId === id);
-        console.log(bookedData?._id);
-        console.log(bookedData);
         if (bookedData?._id) {
           const result = await fetch(
             `${import.meta.env.VITE_API_BASE_URL}/coach/find/${
@@ -124,12 +171,12 @@ export default function CustomerModal({ userData }) {
             }
           );
           const coachData = await result.json();
-          setCoachName(coachData?.firstName + " " + coachData?.lastName);
+          setCoachId(coachData?._id);
         } else {
-          setCoachName("");
+          setCoachId("");
         }
       } else {
-        setCoachName("");
+        setCoachId("");
       }
     } catch (error) {
       console.log(error);
@@ -146,6 +193,8 @@ export default function CustomerModal({ userData }) {
       fetchCoach(userData?._id);
     }
   }, [userData?._id]);
+
+  console.log(coachId);
 
   return (
     <>
@@ -424,6 +473,7 @@ export default function CustomerModal({ userData }) {
                     </div>
                     {/* apparelSize */}
                   </div>
+                  {/*                   
                   <div className="flex flex-col gap-5">
                     <span className="text-xs font-mont font-semibold text-black capitalize">
                       Assigned Midwife
@@ -437,7 +487,7 @@ export default function CustomerModal({ userData }) {
                         className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
                       />
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="flex items-center justify-end mt-6">
                     <button
@@ -447,6 +497,55 @@ export default function CustomerModal({ userData }) {
                     >
                       Save & Update
                     </button>
+                  </div>
+                </form>
+
+                <form action="" onSubmit={handleAssignedMidwife}>
+                  <div className="flex flex-col gap-5">
+                    {/* apparelSize */}
+                    <div className="flex flex-col gap-5">
+                      <span className="text-xs font-mont font-semibold text-black capitalize">
+                        Assigned Midwife
+                      </span>
+                      <div className="relative">
+                        <select
+                          className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
+                          name="apparelSize"
+                          value={coachId}
+                          onChange={(e) => setCoachId(e.target.value)}
+                        >
+                          <option value="" disabled>
+                            Select midwife coach
+                          </option>
+                          {!isLoading && !isError && coaches?.length > 0
+                            ? coaches?.map((coach, i) => (
+                                <option value={coach?._id} key={i}>
+                                  {coach?.firstName + " " + coach?.lastName}
+                                  {/* {coachId + " " + coach?._id} */}
+                                </option>
+                              ))
+                            : ""}
+                          {/*                           
+                          <option value="Medium">Medium</option>
+                          <option value="Large">Large</option>
+                          <option value="XL">XL</option> */}
+                        </select>
+                        <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
+                          <span className="material-symbols-outlined">
+                            expand_more
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end mt-6">
+                      <button
+                        className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
+                        type="submit"
+                        data-hs-overlay="#hs-scroll-inside-body-modal"
+                      >
+                        Save & Update
+                      </button>
+                    </div>
                   </div>
                 </form>
 
