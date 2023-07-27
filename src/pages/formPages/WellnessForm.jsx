@@ -174,12 +174,12 @@ function WellnessForm() {
           {/* Title */}
           <div className="flex flex-col gap-5">
             <span className="text-xs font-semibold text-black font-mont capitalize">
-              Wellness name
+              Title
             </span>
             <input
               className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
               name="title"
-              placeholder="Enter Wellness name"
+              placeholder="Enter wellness title"
               required
               defaultValue={title}
             />

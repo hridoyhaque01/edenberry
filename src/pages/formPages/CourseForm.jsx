@@ -1,17 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CourseModal from "../../components/modals/CourseModal";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import FormTitle from "../../components/shared/titles/FormTitle";
-import {
-  addCourse,
-  addLocalLessons,
-  fetchCourses,
-  updateCourse,
-} from "../../features/services/courseSlice";
+import { addCourse, updateCourse } from "../../features/services/courseSlice";
+import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
 
 function CourseForm() {
@@ -19,33 +15,24 @@ function CourseForm() {
   const { data, type } = state || {};
   const {
     title,
-    lessons: stateLessons,
-    description,
+    description: initialDescription,
     fileUrl,
     _id: id,
   } = data || {};
 
-  const {
-    isLoading,
-    isSuccess,
-    courseId,
-    lessons: initialLesson,
-    isLessonAddSuccess,
-    isResponseError,
-    isRequestLoading,
-    isLessonEditSuccess,
-  } = useSelector((state) => state.courses);
-
   const dispatch = useDispatch();
-  const [lessons, setLessons] = useState([]);
+  // const [lessons, setLessons] = useState([]);
   const thumbnailRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const [lesson, setLesson] = useState({});
+  const [description, setDescription] = useState(initialDescription);
+  const [lessonIndex, setLessonIndex] = useState();
   const [lessonType, setLessonType] = useState("add");
+  const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
   const [navigateData, setNavigateData] = useState({});
   const navigate = useNavigate();
+  const [isSuccess, setSuccess] = useState(false);
 
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
@@ -86,7 +73,14 @@ function CourseForm() {
       theme: "light",
     });
 
-  const handleSubmit = (event) => {
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 1200) {
+      setDescription(value);
+    }
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const title = form.title.value;
@@ -96,51 +90,115 @@ function CourseForm() {
       title,
       description,
     };
-    setNavigateData({ title, description, fileUrl: thumbnailPreview, _id: id });
     formData.append("data", JSON.stringify(data));
-    if (type === "edit") {
-      if (!thumbnail) {
-        dispatch(updateCourse({ id, formData }));
+    setIsLoading(true);
+    setSuccess(false);
+
+    try {
+      if (type === "edit") {
+        if (!thumbnail) {
+          await dispatch(updateCourse({ id, formData }));
+          await setNavigateData((prev) => ({
+            ...prev,
+            title,
+            description,
+            _id: id,
+          }));
+        } else {
+          const file = await getCompressedImage(thumbnail);
+          formData.append("files", file);
+          await dispatch(updateCourse({ id, formData }));
+          await setNavigateData((prev) => ({
+            ...prev,
+            title,
+            description,
+            _id: id,
+            fileUrl: thumbnailPreview,
+          }));
+        }
+
+        infoNotify("Course Update successful");
       } else {
-        formData.append("files", thumbnail);
-        dispatch(updateCourse({ id, formData }));
+        const file = await getCompressedImage(thumbnail);
+        formData.append("files", file);
+        await dispatch(addCourse(formData))
+          .unwrap()
+          .then((res) => {
+            setNavigateData((prev) => ({
+              ...prev,
+              title,
+              description,
+              fileUrl: thumbnailPreview,
+              _id: res?.insertedId,
+              lessons: [],
+            }));
+            setIsDisabled(true);
+          })
+          .catch((err) => console.log(err));
+        infoNotify("Course Add successful");
       }
-    } else {
-      formData.append("files", thumbnail);
-      dispatch(addCourse(formData));
+      setIsLoading(false);
+      setSuccess(true);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+      setSuccess(false);
+
+      if (type === "edit") {
+        errorNotify("Course update failed");
+      } else {
+        errorNotify("Course add failed");
+      }
     }
   };
 
-  const handleLesson = (type, data) => {
-    setLesson(data);
+  const handleLesson = (type, index) => {
     setLessonType(type);
+    setLessonIndex(index);
   };
 
   useEffect(() => {
-    if (isLessonAddSuccess || isLessonEditSuccess) {
-      setLessons(initialLesson);
+    if (type === "edit") {
+      setNavigateData(data);
     }
-  }, [isLessonAddSuccess, initialLesson]);
+  }, []);
 
   useEffect(() => {
-    if (type === "edit" && stateLessons?.length > 0) {
-      dispatch(addLocalLessons(stateLessons));
-      console.log(stateLessons);
-      setLessons(stateLessons);
+    if (isSuccess && type === "edit") {
+      navigate("/editCourse", {
+        state: {
+          type: "edit",
+          data: navigateData,
+        },
+      });
     }
-  }, [type, dispatch, stateLessons]);
+  }, [isSuccess, type, navigateData, navigate]);
 
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(fetchCourses());
-      if (type !== "edit") {
-        setIsDisabled(true);
-      }
-      infoNotify(`course ${type === "edit" ? "update" : "add"} successfull`);
-    } else if (isResponseError) {
-      errorNotify("Something went wrong!");
-    }
-  }, [isSuccess, dispatch, type, isResponseError]);
+  // useEffect(() => {
+  //   if (isLessonAddSuccess || isLessonEditSuccess) {
+  //     setLessons(initialLesson);
+  //   }
+  // }, [isLessonAddSuccess, initialLesson]);
+
+  // useEffect(() => {
+  //   if (type === "edit" && stateLessons?.length > 0) {
+  //     dispatch(addLocalLessons(stateLessons));
+  //     console.log(stateLessons);
+  //     setLessons(stateLessons);
+  //   }
+  // }, [type, dispatch, stateLessons]);
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     dispatch(fetchCourses());
+  //     if (type !== "edit") {
+  //       setIsDisabled(true);
+  //     }
+  //     infoNotify(`course ${type === "edit" ? "update" : "add"} successfull`);
+  //   } else if (isResponseError) {
+  //     errorNotify("Something went wrong!");
+  //   }
+  // }, [isSuccess, dispatch, type, isResponseError]);
 
   return (
     <>
@@ -158,13 +216,13 @@ function CourseForm() {
           >
             <div className="flex flex-col gap-5">
               <span className="text-xs font-mont font-semibold text-black capitalize">
-                Course Name
+                Title
               </span>
               <input
                 required
                 id="courseName"
                 type="text"
-                placeholder="Enter course name"
+                placeholder="Enter course title"
                 name="title"
                 className={`w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black `}
                 defaultValue={title}
@@ -225,15 +283,20 @@ function CourseForm() {
                 Description
               </span>
               <div>
-                <textarea
-                  required
-                  id="description"
-                  name="description"
-                  className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md resize-none h-32 text-sm placeholder:text-fadeSemi text-black"
-                  placeholder="Enter course description"
-                  defaultValue={description}
-                ></textarea>
-                <p className="text-darkMid text-xs text-right">(45/12000)</p>
+                <div>
+                  <textarea
+                    required
+                    id="description"
+                    name="description"
+                    className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md resize-none h-32 text-sm placeholder:text-fadeSemi text-black"
+                    placeholder="Enter course description"
+                    value={description}
+                    onChange={(e) => handleChange(e)}
+                  ></textarea>
+                  <p className="text-darkMid text-xs text-right mt-1">
+                    ({description?.length || 0}/1200)
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -249,7 +312,7 @@ function CourseForm() {
               </button>
             </div>
 
-            {lessons?.map((lesson, index) => (
+            {navigateData?.lessons?.map((lesson, index) => (
               <div className="flex flex-col gap-5" key={index}>
                 <span className="text-xs font-mont font-semibold text-black">
                   Lessons
@@ -268,7 +331,7 @@ function CourseForm() {
                         {lesson?.title}
                       </h4>
                       <p className="text-xs font-mont font-semibold mt-2">
-                        Lesson: <span>01</span> | <span>34min</span>{" "}
+                        Lesson: <span>{index + 1}</span>
                       </p>
                     </div>
                   </div>
@@ -276,7 +339,7 @@ function CourseForm() {
                     <button
                       type="button"
                       data-hs-overlay="#course-modal"
-                      onClick={() => handleLesson("edit", lesson)}
+                      onClick={() => handleLesson("edit", lesson?.id)}
                     >
                       <svg
                         width="24"
@@ -310,13 +373,13 @@ function CourseForm() {
               </div>
             ))}
 
-            {(id || courseId) && (
+            {navigateData?._id && (
               <div>
                 <button
                   type="button"
                   className="flex items-center gap-1 text-primaryColor"
                   data-hs-overlay="#course-modal"
-                  onClick={() => handleLesson("add", {})}
+                  onClick={() => handleLesson("add", null)}
                 >
                   <span className="material-symbols-outlined">add</span>
                   <span className="text-sm font-mont font-semibold">
@@ -329,11 +392,16 @@ function CourseForm() {
         </div>
       </section>
       <CourseModal
-        id={id || courseId}
         type={lessonType}
-        data={lesson}
+        lessonIndex={lessonIndex}
+        courseData={navigateData}
+        setNavigateData={setNavigateData}
+        setIsLoading={setIsLoading}
+        setSuccess={setSuccess}
+        errorNotify={errorNotify}
+        infoNotify={infoNotify}
       ></CourseModal>
-      {isRequestLoading && <RequestLoader></RequestLoader>}
+      {isLoading && <RequestLoader></RequestLoader>}
       <div>
         <ToastContainer
           position="top-right"

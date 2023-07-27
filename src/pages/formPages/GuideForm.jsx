@@ -112,8 +112,6 @@ function GuideForm() {
       console.log(error);
     }
 
-    console.log(file);
-
     if (type === "edit") {
       if (!file) {
         dispatch(updateGuide({ id, formData }));
