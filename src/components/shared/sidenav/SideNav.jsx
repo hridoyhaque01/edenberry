@@ -150,7 +150,7 @@ export default function SideNav() {
                   />
                 </svg>
               </span>
-              <span>Staffs</span>
+              <span>Staff</span>
             </NavLink>
           )}
 

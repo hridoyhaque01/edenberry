@@ -110,6 +110,37 @@ export default function CustomerModal({
     }
   };
 
+  const handleBilling = async (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const shippingAddress1 = form.shippingAddress1.value;
+    const shippingAddress2 = form.shippingAddress2.value;
+    const billingCity = form.billingCity.value;
+    const billingZip = form.billingZip.value;
+    const country = form.country.value;
+    const data = {
+      shippingAddress1,
+      shippingAddress2,
+      billingCity,
+      billingZip,
+      country,
+    };
+    const formData = new FormData();
+    setIsReuestLoading(true);
+
+    try {
+      formData.append("data", JSON.stringify(data));
+      await dispatch(updateUser({ id: userData?._id, formData }));
+      await dispatch(fetchUsers());
+      setIsReuestLoading(false);
+      infoNotify("Update shipping  successfull");
+    } catch (error) {
+      console.log(error);
+      setIsReuestLoading(false);
+      errorNotify("update shipping failed");
+    }
+  };
+
   const handleAssignedMidwife = async (event) => {
     event.preventDefault();
 
@@ -576,7 +607,7 @@ export default function CustomerModal({
                   </div>
                 </form>
 
-                <form>
+                <form onSubmit={handleBilling}>
                   <div className="flex flex-col gap-4">
                     <h2 className="text-xl font-semibold text-black ">
                       SHIPPING ADDRESS
@@ -589,9 +620,8 @@ export default function CustomerModal({
                       <div>
                         <input
                           className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md outline-none"
-                          name="shippingStreetOne"
+                          name="shippingAddress1"
                           placeholder="Street name..."
-                          readOnly
                           defaultValue={shippingAddress1}
                         />
                       </div>
@@ -604,9 +634,8 @@ export default function CustomerModal({
                       <div>
                         <input
                           className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md outline-none"
-                          name="shippingStreetTwo"
+                          name="shippingAddress2"
                           placeholder="Street name..."
-                          readOnly
                           defaultValue={shippingAddress2}
                         />
                       </div>
@@ -620,9 +649,8 @@ export default function CustomerModal({
                         <div>
                           <input
                             className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md outline-none"
-                            name="shippingStreetTwo"
+                            name="billingCity"
                             placeholder="City name..."
-                            readOnly
                             defaultValue={billingCity}
                           />
                         </div>
@@ -634,9 +662,8 @@ export default function CustomerModal({
                         <div>
                           <input
                             className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md outline-none"
-                            name="shippingStreetTwo"
+                            name="billingZip"
                             placeholder="Zip code..."
-                            readOnly
                             defaultValue={billingZip}
                           />
                         </div>
@@ -650,12 +677,22 @@ export default function CustomerModal({
                       <div>
                         <input
                           className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md outline-none"
-                          name="shippingStreetTwo"
+                          name="country"
                           placeholder="Country name..."
                           defaultValue="USA"
-                          readOnly
                         />
                       </div>
+                    </div>
+
+                    {/* submit button  */}
+                    <div className="flex items-center justify-end mt-6">
+                      <button
+                        className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
+                        type="submit"
+                        data-hs-overlay="#hs-scroll-inside-body-modal"
+                      >
+                        Save & Update
+                      </button>
                     </div>
                   </div>
                 </form>
