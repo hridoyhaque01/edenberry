@@ -284,7 +284,7 @@ function ResourceForm() {
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
               disabled={isRequestLoading}
             >
-              {type === "edit" ? "Add Resource" : "Update Resource"}
+              {type === "edit" ? "Update Resource" : "Add Resource"}
             </button>
           </div>
         </form>
