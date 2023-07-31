@@ -8,6 +8,27 @@ const ForgetPasword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { email } = useParams();
   const navigate = useNavigate();
+  const [isStrong, setIsStrong] = useState(false);
+
+  function checkPasswordStrength(event) {
+    const password = event.target.value;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasLength = password.length >= 8;
+    const hasSpecialSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    if (
+      hasUppercase &&
+      hasLowercase &&
+      hasNumber &&
+      hasLength &&
+      hasSpecialSymbol
+    ) {
+      setIsStrong(true);
+    } else {
+      setIsStrong(false);
+    }
+  }
 
   const errorNotify = (message) =>
     toast.error(message, {
@@ -103,7 +124,14 @@ const ForgetPasword = () => {
                   required
                   className="input bg-transparent border border-fadeReg focus:outline-none w-full p-3 rounded-md"
                   autoComplete="off"
+                  onChange={(e) => checkPasswordStrength(e)}
                 />
+                {!isStrong && (
+                  <p className="text-[10px]">
+                    must contain more than 7 character with uppercase,
+                    lowercase, symble and number
+                  </p>
+                )}
               </div>
               <div>
                 <p className="text-sm text-pureBlackColor font-bold mb-2">
@@ -122,6 +150,7 @@ const ForgetPasword = () => {
               <button
                 className="mt-4 mb-6 py-3.5 rounded-full bg-primaryColor text-white border-0 font-bold"
                 type="submit"
+                disabled={isLoading || !isStrong}
               >
                 Reset Password
               </button>
