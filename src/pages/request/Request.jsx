@@ -33,6 +33,17 @@ function Request() {
       theme: "light",
     });
 
+  const testData = [
+    {
+      id: 1,
+      firstName: "best",
+    },
+    {
+      id: 2,
+      firstName: "best",
+    },
+  ];
+
   const infoNotify = (message) =>
     toast.info(message, {
       position: "top-right",
@@ -96,13 +107,13 @@ function Request() {
     midwiveContent = (
       <div className="text-errorColor">Something went wrong!</div>
     );
-  } else if (!isLoading && !isError && midwives?.length === 0) {
+  } else if (!isLoading && !isError && testData?.length === 0) {
     midwiveContent = <div>No data found!</div>;
-  } else if (!isLoading && !isError && midwives?.length > 0) {
+  } else if (!isLoading && !isError && testData?.length > 0) {
     midwiveContent = (
       <RequestTable
         dispatchFun={updateMidwive}
-        data={midwives}
+        data={testData}
         setReason={setReason}
         errorNotify={errorNotify}
         infoNotify={infoNotify}

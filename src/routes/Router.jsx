@@ -90,7 +90,7 @@ export const routes = createBrowserRouter([
     ],
   },
   {
-    path: "/register",
+    path: "/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
     element: <Register></Register>,
   },
   {
@@ -102,7 +102,7 @@ export const routes = createBrowserRouter([
     element: <ForgetPasword></ForgetPasword>,
   },
   {
-    path: "/forgot-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/:email",
+    path: "/forgot-password/64c794d78df3e8d416e5ba9f/:email",
     element: <ResetPasword></ResetPasword>,
   },
 
