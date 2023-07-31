@@ -22,7 +22,9 @@ export const routes = createBrowserRouter([
     path: "/",
     element: (
       <PrivateRouter>
+        {/* <RouteChange> */}
         <MainLayout></MainLayout>
+        {/* </RouteChange> */}
       </PrivateRouter>
     ),
     children: [

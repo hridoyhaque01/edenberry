@@ -223,7 +223,7 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
                       checked={permissions?.includes("dashboard")}
                     />
                     <label className="cursor-pointer" htmlFor="editdashboard">
-                      dashboard
+                      Dashboard
                     </label>
                   </div>
                   <div className="flex items-center gap-2 text-blackHigh">
@@ -301,7 +301,7 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
                       checked={permissions?.includes("additional")}
                     />
                     <label className="cursor-pointer" htmlFor="editadditional">
-                      additional
+                      Additional
                     </label>
                   </div>
                 </div>

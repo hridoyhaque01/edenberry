@@ -3,11 +3,13 @@ import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CourseDeletePopup from "../../components/modals/CourseDeletePopup";
 import CourseModal from "../../components/modals/CourseModal";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import FormTitle from "../../components/shared/titles/FormTitle";
 import {
   addCourse,
+  deleteCourse,
   fetchCourses,
   updateCourse,
 } from "../../features/services/courseSlice";
@@ -179,6 +181,23 @@ function CourseForm() {
     }
   }, [isSuccess, type, navigateData, navigate]);
 
+  const handleDeleteCourse = async () => {
+    setIsLoading(true);
+
+    dispatch(deleteCourse(id))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchCourses());
+        infoNotify("Delete course successfull");
+        navigate("/services");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        errorNotify("Delete course failed");
+        setIsLoading(false);
+      });
+  };
+
   // useEffect(() => {
   //   if (isLessonAddSuccess || isLessonEditSuccess) {
   //     setLessons(initialLesson);
@@ -307,7 +326,16 @@ function CourseForm() {
 
             {/* Lesson */}
 
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-between">
+              {type === "edit" && (
+                <label
+                  htmlFor="courseDeletePopup"
+                  className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+                >
+                  Delete Course
+                </label>
+              )}
+              <div></div>
               <button
                 className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                 type="submit"
@@ -420,6 +448,14 @@ function CourseForm() {
           pauseOnHover
           theme="light"
         />
+
+        <div>
+          <CourseDeletePopup
+            handleStatus={handleDeleteCourse}
+            status="Delete"
+            modalClose=""
+          ></CourseDeletePopup>
+        </div>
       </div>
     </>
   );

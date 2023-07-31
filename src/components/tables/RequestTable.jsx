@@ -96,7 +96,7 @@ function RequestTable({
                           className={`rounded-lg px-2 py-2 w-24 focus:outline-none active:border-none bg-secondaryLight
                           text-redColor cursor-pointer select-none`}
                         >
-                          pending
+                          open
                           <i className="fa-solid fa-angle-down text-sm"></i>
                         </label>
                         <ul

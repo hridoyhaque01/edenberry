@@ -1,8 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addLesson, updateLesson } from "../../features/services/courseSlice";
+import {
+  addLesson,
+  deleteLesson,
+  fetchCourses,
+  updateLesson,
+} from "../../features/services/courseSlice";
 import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
+import ConfirmationModal from "./ConfirmationModal";
 
 function CourseModal({
   type,
@@ -15,6 +21,8 @@ function CourseModal({
   infoNotify,
 }) {
   const [lessondData, setLessonData] = useState({});
+
+  console.log(courseData);
 
   const courseId = courseData?._id;
   const lessonModalRef = useRef();
@@ -58,7 +66,7 @@ function CourseModal({
     const videoUrl = form.videoUrl.value;
     const formData = new FormData();
     const data = {
-      id: lessonIndex?.id || courseData?.lessons?.length + 1,
+      id: lessonIndex || courseData?.lessons?.length + 1,
       title,
       description,
       videoUrl,
@@ -133,6 +141,36 @@ function CourseModal({
     }
   };
 
+  const handleDeleteLesson = async () => {
+    setIsLoading(true);
+    setSuccess(false);
+
+    dispatch(deleteLesson({ id: courseId, lessonIndex }))
+      .unwrap()
+      .then((res) => {
+        setNavigateData((prev) => {
+          const updatedLessons = prev.lessons.filter(
+            (lesson) => lesson.id !== lessonIndex
+          );
+          return {
+            ...prev,
+            lessons: updatedLessons,
+          };
+        });
+        dispatch(fetchCourses());
+        lessonModalRef.current.reset();
+        setThumbnailPreview(null);
+        infoNotify("Delete lesson successfull");
+        setIsLoading(false);
+        setSuccess(true);
+      })
+      .catch((err) => {
+        errorNotify("Delete lesson failed");
+        setIsLoading(false);
+        setSuccess(false);
+      });
+  };
+
   useEffect(() => {
     if (type === "edit") {
       const lesson = courseData?.lessons[lessonIndex - 1];
@@ -144,7 +182,7 @@ function CourseModal({
       setThumbnailPreview(null);
       setDescription("");
     }
-  }, [type, courseData?.lessons]);
+  }, [type, courseData?.lessons, dispatch, lessonIndex]);
 
   return (
     <div
@@ -272,7 +310,16 @@ function CourseModal({
               </div>
               {/* buttons */}
 
-              <div className="flex justify-end mt-8">
+              <div className="flex justify-between mt-8">
+                {type === "edit" && (
+                  <label
+                    htmlFor="confirmationPopup"
+                    className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+                  >
+                    Delete Lesson
+                  </label>
+                )}
+                <div></div>
                 <button
                   type="submit"
                   className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
@@ -284,6 +331,14 @@ function CourseModal({
             </form>
           </div>
         </div>
+      </div>
+
+      <div>
+        <ConfirmationModal
+          handleStatus={handleDeleteLesson}
+          status="Delete"
+          modalClose="#course-modal"
+        ></ConfirmationModal>
       </div>
     </div>
   );

@@ -97,6 +97,40 @@ export const updateLesson = createAsyncThunk(
   }
 );
 
+export const deleteCourse = createAsyncThunk(
+  "course/deleteCourse",
+  async (id) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/courses/delete/${id}`
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const deleteLesson = createAsyncThunk(
+  "course/deleteLesson",
+  async ({ id, lessonIndex }) => {
+    const formData = new FormData();
+    const data = {
+      id: lessonIndex,
+    };
+    formData.append("data", JSON.stringify(data));
+    try {
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/courses/removelesson/${id}`,
+        formData
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const courseSlice = createSlice({
   name: "courseSlice",
   initialState,
@@ -180,6 +214,39 @@ const courseSlice = createSlice({
       state.isSuccess = true;
     });
     builder.addCase(updateCourse.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = true;
+      state.isSuccess = false;
+    });
+    // delete course
+    builder.addCase(deleteCourse.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(deleteCourse.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = true;
+    });
+    builder.addCase(deleteCourse.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = true;
+      state.isSuccess = false;
+    });
+
+    // delete course
+    builder.addCase(deleteLesson.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(deleteLesson.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = true;
+    });
+    builder.addCase(deleteLesson.rejected, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = true;
       state.isSuccess = false;

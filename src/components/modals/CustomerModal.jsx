@@ -38,6 +38,7 @@ export default function CustomerModal({
     babysBirthday,
     midwifeName,
     midwifeId,
+    country,
   } = userData || {};
 
   const { isLoading, isError, coaches } = useSelector((state) => state.coaches);
@@ -170,23 +171,22 @@ export default function CustomerModal({
     }
   };
 
-  const handleGuideDelete = async () => {
+  const handleUserDelete = async () => {
     setIsReuestLoading(true);
     true;
 
-    dispatch(deleteUser(userData?._id))
+    dispatch(deleteUser())
       .unwrap()
       .then((res) => {
         dispatch(fetchUsers());
         infoNotify("Delete user successfull");
         navigate("/services");
         setIsReuestLoading(true);
-        false;
       })
       .catch((err) => {
+        console.log(err);
         errorNotify("Delete user failed");
-        setIsReuestLoading(true);
-        false;
+        setIsReuestLoading(false);
       });
   };
 
@@ -673,7 +673,7 @@ export default function CustomerModal({
                           className="py-3 text-darkSemi placeholder:text-blackSemi px-2 w-full bg-transparent border border-fadeMid rounded-md outline-none"
                           name="country"
                           placeholder="Country name..."
-                          defaultValue="USA"
+                          defaultValue={country || "USA"}
                         />
                       </div>
                     </div>
@@ -701,7 +701,7 @@ export default function CustomerModal({
           </div>
           <div>
             <ConfirmationModal
-              handleStatus={handleGuideDelete}
+              handleStatus={handleUserDelete}
               status="Delete"
               modalClose="#hs-scroll-inside-body-modal"
             ></ConfirmationModal>

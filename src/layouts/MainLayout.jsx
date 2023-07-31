@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import SideNav from "../components/shared/sidenav/SideNav";
 import TopNav from "../components/shared/topnav/TopNav";
 import { fetchAdmin } from "../features/admin/adminSlice";
@@ -18,6 +18,7 @@ import { fetchUsers } from "../features/users/usersSlice";
 const MainLayout = () => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchCoaches());
@@ -33,6 +34,10 @@ const MainLayout = () => {
     dispatch(fetchProducts());
     dispatch(fetchChart());
   }, [dispatch]);
+
+  // useEffect(() => {
+  //   navigate("/services");
+  // }, []);
 
   return (
     <div className="bg-white h-screen w-full overflow-hidden">

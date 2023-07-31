@@ -17,7 +17,7 @@ export default function SideNav() {
         <div className="flex flex-col gap-4">
           {/* Dashboard */}
 
-          {permissions.includes("dashboard") && (
+          {permissions?.includes("dashboard") && (
             <NavLink
               to="/"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -66,7 +66,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Services */}
-          {permissions.includes("services") && (
+          {permissions?.includes("services") && (
             <NavLink
               to="/services"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -89,7 +89,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Coach */}
-          {permissions.includes("coach") && (
+          {permissions?.includes("coach") && (
             <NavLink
               to="/coach"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -112,7 +112,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Products */}
-          {permissions.includes("products") && (
+          {permissions?.includes("products") && (
             <NavLink
               to="/products"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -135,7 +135,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Users */}
-          {permissions.includes("staffs") && (
+          {permissions?.includes("staffs") && (
             <NavLink
               to="/staffs"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -159,7 +159,7 @@ export default function SideNav() {
           )}
 
           {/* Request */}
-          {permissions.includes("request") && (
+          {permissions?.includes("request") && (
             <NavLink
               to="/request"
               className="w-full flex items-center py-2 px-4 gap-2"
@@ -182,7 +182,7 @@ export default function SideNav() {
             </NavLink>
           )}
           {/* Additional  */}
-          {permissions.includes("additional") && (
+          {permissions?.includes("additional") && (
             <NavLink
               to="/additional"
               className="w-full flex items-center py-2 px-4 gap-2"
