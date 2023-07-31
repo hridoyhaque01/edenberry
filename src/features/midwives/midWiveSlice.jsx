@@ -15,7 +15,7 @@ export const fetchMidWives = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/midwives`
+        `${import.meta.env.VITE_API_BASE_URL}/seekmidwifechanges`
       );
       return response?.data;
     } catch (error) {
@@ -31,7 +31,7 @@ export const updateMidWives = createAsyncThunk(
     formData.append("data", JSON.stringify({ status }));
     try {
       const response = await axios.patch(
-        `${import.meta.env.VITE_API_BASE_URL}/midwives/edit/${id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/seekmidwifechanges/edit/${id}`,
         formData
       );
       return response?.data;
