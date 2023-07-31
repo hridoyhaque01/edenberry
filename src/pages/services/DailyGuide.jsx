@@ -6,9 +6,11 @@ import SearchLoader from "../../components/shared/loaders/SearchLoader";
 import GuideTabs from "../../components/shared/tabs/GuideTabs";
 
 function DailyGuide() {
-  const { isLoading, isError, guides, activeTab, handleReset } = useSelector(
+  const { isLoading, isError, guides, activeTab } = useSelector(
     (state) => state.guides
   );
+
+  console.log(activeTab);
 
   let postpartum = null;
   let prenatal = null;
@@ -58,7 +60,7 @@ function DailyGuide() {
       </div>
       <div className="mt-3">
         <div
-          id="tabs-with-underline-1"
+          id="Guide-tab-01"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
           className={`${activeTab === "postpartum" ? "" : "hidden"}`}
@@ -66,7 +68,7 @@ function DailyGuide() {
           <div>{postpartum}</div>
         </div>
         <div
-          id="tabs-with-underline-2"
+          id="Guide-tab-02"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
           className={`${activeTab === "prenatal" ? "" : "hidden"}`}

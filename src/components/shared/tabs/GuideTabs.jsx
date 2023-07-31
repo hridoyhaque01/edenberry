@@ -10,6 +10,8 @@ function GuideTabs() {
     dispatch(changeTab(tabValue));
   };
 
+  console.log(activeTab);
+
   return (
     <div className="text-fadeHigh ">
       <nav
@@ -22,9 +24,9 @@ function GuideTabs() {
           className={`hs-tab-active:font-bold hs-tab-active:text-dark hs-tab-active:text-2xl py-2 px-4 inline-flex items-center ${
             activeTab === "postpartum" ? "active" : ""
           }`}
-          id="tabs-with-underline-item-1"
-          data-hs-tab="#tabs-with-underline-1"
-          aria-controls="tabs-with-underline-1"
+          id="tabs-with-underline-item-8"
+          data-hs-tab="#Guide-tab-01"
+          aria-controls="Guide-tab-01"
           role="tab"
           onClick={() => handleTab("postpartum")}
         >
@@ -35,8 +37,9 @@ function GuideTabs() {
           className={`hs-tab-active:font-bold hs-tab-active:text-dark hs-tab-active:text-2xl py-2 px-4 inline-flex items-center ${
             activeTab === "prenatal" ? "active" : ""
           }`}
-          data-hs-tab="#tabs-with-underline-2"
-          aria-controls="tabs-with-underline-2"
+          id="tabs-with-underline-item-9"
+          data-hs-tab="#Guide-tab-02"
+          aria-controls="Guide-tab-02"
           role="tab"
           onClick={() => handleTab("prenatal")}
         >
