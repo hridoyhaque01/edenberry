@@ -54,6 +54,17 @@ export const updateCoach = createAsyncThunk(
   }
 );
 
+export const deleteCoach = createAsyncThunk("coach/deleteCoach", async (id) => {
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_BASE_URL}/coach/delete/${id}`
+    );
+    return response?.data;
+  } catch (error) {
+    throw error;
+  }
+});
+
 const coachSlice = createSlice({
   name: "coachSlice",
   initialState,
@@ -96,7 +107,7 @@ const coachSlice = createSlice({
       state.isAddError = true;
       state.isAddSuccess = false;
     });
-
+    // update coach
     builder.addCase(updateCoach.pending, (state) => {
       state.isRequestLoading = true;
       state.isUpdateError = false;
@@ -108,6 +119,24 @@ const coachSlice = createSlice({
       state.isUpdateSuccess = true;
     });
     builder.addCase(updateCoach.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isUpdateError = true;
+      state.isUpdateSuccess = false;
+    });
+
+    // delete coach
+
+    builder.addCase(deleteCoach.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isUpdateError = false;
+      state.isUpdateSuccess = false;
+    });
+    builder.addCase(deleteCoach.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isUpdateError = false;
+      state.isUpdateSuccess = true;
+    });
+    builder.addCase(deleteCoach.rejected, (state) => {
       state.isRequestLoading = false;
       state.isUpdateError = true;
       state.isUpdateSuccess = false;

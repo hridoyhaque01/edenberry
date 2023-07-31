@@ -6,7 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import CourseModal from "../../components/modals/CourseModal";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import FormTitle from "../../components/shared/titles/FormTitle";
-import { addCourse, updateCourse } from "../../features/services/courseSlice";
+import {
+  addCourse,
+  fetchCourses,
+  updateCourse,
+} from "../../features/services/courseSlice";
 import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
 
@@ -137,6 +141,7 @@ function CourseForm() {
           .catch((err) => console.log(err));
         infoNotify("Course Add successful");
       }
+      await dispatch(fetchCourses());
       setIsLoading(false);
       setSuccess(true);
     } catch (error) {

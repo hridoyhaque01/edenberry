@@ -60,6 +60,9 @@ const midwiveSlice = createSlice({
     builder.addCase(fetchMidWives.rejected, (state) => {
       state.isError = true;
     });
+
+    // fetch booking midwives
+
     //   update status
     builder.addCase(updateMidWives.pending, (state) => {
       state.isRequestLoading = true;

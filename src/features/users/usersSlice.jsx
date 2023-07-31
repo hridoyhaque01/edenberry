@@ -38,6 +38,17 @@ export const updateUser = createAsyncThunk(
   }
 );
 
+export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
+  try {
+    const response = await axios.patch(
+      `${import.meta.env.VITE_API_BASE_URL}"/users/delete/${id}`
+    );
+    return response?.data;
+  } catch (error) {
+    throw error;
+  }
+});
+
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   try {
     const response = await axios.get(
@@ -106,6 +117,24 @@ const usersSlice = createSlice({
     });
 
     builder.addCase(updateUser.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = true;
+      state.isSuccess = false;
+    });
+    // update user data
+
+    builder.addCase(deleteUser.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(deleteUser.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = true;
+    });
+
+    builder.addCase(deleteUser.rejected, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = true;
       state.isSuccess = false;

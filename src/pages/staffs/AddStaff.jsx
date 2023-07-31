@@ -68,20 +68,25 @@ export default function AddStaff({ infoNotify, errorNotify }) {
       timestamp,
     };
     setIsLaoding(true);
-    try {
-      const formData = new FormData();
-      formData.append("data", JSON.stringify(data));
-      await dispatch(addAdmin({ token: userData?.token, formData }));
-      await dispatch(fetchAdmin(userData?.token));
-      form.reset();
-      setPermissions([]);
-      infoNotify("Add staff successfull");
-      setIsLaoding(false);
-    } catch (error) {
-      setIsLaoding(false);
-      console.log(error);
-      errorNotify("Add staff failed");
-    }
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
+    dispatch(addAdmin({ token: userData?.token, formData }))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchAdmin(userData?.token));
+        form.reset();
+        setPermissions([]);
+        infoNotify("Add staff successfull");
+        setIsLaoding(false);
+      })
+      .catch((error) => {
+        if (error?.message === "Request failed with status code 409") {
+          errorNotify("Staff already exist");
+        } else {
+          errorNotify("Add staff failed");
+        }
+        setIsLaoding(false);
+      });
   };
 
   return (
@@ -148,6 +153,7 @@ export default function AddStaff({ infoNotify, errorNotify }) {
                 type="password"
                 placeholder="Enter password"
                 name="password"
+                autoComplete="false"
                 className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
                 onChange={(e) => checkPasswordStrength(e)}
               />
@@ -165,6 +171,19 @@ export default function AddStaff({ infoNotify, errorNotify }) {
             <p className="font-semibold text-xs text-blackHigh">Permissions</p>
 
             <div className="flex items-center gap-10 mt-6">
+              <div className="flex items-center gap-2 text-blackHigh">
+                <input
+                  type="checkbox"
+                  name="dashboard"
+                  id="dashboard"
+                  className="checkbox"
+                  onChange={handleCheckbox}
+                  defaultChecked={permissions?.includes("dashboard")}
+                />
+                <label className="cursor-pointer" htmlFor="dashboard">
+                  Dashboard
+                </label>
+              </div>
               <div className="flex items-center gap-2 text-blackHigh">
                 <input
                   type="checkbox"

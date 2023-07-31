@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteProduct,
   fetchProducts,
   updateProduct,
 } from "../../features/products/productSlice";
 import getCompressedImage from "../../utils/getCompresedImage";
 import { imageIcon } from "../../utils/getImages";
+import ConfirmationModal from "./ConfirmationModal";
 
 function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
   const [product, setProduct] = useState(null);
@@ -59,35 +61,37 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
       description,
       // productCount,
     };
-
+    setIsRequestLoading(true);
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
-    setIsRequestLoading(true);
     try {
       if (product) {
         const file = await getCompressedImage(product);
         formData.append("files", file);
-        dispatch(updateProduct({ id: activeProduct?._id, formData }))
-          .unwrap()
-          .then((res) => {
-            dispatch(fetchProducts());
-            infoNotify("Product update successfull");
-          })
-          .catch((err) => errorNotify("Product update failed"));
-      } else {
-        dispatch(updateProduct({ id: activeProduct?._id, formData }))
-          .unwrap()
-          .then((res) => {
-            infoNotify("Product update successfull");
-            dispatch(fetchProducts());
-          })
-          .catch((err) => errorNotify("Product update failed"));
       }
+      await dispatch(updateProduct({ id: activeProduct?._id, formData }));
+      await dispatch(fetchProducts());
+      infoNotify("Product update successfull");
       setIsRequestLoading(false);
     } catch (error) {
-      errorNotify("Something went wrong");
+      errorNotify("Product update failed");
       setIsRequestLoading(false);
     }
+  };
+
+  const handleProductDelete = async () => {
+    setIsRequestLoading(true);
+    dispatch(deleteProduct(activeProduct?._id))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchProducts());
+        infoNotify("Delete product successfull");
+        setIsRequestLoading(false);
+      })
+      .catch((err) => {
+        errorNotify("Delete product failed");
+        setIsRequestLoading(false);
+      });
   };
 
   return (
@@ -219,7 +223,13 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
               </div> */}
               {/* buttons */}
 
-              <div className="flex justify-end mt-8">
+              <div className="flex items-center justify-between mt-8">
+                <label
+                  htmlFor="confirmationPopup"
+                  className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+                >
+                  Delete Product
+                </label>
                 <button
                   type="submit"
                   className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
@@ -230,7 +240,13 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
               </div>
             </form>
           </div>
-          <div></div>
+          <div>
+            <ConfirmationModal
+              handleStatus={handleProductDelete}
+              status="Delete"
+              modalClose="#product-modal"
+            ></ConfirmationModal>
+          </div>
         </div>
       </div>
     </div>

@@ -3,10 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 // import { updateUserData } from "../../features/users/usersSlice";
 import axios from "axios";
 import { useEffect } from "react";
-import { fetchUsers, updateUser } from "../../features/users/usersSlice";
+import {
+  deleteUser,
+  fetchUsers,
+  updateUser,
+} from "../../features/users/usersSlice";
 import getCompresedImage from "../../utils/getCompresedImage";
 import { avater } from "../../utils/getImages";
 import { default as getFormattedDate } from "../../utils/getIsoDateString";
+import ConfirmationModal from "./ConfirmationModal";
 
 // eslint-disable-next-line react/prop-types
 export default function CustomerModal({
@@ -31,6 +36,8 @@ export default function CustomerModal({
     shippingAddress1,
     shippingAddress2,
     babysBirthday,
+    midwifeName,
+    midwifeId,
   } = userData || {};
 
   const { isLoading, isError, coaches } = useSelector((state) => state.coaches);
@@ -39,8 +46,9 @@ export default function CustomerModal({
   const [profilePreview, setProfilePreview] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [babyBirthDate, setBabyBirthDate] = useState(null);
-  const [coachId, setCoachId] = useState("");
+  const [midwife, setMidwife] = useState("");
   const [customerNote, setCustomerNote] = useState("");
+  const [midwives, setMidwives] = useState([]);
   const profileRef = useRef();
   const noteRef = useRef();
   const sizeRef = useRef();
@@ -143,32 +151,43 @@ export default function CustomerModal({
 
   const handleAssignedMidwife = async (event) => {
     event.preventDefault();
-
+    const splitMidwife = midwife?.split("-");
+    const midwifeName = splitMidwife[0];
+    const midwifeId = splitMidwife[1];
+    const data = { midwifeName, midwifeId };
     setIsReuestLoading(true);
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/bookings`
-      );
-      const bookings = await res?.data;
-      const bookedData = bookings?.find(
-        (item) => item?.userId === userData?._id
-      );
-      // Create a new FormData instance
-      const formData = new FormData();
-      formData.append("data", JSON.stringify({ coachId })); // Append data to the formData instance
-      const bookingId = bookedData?._id;
-      await axios.patch(
-        `${import.meta.env.VITE_API_BASE_URL}/bookings/edit/${bookingId}`,
-        formData
-      );
-
+      await dispatch(updateUser({ id: userData?._id, formData }));
+      await dispatch(fetchUsers());
       setIsReuestLoading(false);
-      infoNotify("Assign coach successfull");
+      infoNotify("Assign midwife successfull");
     } catch (error) {
       console.log(error);
       setIsReuestLoading(false);
-      errorNotify("Assign coach failed");
+      infoNotify("Assign midwife failed");
     }
+  };
+
+  const handleGuideDelete = async () => {
+    setIsReuestLoading(true);
+    true;
+
+    dispatch(deleteUser(userData?._id))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchUsers());
+        infoNotify("Delete user successfull");
+        navigate("/services");
+        setIsReuestLoading(true);
+        false;
+      })
+      .catch((err) => {
+        errorNotify("Delete user failed");
+        setIsReuestLoading(true);
+        false;
+      });
   };
 
   const handleDate = (event) => {
@@ -188,32 +207,16 @@ export default function CustomerModal({
     }
   };
 
-  const fetchCoach = async (id) => {
+  const fetchBookingMidwives = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/bookings`, {
-        method: "GET",
-      });
-      const data = await res.json();
-      if (data?.length > 0) {
-        const bookedData = data?.find((item) => item?.userId === id);
-        if (bookedData?._id) {
-          const result = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/coach/find/${
-              bookedData?.coachId
-            }`,
-            {
-              method: "GET",
-            }
-          );
-          const coachData = await result.json();
-          setCoachId(coachData?._id);
-        } else {
-          setCoachId("");
-        }
-      } else {
-        setCoachId("");
-      }
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/midwives`
+      );
+      const result = await response?.data;
+      setMidwives(result);
+      console.log(result);
     } catch (error) {
+      setMidwives([]);
       console.log(error);
     }
   };
@@ -226,7 +229,10 @@ export default function CustomerModal({
       setDueDate(pregnancyDueDate);
       setBabyBirthDate(babysBirthday);
       setProfilePreview(fileUrl);
-      fetchCoach(userData?._id);
+      const midwife =
+        midwifeName && midwifeId ? `${midwifeName}-${midwifeId}` : "";
+      setMidwife(midwife);
+      fetchBookingMidwives();
     }
   }, [userData?._id]);
 
@@ -561,29 +567,20 @@ export default function CustomerModal({
                         <select
                           className="w-full bg-transparent p-3 border border-fadeMid rounded-md flex items-center text-darkSemi placeholder:text-blackSemi appearance-none outline-none"
                           name="apparelSize"
-                          value={coachId || ""}
-                          onChange={(e) => setCoachId(e.target.value)}
+                          value={midwife}
+                          onChange={(e) => setMidwife(e.target.value)}
                         >
                           <option value="" disabled>
-                            {!coachId
-                              ? "No midwife coach assigned"
-                              : "Select midwife coach"}
+                            Select midwife coach
                           </option>
-                          {!isLoading &&
-                          !isError &&
-                          coaches?.length &&
-                          coachId > 0
-                            ? coaches?.map((coach, i) => (
-                                <option value={coach?._id} key={i}>
-                                  {coach?.firstName + " " + coach?.lastName}
-                                  {/* {coachId + " " + coach?._id} */}
-                                </option>
-                              ))
-                            : ""}
-                          {/*                           
-                          <option value="Medium">Medium</option>
-                          <option value="Large">Large</option>
-                          <option value="XL">XL</option> */}
+                          {midwives?.map((midwive) => (
+                            <option
+                              value={`${midwive?.name}-${midwive?._id}`}
+                              key={midwive?._id}
+                            >
+                              {midwive?.name}
+                            </option>
+                          ))}
                         </select>
                         <div className="absolute inset-y-0 right-3 flex items-center text-secondaryColor pointer-events-none">
                           <span className="material-symbols-outlined">
@@ -594,12 +591,9 @@ export default function CustomerModal({
                     </div>
                     <div className="flex items-center justify-end mt-6">
                       <button
-                        className={`w-60 py-4  text-white text-sm font-mont font-semibold rounded-xl ${
-                          coachId ? "bg-secondaryColor" : "bg-secondaryLight"
-                        }`}
+                        className={`w-60 py-4  text-white text-sm font-mont font-semibold rounded-xl bg-secondaryColor`}
                         type="submit"
                         data-hs-overlay="#hs-scroll-inside-body-modal"
-                        disabled={coachId ? false : true}
                       >
                         Save & Update
                       </button>
@@ -685,7 +679,13 @@ export default function CustomerModal({
                     </div>
 
                     {/* submit button  */}
-                    <div className="flex items-center justify-end mt-6">
+                    <div className="flex items-center justify-between mt-6">
+                      <label
+                        htmlFor="confirmationPopup"
+                        className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+                      >
+                        Delete User
+                      </label>
                       <button
                         className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                         type="submit"
@@ -698,6 +698,13 @@ export default function CustomerModal({
                 </form>
               </div>
             </div>
+          </div>
+          <div>
+            <ConfirmationModal
+              handleStatus={handleGuideDelete}
+              status="Delete"
+              modalClose="#hs-scroll-inside-body-modal"
+            ></ConfirmationModal>
           </div>
         </div>
       </div>

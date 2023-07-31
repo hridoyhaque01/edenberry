@@ -58,6 +58,20 @@ export const updateGuide = createAsyncThunk(
   }
 );
 
+export const deleteGuide = createAsyncThunk(
+  "course/deleteGuide",
+  async (id) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/dailyguides/delete/${id}`
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const guideSlice = createSlice({
   name: "guideSlice",
   initialState,
@@ -119,6 +133,23 @@ const guideSlice = createSlice({
       state.isResponseError = false;
     });
     builder.addCase(updateGuide.rejected, (state) => {
+      state.isSuccess = false;
+      state.isRequestLoading = false;
+      state.isResponseError = true;
+    });
+
+    // update course
+    builder.addCase(deleteGuide.pending, (state) => {
+      state.isSuccess = false;
+      state.isRequestLoading = true;
+      state.isResponseError = false;
+    });
+    builder.addCase(deleteGuide.fulfilled, (state) => {
+      state.isSuccess = true;
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+    });
+    builder.addCase(deleteGuide.rejected, (state) => {
       state.isSuccess = false;
       state.isRequestLoading = false;
       state.isResponseError = true;

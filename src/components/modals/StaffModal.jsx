@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAdmin, updateAdmin } from "../../features/admin/adminSlice";
+import {
+  deleteAdmin,
+  fetchAdmin,
+  updateAdmin,
+} from "../../features/admin/adminSlice";
+import ConfirmationModal from "./ConfirmationModal";
 
 function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
   const {
@@ -88,6 +93,20 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
     }
   };
 
+  const handleDeleteStaff = async () => {
+    setLoading(true);
+    try {
+      await dispatch(deleteAdmin({ token: userData?.token, id }));
+      await dispatch(fetchAdmin(userData?.token));
+      infoNotify("Delete staff successfull");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorNotify("Delete staff failed");
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (staffPermissions?.length > 0) {
       setPermissions(staffPermissions);
@@ -100,7 +119,7 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
       className="hs-overlay hidden w-full h-full fixed inset-y-0 left-0 z-[60] overflow-x-hidden overflow-y-auto bg-overlay scrollbar-none"
     >
       <div className=" hs-overlay-open:opacity-100 hs-overlay-open:duration-300 opacity-0 ease-out transition-all w-full h-full mx-auto flex items-center justify-center ">
-        <div className="w-[50rem] z-20 bg-white h-[calc(100%-8rem)] overflow-auto rounded-xl">
+        <div className="w-[57rem] z-20 bg-white h-[calc(100%-8rem)] overflow-auto rounded-xl">
           <div className="w-full py-3 px-4 bg-secondaryColor flex items-center justify-between">
             <span className="text-xl text-white font-semibold">
               Update Staff Data
@@ -173,6 +192,7 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
                   <input
                     type="password"
                     placeholder="Enter password"
+                    autoComplete="false"
                     name="password"
                     className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md text-sm placeholder:text-fadeSemi text-black"
                     onChange={(e) => checkPasswordStrength(e)}
@@ -193,6 +213,19 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
                 </p>
 
                 <div className="flex items-center gap-6 mt-6">
+                  <div className="flex items-center gap-2 text-blackHigh">
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      name="dashboard"
+                      id="editdashboard"
+                      onChange={handleCheckbox}
+                      checked={permissions?.includes("dashboard")}
+                    />
+                    <label className="cursor-pointer" htmlFor="editdashboard">
+                      dashboard
+                    </label>
+                  </div>
                   <div className="flex items-center gap-2 text-blackHigh">
                     <input
                       type="checkbox"
@@ -274,7 +307,13 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
                 </div>
               </div>
               {/* submit button  */}
-              <div className="flex items-center justify-end mt-6">
+              <div className="flex items-center justify-between mt-6">
+                <label
+                  htmlFor="confirmationPopup"
+                  className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+                >
+                  Delete Staff
+                </label>
                 <button
                   className="w-60 py-4 bg-secondaryColor text-white text-sm font-mont font-semibold rounded-xl"
                   type="submit"
@@ -288,6 +327,13 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
             </form>
           </div>
         </div>
+      </div>
+      <div>
+        <ConfirmationModal
+          handleStatus={handleDeleteStaff}
+          status="Delete"
+          modalClose="#staff-modal"
+        ></ConfirmationModal>
       </div>
     </div>
   );

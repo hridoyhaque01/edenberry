@@ -5,9 +5,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormTitle from "../../components/shared/titles/FormTitle";
 
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import {
   addGuide,
+  deleteGuide,
   fetchGuides,
   updateGuide,
 } from "../../features/services/guidesSlice";
@@ -29,10 +31,10 @@ function GuideForm() {
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const { isRequestLoading, isResponseError, isSuccess, handleReset } =
-    useSelector((state) => state.guides);
+  const { isRequestLoading, isSuccess } = useSelector((state) => state.guides);
   const [navigateData, setNavigateData] = useState({});
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (event) => {
     const { value } = event.target;
@@ -89,66 +91,66 @@ function GuideForm() {
     const title = form.title.value;
     const status = form.status.value;
     const description = form.description.value;
-
     const formData = new FormData();
-
     const data = {
       title,
       status,
       description,
     };
-
+    setIsLoading(true);
     setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
-
     formData.append("data", JSON.stringify(data));
-
     let file = null;
-
     try {
       if (thumbnail) {
         file = await getCompressedImage(thumbnail);
       }
-    } catch (error) {
-      console.log(error);
-    }
-
-    if (type === "edit") {
-      if (!file) {
-        dispatch(updateGuide({ id, formData }));
+      if (type === "edit") {
+        if (!file) {
+          await dispatch(updateGuide({ id, formData }));
+        } else {
+          formData.append("files", file);
+          await dispatch(updateGuide({ id, formData }));
+        }
+        infoNotify("Daily Guide update successfull");
       } else {
         formData.append("files", file);
-        dispatch(updateGuide({ id, formData }));
-      }
-    } else {
-      formData.append("files", file);
-      dispatch(addGuide(formData));
-    }
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(fetchGuides());
-      if (type !== "edit") {
+        await dispatch(addGuide(formData));
         formRef.current.reset();
         thumbnailRef.current.value = "";
         setThumbnail(null);
         setThumbnailPreview(null);
         setDescription("");
+        infoNotify("Daily Guide add successfull");
       }
+      await dispatch(fetchGuides());
+      setIsLoading(false);
+    } catch (error) {
       if (type === "edit") {
-        infoNotify("Daily guide update successfull");
+        errorNotify("Daily Guide update failed");
       } else {
-        infoNotify("Daily guide add successfull");
+        errorNotify("Daily Guide add failed");
       }
-    } else if (isResponseError) {
-      dispatch(handleReset());
-      if (type === "edit") {
-        errorNotify("Daily guide update failed");
-      } else {
-        errorNotify("Daily guide add failed");
-      }
+      setIsLoading(false);
     }
-  }, [isSuccess, dispatch, type]);
+  };
+
+  const handleGuideDelete = async () => {
+    setIsLoading(true);
+
+    dispatch(deleteGuide(id))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchGuides());
+        infoNotify("Delete guide successfull");
+        navigate("/services");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        errorNotify("Delete guide failed");
+        setIsLoading(false);
+      });
+  };
 
   useEffect(() => {
     if (isSuccess && type === "edit") {
@@ -278,7 +280,16 @@ function GuideForm() {
           </div>
           {/* buttons */}
 
-          <div className="flex justify-end items-center gap-6 mt-8">
+          <div className={"flex justify-between items-center gap-6 mt-8"}>
+            {type === "edit" && (
+              <label
+                htmlFor="confirmationPopup"
+                className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+              >
+                Delete Daily Guide
+              </label>
+            )}
+            <div></div>
             <button
               type="submit"
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
@@ -288,7 +299,7 @@ function GuideForm() {
           </div>
         </form>
       </div>
-      {isRequestLoading && <RequestLoader></RequestLoader>}
+      {isLoading && <RequestLoader></RequestLoader>}
 
       <div>
         <ToastContainer
@@ -303,6 +314,13 @@ function GuideForm() {
           pauseOnHover
           theme="light"
         />
+      </div>
+      <div>
+        <ConfirmationModal
+          handleStatus={handleGuideDelete}
+          status="Delete"
+          modalClose=""
+        ></ConfirmationModal>
       </div>
     </section>
   );

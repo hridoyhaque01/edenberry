@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Card from "../../components/shared/Cards/Card";
 import AddButton from "../../components/shared/button/AddButton";
 import SearchLoader from "../../components/shared/loaders/SearchLoader";
@@ -9,7 +9,6 @@ function DailyGuide() {
   const { isLoading, isError, guides, activeTab, handleReset } = useSelector(
     (state) => state.guides
   );
-  const dispatch = useDispatch();
 
   let postpartum = null;
   let prenatal = null;

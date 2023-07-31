@@ -39,13 +39,13 @@ function AddProduct({ errorNotify, infoNotify }) {
     }
   };
 
-  const handleProductAdded = () => {
-    infoNotify("Add product successful");
-    dispatch(fetchProducts());
+  const handleProductAdded = async () => {
+    await dispatch(fetchProducts());
     formRef.current.reset();
     setProductPreview(null);
     productRef.current.value = "";
     setDescription("");
+    infoNotify("Add product successful");
   };
 
   const handleProductFailed = () => {
@@ -67,10 +67,8 @@ function AddProduct({ errorNotify, infoNotify }) {
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
       formData.append("files", file);
-      dispatch(addProduct(formData))
-        .unwrap()
-        .then(handleProductAdded)
-        .catch(handleProductFailed);
+      await dispatch(addProduct(formData));
+      await handleProductAdded();
       setIsLoading(false);
     } catch (error) {
       console.log(error);

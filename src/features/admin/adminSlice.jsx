@@ -62,6 +62,23 @@ export const updateAdmin = createAsyncThunk(
   }
 );
 
+export const deleteAdmin = createAsyncThunk(
+  "auth/deleteAdmin",
+  async ({ token, id }) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/admin/delete/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const adminSlice = createSlice({
   name: "adminSlice",
   initialState,
@@ -122,6 +139,22 @@ const adminSlice = createSlice({
       state.isResponseError = false;
     });
     builder.addCase(updateAdmin.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isUpdateSuccess = false;
+      state.isResponseError = true;
+    });
+
+    builder.addCase(deleteAdmin.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isUpdateSuccess = false;
+      state.isResponseError = false;
+    });
+    builder.addCase(deleteAdmin.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isUpdateSuccess = true;
+      state.isResponseError = false;
+    });
+    builder.addCase(deleteAdmin.rejected, (state) => {
       state.isRequestLoading = false;
       state.isUpdateSuccess = false;
       state.isResponseError = true;

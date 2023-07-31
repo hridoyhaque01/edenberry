@@ -61,6 +61,20 @@ export const updateResource = createAsyncThunk(
   }
 );
 
+export const deleteResource = createAsyncThunk(
+  "course/deleteResource",
+  async (id) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/resources/delete/${id}`
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const resourceSlice = createSlice({
   name: "resourceSlice",
   initialState,
@@ -122,6 +136,22 @@ const resourceSlice = createSlice({
       state.isSuccess = true;
     });
     builder.addCase(updateResource.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = true;
+      state.isSuccess = false;
+    });
+    // update course
+    builder.addCase(deleteResource.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(deleteResource.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = true;
+    });
+    builder.addCase(deleteResource.rejected, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = true;
       state.isSuccess = false;

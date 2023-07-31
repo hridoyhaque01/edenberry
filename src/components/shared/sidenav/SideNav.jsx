@@ -17,50 +17,54 @@ export default function SideNav() {
         <div className="flex flex-col gap-4">
           {/* Dashboard */}
 
-          <NavLink to="/" className="w-full flex items-center py-2 px-4 gap-2">
-            <span>
-              <svg
-                width="24"
-                height="25"
-                viewBox="0 0 24 25"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="3.69238"
-                  y="4.31445"
-                  width="5.53846"
-                  height="8.30769"
-                  rx="0.923077"
-                  className="fill-white"
-                />
-                <rect
-                  x="12"
-                  y="4.31445"
-                  width="8.30769"
-                  height="8.30769"
-                  rx="0.923077"
-                  className="fill-white"
-                />
-                <rect
-                  width="5.53846"
-                  height="5.53846"
-                  rx="0.923077"
-                  transform="matrix(-1 0 0 1 20.3076 15.3914)"
-                  className="fill-white"
-                />
-                <rect
-                  width="8.30769"
-                  height="5.53846"
-                  rx="0.923077"
-                  transform="matrix(-1 0 0 1 12 15.3914)"
-                  className="fill-white"
-                />
-              </svg>
-            </span>
-            <span>Dashboard</span>
-          </NavLink>
-
+          {permissions.includes("dashboard") && (
+            <NavLink
+              to="/"
+              className="w-full flex items-center py-2 px-4 gap-2"
+            >
+              <span>
+                <svg
+                  width="24"
+                  height="25"
+                  viewBox="0 0 24 25"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="3.69238"
+                    y="4.31445"
+                    width="5.53846"
+                    height="8.30769"
+                    rx="0.923077"
+                    className="fill-white"
+                  />
+                  <rect
+                    x="12"
+                    y="4.31445"
+                    width="8.30769"
+                    height="8.30769"
+                    rx="0.923077"
+                    className="fill-white"
+                  />
+                  <rect
+                    width="5.53846"
+                    height="5.53846"
+                    rx="0.923077"
+                    transform="matrix(-1 0 0 1 20.3076 15.3914)"
+                    className="fill-white"
+                  />
+                  <rect
+                    width="8.30769"
+                    height="5.53846"
+                    rx="0.923077"
+                    transform="matrix(-1 0 0 1 12 15.3914)"
+                    className="fill-white"
+                  />
+                </svg>
+              </span>
+              <span>Dashboard</span>
+            </NavLink>
+          )}
           {/* Services */}
           {permissions.includes("services") && (
             <NavLink

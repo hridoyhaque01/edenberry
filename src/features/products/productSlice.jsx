@@ -53,6 +53,19 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
+export const deleteProduct = createAsyncThunk(
+  "products/deleteProduct",
+  async (id) => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/products/delete/${id}`
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "productSlice",
   initialState,
@@ -111,6 +124,21 @@ const productSlice = createSlice({
       state.isSuccess = true;
     });
     builder.addCase(updateProduct.rejected, (state) => {
+      state.isResponseError = true;
+      state.isRequestLoading = false;
+    });
+    //   delete product
+
+    builder.addCase(deleteProduct.pending, (state) => {
+      state.isResponseError = false;
+      state.isRequestLoading = true;
+    });
+    builder.addCase(deleteProduct.fulfilled, (state) => {
+      state.isResponseError = false;
+      state.isRequestLoading = false;
+      state.isSuccess = true;
+    });
+    builder.addCase(deleteProduct.rejected, (state) => {
       state.isResponseError = true;
       state.isRequestLoading = false;
     });

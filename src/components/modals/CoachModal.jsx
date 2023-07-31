@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCoaches, updateCoach } from "../../features/coach/coachSlice";
+import {
+  deleteCoach,
+  fetchCoaches,
+  updateCoach,
+} from "../../features/coach/coachSlice";
 import getCompressedImage from "../../utils/getCompresedImage";
 import { user } from "../../utils/getImages";
+import ConfirmationModal from "./ConfirmationModal";
 
 function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
   const [profile, setProfile] = useState(null);
@@ -81,6 +86,19 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
     } finally {
       setIsRequestLoading(false);
     }
+  };
+
+  const handleGuideDelete = async () => {
+    dispatch(deleteCoach(id))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchCoaches());
+        infoNotify("Delete coach successfull");
+        navigate("/services");
+      })
+      .catch((err) => {
+        errorNotify("Delete coach failed");
+      });
   };
 
   useEffect(() => {
@@ -332,7 +350,13 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
                     />
                   </div>
 
-                  <div className="flex justify-end mt-8">
+                  <div className="flex justify-between items-center mt-8">
+                    <label
+                      htmlFor="confirmationPopup"
+                      className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+                    >
+                      Delete Coach
+                    </label>
                     <button
                       disabled={isLoading}
                       type="submit"
@@ -347,6 +371,13 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <ConfirmationModal
+          handleStatus={handleGuideDelete}
+          status="Delete"
+          modalClose="#coach-modal"
+        ></ConfirmationModal>
       </div>
     </div>
   );

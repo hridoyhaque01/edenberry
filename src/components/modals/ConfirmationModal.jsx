@@ -1,6 +1,6 @@
 import React from "react";
 
-const ConfirmationModal = ({ handleStatus, status }) => {
+const ConfirmationModal = ({ handleStatus, status, modalClose }) => {
   return (
     <section>
       <input type="checkbox" id="confirmationPopup" className="modal-toggle" />
@@ -43,6 +43,7 @@ const ConfirmationModal = ({ handleStatus, status }) => {
               htmlFor="confirmationPopup"
               className="btn rounded-full bg-secondaryColor hover:bg-secondaryColor border-secondaryColor hover:border-secondaryColor text-white  w-full"
               onClick={handleStatus}
+              data-hs-overlay={modalClose || ""}
             >
               Confirm
             </label>

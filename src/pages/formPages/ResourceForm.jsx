@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import FormTitle from "../../components/shared/titles/FormTitle";
 import {
   addResource,
+  deleteResource,
   fetchResources,
   updateResource,
 } from "../../features/services/resourceSlice";
@@ -31,6 +33,7 @@ function ResourceForm() {
   const { isRequestLoading, isResponseError, isSuccess, handleReset } =
     useSelector((state) => state.resources);
   const [description, setDescription] = useState(initialDesciption);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const [navigateData, setNavigateData] = useState({});
@@ -85,69 +88,69 @@ function ResourceForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const form = event.target;
     const title = form.title.value;
     const status = form.status.value;
     const description = form.description.value;
-
     const formData = new FormData();
-
     const data = {
       title,
       status,
       description,
     };
-
+    setIsLoading(true);
+    setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
     formData.append("data", JSON.stringify(data));
     let file = null;
-
     try {
       if (thumbnail) {
         file = await getCompressedImage(thumbnail);
       }
-    } catch (error) {
-      console.log(error);
-    }
-
-    setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
-    if (type === "edit") {
-      if (!file) {
-        dispatch(updateResource({ id, formData }));
-      } else {
-        formData.append("files", file);
-        dispatch(updateResource({ id, formData }));
-      }
-    } else {
-      formData.append("files", file);
-      dispatch(addResource(formData));
-    }
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(fetchResources());
-      if (type !== "edit") {
-        formRef.current.reset();
-        thumbnailRef.current.value = "";
-        setDescription("");
-        setThumbnail(null);
-        setThumbnailPreview(null);
-      }
       if (type === "edit") {
+        if (!file) {
+          await dispatch(updateResource({ id, formData }));
+        } else {
+          formData.append("files", file);
+          await dispatch(updateResource({ id, formData }));
+        }
         infoNotify("Resource update successfull");
       } else {
+        formData.append("files", file);
+        await dispatch(addResource(formData));
+        formRef.current.reset();
+        thumbnailRef.current.value = "";
+        setThumbnail(null);
+        setThumbnailPreview(null);
+        setDescription("");
         infoNotify("Resource add successfull");
       }
-    } else if (isResponseError) {
-      dispatch(handleReset());
+      await dispatch(fetchResources());
+      setIsLoading(false);
+    } catch (error) {
       if (type === "edit") {
         errorNotify("Resource update failed");
       } else {
         errorNotify("Resource add failed");
       }
+      setIsLoading(false);
     }
-  }, [isSuccess, dispatch, type]);
+  };
+
+  const handleResourceDelete = async () => {
+    setIsLoading(true);
+    dispatch(deleteResource(id))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchResources());
+        infoNotify("Delete resource successfull");
+        navigate("/services");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        errorNotify("Delete resource failed");
+        setIsLoading(false);
+      });
+  };
 
   useEffect(() => {
     if (isSuccess && type === "edit" && navigateData?._id) {
@@ -278,18 +281,26 @@ function ResourceForm() {
           </div>
           {/* buttons */}
 
-          <div className="flex justify-end items-center gap-6 mt-8">
+          <div className="flex justify-between items-center gap-6 mt-8">
+            {type === "edit" && (
+              <label
+                htmlFor="confirmationPopup"
+                className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+              >
+                Delete Resource
+              </label>
+            )}
+            <div></div>
             <button
               type="submit"
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-              disabled={isRequestLoading}
             >
               {type === "edit" ? "Update Resource" : "Add Resource"}
             </button>
           </div>
         </form>
       </div>
-      {isRequestLoading && <RequestLoader></RequestLoader>}
+      {isLoading && <RequestLoader></RequestLoader>}
       <div>
         <ToastContainer
           position="top-right"
@@ -303,6 +314,13 @@ function ResourceForm() {
           pauseOnHover
           theme="light"
         />
+      </div>
+      <div>
+        <ConfirmationModal
+          handleStatus={handleResourceDelete}
+          status="Delete"
+          modalClose=""
+        ></ConfirmationModal>
       </div>
     </section>
   );
