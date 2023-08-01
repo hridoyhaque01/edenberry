@@ -104,34 +104,48 @@ function GuideForm() {
     try {
       if (thumbnail) {
         file = await getCompressedImage(thumbnail);
-      }
-      if (type === "edit") {
-        if (!file) {
-          await dispatch(updateGuide({ id, formData }));
-        } else {
-          formData.append("files", file);
-          await dispatch(updateGuide({ id, formData }));
-        }
-        infoNotify("Daily Guide update successfull");
-      } else {
         formData.append("files", file);
-        await dispatch(addGuide(formData));
-        formRef.current.reset();
-        thumbnailRef.current.value = "";
-        setThumbnail(null);
-        setThumbnailPreview(null);
-        setDescription("");
-        infoNotify("Daily Guide add successfull");
       }
-      await dispatch(fetchGuides());
-      setIsLoading(false);
-    } catch (error) {
+
       if (type === "edit") {
-        errorNotify("Daily Guide update failed");
+        await dispatch(updateGuide({ id, formData }))
+          .unwrap()
+          .then((res) => {
+            dispatch(fetchGuides())
+              .unwrap()
+              .then((res) => {
+                setIsLoading(false);
+                infoNotify("Daily Guide update successfull");
+              });
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            errorNotify("Daily Guide update failed");
+          });
       } else {
-        errorNotify("Daily Guide add failed");
+        dispatch(addGuide(formData))
+          .unwrap()
+          .then((res) => {
+            dispatch(fetchGuides())
+              .unwrap()
+              .then((res) => {
+                formRef.current.reset();
+                thumbnailRef.current.value = "";
+                setThumbnail(null);
+                setThumbnailPreview(null);
+                setDescription("");
+                infoNotify("Daily Guide add successfull");
+                setIsLoading(false);
+              });
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            errorNotify("Daily Guide add failed");
+          });
       }
+    } catch (error) {
       setIsLoading(false);
+      errorNotify("Somthing went wrong!");
     }
   };
 
@@ -141,10 +155,13 @@ function GuideForm() {
     dispatch(deleteGuide(id))
       .unwrap()
       .then((res) => {
-        dispatch(fetchGuides());
-        infoNotify("Delete guide successfull");
-        navigate("/services");
-        setIsLoading(false);
+        dispatch(fetchGuides())
+          .unwrap()
+          .then((res) => {
+            infoNotify("Delete guide successfull");
+            navigate("/services");
+            setIsLoading(false);
+          });
       })
       .catch((err) => {
         errorNotify("Delete guide failed");

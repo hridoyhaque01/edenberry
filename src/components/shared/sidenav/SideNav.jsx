@@ -19,7 +19,7 @@ export default function SideNav() {
 
           {permissions?.includes("dashboard") && (
             <NavLink
-              to="/"
+              to="/dashboard"
               className="w-full flex items-center py-2 px-4 gap-2"
             >
               <span>

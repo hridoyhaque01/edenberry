@@ -67,13 +67,18 @@ function AddProduct({ errorNotify, infoNotify }) {
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
       formData.append("files", file);
-      await dispatch(addProduct(formData));
-      await handleProductAdded();
-      setIsLoading(false);
+      dispatch(addProduct(formData))
+        .unwrap()
+        .then((res) => {
+          handleProductAdded();
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          handleProductFailed();
+          setIsLoading(false);
+        });
     } catch (error) {
-      console.log(error);
-      handleProductFailed();
-      setIsLoading(false);
+      errorNotify("Somthing went wrong");
     }
   };
 

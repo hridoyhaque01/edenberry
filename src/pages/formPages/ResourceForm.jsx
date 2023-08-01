@@ -30,8 +30,7 @@ function ResourceForm() {
   const formRef = useRef();
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const { isRequestLoading, isResponseError, isSuccess, handleReset } =
-    useSelector((state) => state.resources);
+  const { isSuccess } = useSelector((state) => state.resources);
   const [description, setDescription] = useState(initialDesciption);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -105,34 +104,47 @@ function ResourceForm() {
     try {
       if (thumbnail) {
         file = await getCompressedImage(thumbnail);
-      }
-      if (type === "edit") {
-        if (!file) {
-          await dispatch(updateResource({ id, formData }));
-        } else {
-          formData.append("files", file);
-          await dispatch(updateResource({ id, formData }));
-        }
-        infoNotify("Resource update successfull");
-      } else {
         formData.append("files", file);
-        await dispatch(addResource(formData));
-        formRef.current.reset();
-        thumbnailRef.current.value = "";
-        setThumbnail(null);
-        setThumbnailPreview(null);
-        setDescription("");
-        infoNotify("Resource add successfull");
       }
-      await dispatch(fetchResources());
-      setIsLoading(false);
-    } catch (error) {
       if (type === "edit") {
-        errorNotify("Resource update failed");
+        await dispatch(updateResource({ id, formData }))
+          .unwrap()
+          .then((res) => {
+            dispatch(fetchResources())
+              .unwrap()
+              .then((res) => {
+                infoNotify("Resource update successfull");
+                setIsLoading(false);
+              });
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            errorNotify("Resource update failed");
+          });
       } else {
-        errorNotify("Resource add failed");
+        dispatch(addResource(formData))
+          .unwrap()
+          .then((res) => {
+            dispatch(fetchResources())
+              .unwrap()
+              .then((res) => {
+                infoNotify("Resource add successfull");
+                setIsLoading(false);
+                formRef.current.reset();
+                thumbnailRef.current.value = "";
+                setThumbnail(null);
+                setThumbnailPreview(null);
+                setDescription("");
+              });
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            errorNotify("Resource add failed");
+          });
       }
+    } catch (error) {
       setIsLoading(false);
+      errorNotify("Something went wrong");
     }
   };
 
@@ -141,10 +153,13 @@ function ResourceForm() {
     dispatch(deleteResource(id))
       .unwrap()
       .then((res) => {
-        dispatch(fetchResources());
-        infoNotify("Delete resource successfull");
-        navigate("/services");
-        setIsLoading(false);
+        dispatch(fetchResources())
+          .unwrap()
+          .then((res) => {
+            infoNotify("Delete resource successfull");
+            navigate("/services");
+            setIsLoading(false);
+          });
       })
       .catch((err) => {
         errorNotify("Delete resource failed");

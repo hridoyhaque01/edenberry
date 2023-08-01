@@ -92,16 +92,16 @@ function CourseForm() {
     const title = form.title.value;
     const description = form.description.value;
     const formData = new FormData();
-    const data = {
-      title,
-      description,
-    };
-    formData.append("data", JSON.stringify(data));
     setIsLoading(true);
     setSuccess(false);
 
     try {
       if (type === "edit") {
+        const data = {
+          title,
+          description,
+        };
+        formData.append("data", JSON.stringify(data));
         if (!thumbnail) {
           await dispatch(updateCourse({ id, formData }));
           await setNavigateData((prev) => ({
@@ -126,6 +126,12 @@ function CourseForm() {
         infoNotify("Course Update successful");
       } else {
         const file = await getCompressedImage(thumbnail);
+        const data = {
+          title,
+          description,
+          lessons: [],
+        };
+        formData.append("data", JSON.stringify(data));
         formData.append("files", file);
         await dispatch(addCourse(formData))
           .unwrap()

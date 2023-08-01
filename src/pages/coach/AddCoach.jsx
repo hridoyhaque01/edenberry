@@ -22,14 +22,19 @@ function AddCoach({ errorNotify, infoNotify }) {
     try {
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
-      dispatch(addCoache(formData));
-      form.reset();
-      setIsLoading(false);
-      infoNotify("Coach add successfull");
+      dispatch(addCoache(formData))
+        .unwrap()
+        .then((res) => {
+          form.reset();
+          setIsLoading(false);
+          infoNotify("Coach add successfull");
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          errorNotify("Coach add failed");
+        });
     } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-      errorNotify("Coach add failed");
+      errorNotify("Something went wrong");
     }
   };
 

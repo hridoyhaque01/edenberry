@@ -77,27 +77,38 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
         const file = await getCompressedImage(profile);
         formData.append("files", file);
       }
-      await dispatch(updateCoach({ formData, id: coachData?._id }));
-      dispatch(fetchCoaches()); // Assuming this action fetches the coaches after the update.
-      infoNotify("Coach update successful");
+      await dispatch(updateCoach({ formData, id: coachData?._id }))
+        .unwrap()
+        .then((res) => {
+          dispatch(fetchCoaches())
+            .unwrap()
+            .then((res) => {
+              infoNotify("Coach update successful");
+              setIsRequestLoading(false);
+            });
+        })
+        .catch((error) => {
+          setIsRequestLoading(false);
+          errorNotify("Coach update failed");
+        });
     } catch (error) {
-      console.log(error);
-      errorNotify("Coach update failed");
-    } finally {
       setIsRequestLoading(false);
+      errorNotify("Somthing went wrong");
     }
   };
 
-  const handleGuideDelete = async () => {
-    dispatch(deleteCoach(id))
+  const handleCoachDelete = async () => {
+    setIsRequestLoading(true);
+    dispatch(deleteCoach(coachData?._id))
       .unwrap()
       .then((res) => {
         dispatch(fetchCoaches());
         infoNotify("Delete coach successfull");
-        navigate("/services");
+        setIsRequestLoading(false);
       })
       .catch((err) => {
         errorNotify("Delete coach failed");
+        setIsRequestLoading(false);
       });
   };
 
@@ -108,7 +119,7 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
       setBio(coachData?.bio || "");
       categoryRef.current.value = coachData?.category || "";
     }
-  }, [coachData]);
+  }, [coachData?._id]);
 
   return (
     <div
@@ -374,7 +385,7 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
       </div>
       <div>
         <ConfirmationModal
-          handleStatus={handleGuideDelete}
+          handleStatus={handleCoachDelete}
           status="Delete"
           modalClose="#coach-modal"
         ></ConfirmationModal>

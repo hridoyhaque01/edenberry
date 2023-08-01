@@ -62,7 +62,6 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
     const lastName = form.lastName?.value;
     const email = form.email?.value;
     const password = form.password?.value;
-
     const data = {
       firstName,
       lastName,
@@ -82,29 +81,42 @@ function StaffModal({ staff, infoNotify, errorNotify, setLoading }) {
     try {
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
-      await dispatch(updateAdmin({ token: userData?.token, formData, id }));
-      await dispatch(fetchAdmin(userData?.token));
-      infoNotify("Update staff successfull");
-      setLoading(false);
+      dispatch(updateAdmin({ token: userData?.token, formData, id }))
+        .unwrap()
+        .then((res) => {
+          dispatch(fetchAdmin(userData?.token))
+            .unwrap()
+            .then((res) => {
+              infoNotify("Update staff successfull");
+              setLoading(false);
+            });
+        })
+        .catch((error) => {
+          errorNotify("Update staff failed");
+          setLoading(false);
+        });
     } catch (error) {
-      console.log(error);
-      errorNotify("Update staff failed");
+      errorNotify("Somthing went wrong");
       setLoading(false);
     }
   };
 
   const handleDeleteStaff = async () => {
     setLoading(true);
-    try {
-      await dispatch(deleteAdmin({ token: userData?.token, id }));
-      await dispatch(fetchAdmin(userData?.token));
-      infoNotify("Delete staff successfull");
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      errorNotify("Delete staff failed");
-      setLoading(false);
-    }
+    dispatch(deleteAdmin({ token: userData?.token, id }))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchAdmin(userData?.token))
+          .unwrap()
+          .then((res) => {
+            infoNotify("Delete staff successfull");
+            setLoading(false);
+          });
+      })
+      .catch((error) => {
+        errorNotify("Delete staff failed");
+        setLoading(false);
+      });
   };
 
   useEffect(() => {

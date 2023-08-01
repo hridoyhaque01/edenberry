@@ -69,12 +69,22 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
         const file = await getCompressedImage(product);
         formData.append("files", file);
       }
-      await dispatch(updateProduct({ id: activeProduct?._id, formData }));
-      await dispatch(fetchProducts());
-      infoNotify("Product update successfull");
-      setIsRequestLoading(false);
+      dispatch(updateProduct({ id: activeProduct?._id, formData }))
+        .unwrap()
+        .then((res) => {
+          dispatch(fetchProducts())
+            .unwrap()
+            .then((res) => {
+              infoNotify("Product update successfull");
+              setIsRequestLoading(false);
+            });
+        })
+        .catch((error) => {
+          errorNotify("Product update failed");
+          setIsRequestLoading(false);
+        });
     } catch (error) {
-      errorNotify("Product update failed");
+      errorNotify("Somthing went wrong");
       setIsRequestLoading(false);
     }
   };

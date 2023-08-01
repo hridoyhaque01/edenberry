@@ -4,6 +4,8 @@ import CustomerTable from "../../components/tables/CustomerTable";
 import Sales from "./Sales";
 
 function Dashboard() {
+  // const { userData } = useSelector((state) => state.auth);
+
   return (
     <div className="h-full flex flex-col gap-8 py-8">
       <DashboardTabs></DashboardTabs>

@@ -61,6 +61,22 @@ export const updateWellness = createAsyncThunk(
   }
 );
 
+// add new wellness
+
+export const deleteWellness = createAsyncThunk(
+  "wellness/deleteWellness",
+  async (id) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/wellness/delete/${id}`
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const wellnessSlice = createSlice({
   name: "wellnessSlice",
   initialState,
@@ -117,6 +133,22 @@ const wellnessSlice = createSlice({
       state.isSuccess = true;
     });
     builder.addCase(updateWellness.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = true;
+      state.isSuccess = false;
+    });
+    // add welness
+    builder.addCase(deleteWellness.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(deleteWellness.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = true;
+    });
+    builder.addCase(deleteWellness.rejected, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = true;
       state.isSuccess = false;

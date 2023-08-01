@@ -5,9 +5,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormTitle from "../../components/shared/titles/FormTitle";
 
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
 import {
   addWellness,
+  deleteWellness,
   fetchWellness,
   updateWellness,
 } from "../../features/services/wellnessSlice";
@@ -31,9 +33,9 @@ function WellnessForm() {
   const [thumbnail, setThumbnail] = useState(null);
   const [description, setDescription] = useState(initialDesciption);
   const [thumbnailPreview, setThumbnailPreview] = useState(fileUrl || null);
-  const { isRequestLoading, isResponseError, isSuccess, handleReset } =
-    useSelector((state) => state.wellness);
+  const { isSuccess } = useSelector((state) => state.wellness);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [navigateData, setNavigateData] = useState({});
   const navigate = useNavigate();
@@ -87,7 +89,6 @@ function WellnessForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const form = event.target;
     const title = form.title.value;
     const description = form.description.value;
@@ -96,56 +97,76 @@ function WellnessForm() {
       title,
       description,
     };
+    setIsLoading(true);
+    setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
     formData.append("data", JSON.stringify(data));
-
     let file = null;
-
     try {
       if (thumbnail) {
         file = await getCompressedImage(thumbnail);
+        formData.append("files", file);
+      }
+      if (type === "edit") {
+        dispatch(updateWellness({ id, formData }))
+          .unwrap()
+          .then((res) => {
+            dispatch(fetchWellness())
+              .unwrap()
+              .then((res) => {
+                setIsLoading(false);
+                infoNotify("Wellness update successfull");
+              });
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            errorNotify("Wellness update failed");
+          });
+      } else {
+        dispatch(addWellness(formData))
+          .unwrap()
+          .then((res) => {
+            dispatch(fetchWellness())
+              .unwrap()
+              .then((res) => {
+                setIsLoading(false);
+                infoNotify("Wellness add successfull");
+                formRef.current.reset();
+                thumbnailRef.current.value = "";
+                setThumbnail(null);
+                setThumbnailPreview(null);
+                setDescription("");
+              });
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            errorNotify("Wellness add failed");
+          });
       }
     } catch (error) {
-      console.log(error);
-    }
-
-    setNavigateData({ ...data, fileUrl: thumbnailPreview, _id: id });
-    if (type === "edit") {
-      if (!file) {
-        dispatch(updateWellness({ id, formData }));
-      } else {
-        formData.append("files", file);
-        dispatch(updateWellness({ id, formData }));
-      }
-    } else {
-      formData.append("files", file);
-      dispatch(addWellness(formData));
+      setIsLoading(false);
+      errorNotify("Something went wrong");
     }
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(fetchWellness());
-      if (type !== "edit") {
-        formRef.current.reset();
-        thumbnailRef.current.value = "";
-        setThumbnail(null);
-        setThumbnailPreview(null);
-        setDescription("");
-      }
-      if (type === "edit") {
-        infoNotify("Wellness update successfull");
-      } else {
-        infoNotify("Wellness add successfull");
-      }
-    } else if (isResponseError) {
-      dispatch(handleReset());
-      if (type === "edit") {
-        errorNotify("Wellness update failed");
-      } else {
-        errorNotify("Wellness add failed");
-      }
-    }
-  }, [isSuccess, dispatch, type]);
+  const handleWellnesDelete = async () => {
+    setIsLoading(true);
+
+    dispatch(deleteWellness(id))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchWellness())
+          .unwrap()
+          .then((res) => {
+            infoNotify("Delete wellness successfull");
+            navigate("/services");
+            setIsLoading(false);
+          });
+      })
+      .catch((err) => {
+        errorNotify("Delete wellness failed");
+        setIsLoading(false);
+      });
+  };
 
   useEffect(() => {
     if (isSuccess && type === "edit" && navigateData?._id) {
@@ -267,21 +288,27 @@ function WellnessForm() {
           </div>
           {/* buttons */}
 
-          <div className="flex justify-end items-center gap-6 mt-8">
+          <div className="flex justify-between items-center gap-6 mt-8">
+            {type === "edit" && (
+              <label
+                htmlFor="confirmationPopup"
+                className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+              >
+                Delete Wellness
+              </label>
+            )}
+            <div></div>
             <button
               type="submit"
               className="h-14 w-60 py-4 px-6 rounded-xl bg-secondaryColor text-sm font-semibold text-white"
-              disabled={isRequestLoading}
+              disabled={isLoading}
             >
               {type === "edit" ? "Update Wellness" : "Add Wellness"}
             </button>
           </div>
-          {isResponseError && (
-            <p className="text-errorColor">Something went wrong!</p>
-          )}
         </form>
       </div>
-      {isRequestLoading && <RequestLoader></RequestLoader>}
+      {isLoading && <RequestLoader></RequestLoader>}
       <div>
         <ToastContainer
           position="top-right"
@@ -295,6 +322,13 @@ function WellnessForm() {
           pauseOnHover
           theme="light"
         />
+      </div>
+      <div>
+        <ConfirmationModal
+          handleStatus={handleWellnesDelete}
+          status="Delete"
+          modalClose=""
+        ></ConfirmationModal>
       </div>
     </section>
   );

@@ -38,10 +38,10 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-export const deleteUser = createAsyncThunk("products/deleteUser", async () => {
+export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
   try {
     await axios.delete(
-      `${import.meta.env.VITE_API_BASE_URL}/products/delete/${id}`
+      `${import.meta.env.VITE_API_BASE_URL}/users/delete/${id}`
     );
   } catch (error) {
     throw error;

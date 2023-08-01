@@ -20,7 +20,7 @@ function CourseModal({
   errorNotify,
   infoNotify,
 }) {
-  const [lessondData, setLessonData] = useState({});
+  const [lessonData, setLessonData] = useState({});
 
   console.log(courseData);
 
@@ -61,8 +61,8 @@ function CourseModal({
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
-    const title = form.title.value;
-    const description = form.description.value;
+    const title = form.lessonTitle.value;
+    const description = form.lessonDescription.value;
     const videoUrl = form.videoUrl.value;
     const formData = new FormData();
     const data = {
@@ -117,7 +117,7 @@ function CourseModal({
         await dispatch(addLesson({ id: courseId, formData }));
         setNavigateData((prev) => ({
           ...prev,
-          lessons: [...prev.lessons, { ...data, fileUrl: thumbnailPreview }],
+          lessons: [...prev?.lessons, { ...data, fileUrl: thumbnailPreview }],
         }));
       }
       setIsLoading(false);
@@ -131,6 +131,7 @@ function CourseModal({
             : "Lesson add successfull"
         }`
       );
+      dispatch(fetchCourses());
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -171,9 +172,14 @@ function CourseModal({
       });
   };
 
+  const lesson =
+    lessonIndex !== null
+      ? courseData?.lessons?.find((lesson) => lesson.id === lessonIndex)
+      : null;
+
   useEffect(() => {
-    if (type === "edit") {
-      const lesson = courseData?.lessons[lessonIndex - 1];
+    // Add a check to ensure lessonIndex is valid before setting lessonData
+    if (type === "edit" && lesson) {
       setLessonData(lesson);
       setThumbnailPreview(lesson?.fileUrl);
       setDescription(lesson?.description);
@@ -182,7 +188,7 @@ function CourseModal({
       setThumbnailPreview(null);
       setDescription("");
     }
-  }, [type, courseData?.lessons, dispatch, lessonIndex]);
+  }, [type, courseData?.lessons, lessonIndex, lesson]);
 
   return (
     <div
@@ -193,7 +199,7 @@ function CourseModal({
         <div className="w-[44rem] z-20 bg-white h-[calc(100%-8rem)] overflow-auto rounded-xl">
           <div className="w-full py-3 px-4 bg-secondaryColor flex items-center justify-between">
             <span className="text-xl text-white font-semibold">
-              {type === "edit" ? "Update" : "Add New"} Lesson
+              {type ? "Update" : "Add"} Lesson
             </span>
             <button
               type="button"
@@ -217,9 +223,9 @@ function CourseModal({
                 <input
                   required
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
-                  name="title"
+                  name="lessonTitle"
                   placeholder="Enter lesson title"
-                  defaultValue={lessondData?.title}
+                  defaultValue={lessonData?.title}
                 />
               </div>
 
@@ -283,7 +289,7 @@ function CourseModal({
                   className="p-3 text-darkSemi placeholder:text-blackSemi  bg-transparent border border-fadeMid rounded-md outline-none"
                   name="videoUrl"
                   placeholder="Enter video link"
-                  defaultValue={lessondData?.videoUrl}
+                  defaultValue={lessonData?.videoUrl}
                 />
               </div>
 
@@ -296,7 +302,7 @@ function CourseModal({
                   <div className="w-full">
                     <textarea
                       required
-                      name="description"
+                      name="lessonDescription"
                       className="p-3 h-32 w-full text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
                       placeholder="Enter lesson description"
                       value={description}

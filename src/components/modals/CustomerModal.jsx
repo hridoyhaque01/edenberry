@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 // import { updateUserData } from "../../features/users/usersSlice";
 import axios from "axios";
 import { useEffect } from "react";
@@ -39,9 +39,8 @@ export default function CustomerModal({
     midwifeName,
     midwifeId,
     country,
+    concerns,
   } = userData || {};
-
-  const { isLoading, isError, coaches } = useSelector((state) => state.coaches);
 
   const [profile, setProfile] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
@@ -102,21 +101,25 @@ export default function CustomerModal({
 
     setIsReuestLoading(true);
 
-    try {
-      if (profile) {
-        file = await getCompresedImage(profile);
-        formData.append(`files`, file);
-      }
-      formData.append("data", JSON.stringify(data));
-      await dispatch(updateUser({ id: userData?._id, formData }));
-      await dispatch(fetchUsers());
-      setIsReuestLoading(false);
-      infoNotify("User update successfull");
-    } catch (error) {
-      console.log(error);
-      setIsReuestLoading(false);
-      errorNotify("User update successfull");
+    if (profile) {
+      file = await getCompresedImage(profile);
+      formData.append(`files`, file);
     }
+    formData.append("data", JSON.stringify(data));
+    dispatch(updateUser({ id: userData?._id, formData }))
+      .unwrap()
+      .then((res) => {
+        dispatch(fetchUsers())
+          .unwrap()
+          .then((res) => {
+            setIsReuestLoading(false);
+            infoNotify("User update successfull");
+          });
+      })
+      .catch((error) => {
+        setIsReuestLoading(false);
+        errorNotify("User update failed");
+      });
   };
 
   const handleBilling = async (event) => {
@@ -175,13 +178,12 @@ export default function CustomerModal({
     setIsReuestLoading(true);
     true;
 
-    dispatch(deleteUser())
+    dispatch(deleteUser(userData?._id))
       .unwrap()
       .then((res) => {
         dispatch(fetchUsers());
         infoNotify("Delete user successfull");
-        navigate("/services");
-        setIsReuestLoading(true);
+        setIsReuestLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -558,6 +560,21 @@ export default function CustomerModal({
 
                 <form action="" onSubmit={handleAssignedMidwife}>
                   <div className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-5">
+                      <span className="text-xs font-mont font-semibold text-black capitalize">
+                        Concerns
+                      </span>
+                      <div className="flex items-center gap-4">
+                        {concerns?.map((concern, i) => (
+                          <span
+                            className="bg-aqua text-black capitalize inline-flex px-6 py-2.5 rounded-lg text-xs"
+                            key={i}
+                          >
+                            {concern}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                     {/* apparelSize */}
                     <div className="flex flex-col gap-5">
                       <span className="text-xs font-mont font-semibold text-black capitalize">

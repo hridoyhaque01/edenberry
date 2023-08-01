@@ -33,17 +33,6 @@ function Request() {
       theme: "light",
     });
 
-  const testData = [
-    {
-      id: 1,
-      firstName: "best",
-    },
-    {
-      id: 2,
-      firstName: "best",
-    },
-  ];
-
   const infoNotify = (message) =>
     toast.info(message, {
       position: "top-right",
@@ -63,28 +52,31 @@ function Request() {
 
   const updateMidwive = async () => {
     setIsRequestLoading(true);
-    try {
-      await dispatch(updateMidWives({ id: data?.id, status: data?.status }));
-      setIsRequestLoading(false);
-      infoNotify(`${data?.status} successfull`);
-    } catch (error) {
-      console.log(error);
-      setIsRequestLoading(false);
-      errorNotify(`${data?.status} failed`);
-    }
+
+    dispatch(updateMidWives({ id: data?.id, status: data?.status }))
+      .unwrap()
+      .then((res) => {
+        setIsRequestLoading(false);
+        infoNotify(`${data?.status} successfull`);
+      })
+      .catch((error) => {
+        setIsRequestLoading(false);
+        errorNotify(`${data?.status} failed`);
+      });
   };
 
   const updateSeekHelps = async () => {
     setIsRequestLoading(true);
-    try {
-      await dispatch(updateSeekHelp({ id: data?.id, status: data?.status }));
-      setIsRequestLoading(false);
-      infoNotify(`${data?.status} successfull`);
-    } catch (error) {
-      console.log(error);
-      setIsRequestLoading(false);
-      errorNotify(`${data?.status} failed`);
-    }
+    dispatch(updateSeekHelp({ id: data?.id, status: data?.status }))
+      .unwrap()
+      .then((res) => {
+        setIsRequestLoading(false);
+        infoNotify(`${data?.status} successfull`);
+      })
+      .catch((error) => {
+        setIsRequestLoading(false);
+        errorNotify(`${data?.status} failed`);
+      });
   };
 
   const {
@@ -107,13 +99,13 @@ function Request() {
     midwiveContent = (
       <div className="text-errorColor">Something went wrong!</div>
     );
-  } else if (!isLoading && !isError && testData?.length === 0) {
+  } else if (!isLoading && !isError && midwives?.length === 0) {
     midwiveContent = <div>No data found!</div>;
-  } else if (!isLoading && !isError && testData?.length > 0) {
+  } else if (!isLoading && !isError && midwives?.length > 0) {
     midwiveContent = (
       <RequestTable
         dispatchFun={updateMidwive}
-        data={testData}
+        data={midwives}
         setReason={setReason}
         errorNotify={errorNotify}
         infoNotify={infoNotify}

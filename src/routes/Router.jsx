@@ -29,7 +29,7 @@ export const routes = createBrowserRouter([
     ),
     children: [
       {
-        path: "/",
+        path: "/dashboard",
         element: <Dashboard></Dashboard>,
       },
       {
@@ -110,6 +110,14 @@ export const routes = createBrowserRouter([
 
   {
     path: "*",
+    element: (
+      <h2 className="font-black py-6 text-3xl text-red-600 text-center">
+        Page Not Found!
+      </h2>
+    ),
+  },
+  {
+    path: "/404",
     element: (
       <h2 className="font-black py-6 text-3xl text-red-600 text-center">
         Page Not Found!

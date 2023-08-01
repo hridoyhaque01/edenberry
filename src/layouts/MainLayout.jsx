@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import SideNav from "../components/shared/sidenav/SideNav";
 import TopNav from "../components/shared/topnav/TopNav";
 import { fetchAdmin } from "../features/admin/adminSlice";
@@ -19,6 +19,7 @@ const MainLayout = () => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     dispatch(fetchCoaches());
@@ -35,9 +36,31 @@ const MainLayout = () => {
     dispatch(fetchChart());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   navigate("/services");
-  // }, []);
+  // console.log(location);
+
+  const permissons = useMemo(() => userData?.admin?.permissions, []);
+
+  useEffect(() => {
+    const path = localStorage.getItem("location");
+    console.log(path);
+    if (path) {
+      navigate(`/${path}`);
+      // console.log
+    } else if (permissons?.length > 0) {
+      navigate(`/${permissons[0]}`);
+    }
+  }, [navigate, permissons]);
+
+  useEffect(() => {
+    const path = location.pathname.substring(1);
+    console.log(path);
+    if (permissons?.includes(path)) {
+      localStorage.setItem("location", path);
+    } else if (permissons?.length > 0 && path === "") {
+      navigate(`/${permissons[0]}`);
+      // localStorage.setItem("location", permissons[0]);
+    }
+  }, [location.pathname, permissons, navigate]);
 
   return (
     <div className="bg-white h-screen w-full overflow-hidden">

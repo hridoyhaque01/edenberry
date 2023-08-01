@@ -96,7 +96,7 @@ function RequestTable({
                           className={`rounded-lg px-2 py-2 w-24 focus:outline-none active:border-none bg-secondaryLight
                           text-redColor cursor-pointer select-none`}
                         >
-                          open
+                          Open
                           <i className="fa-solid fa-angle-down text-sm"></i>
                         </label>
                         <ul
@@ -119,7 +119,7 @@ function RequestTable({
                                 <p
                                   className={`text-warningMain py-2 text-greenColor active:bg-blackLow w-full rounded-t-md `}
                                 >
-                                  approve
+                                  Approve
                                 </p>
                               </li>
                             </label>
@@ -138,7 +138,7 @@ function RequestTable({
                                 <p
                                   className={`py-2 text-redColor active:bg-blackLow w-full rounded-t-md `}
                                 >
-                                  denied
+                                  Denied
                                 </p>
                               </li>
                             </label>
