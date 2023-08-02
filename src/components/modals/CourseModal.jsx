@@ -22,8 +22,6 @@ function CourseModal({
 }) {
   const [lessonData, setLessonData] = useState({});
 
-  console.log(courseData);
-
   const courseId = courseData?._id;
   const lessonModalRef = useRef();
   const thumbnailRef = useRef();
@@ -133,7 +131,6 @@ function CourseModal({
       );
       dispatch(fetchCourses());
     } catch (error) {
-      console.log(error);
       setIsLoading(false);
       setSuccess(false);
       errorNotify(

@@ -150,7 +150,6 @@ export default function CustomerModal({
       setIsReuestLoading(false);
       infoNotify("Update shipping  successfull");
     } catch (error) {
-      console.log(error);
       setIsReuestLoading(false);
       errorNotify("update shipping failed");
     }
@@ -179,7 +178,6 @@ export default function CustomerModal({
             });
         })
         .catch((err) => {
-          console.log(err);
           setIsReuestLoading(false);
           errorNotify("Assign midwife failed");
         });
@@ -201,7 +199,6 @@ export default function CustomerModal({
         setIsReuestLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         errorNotify("Delete user failed");
         setIsReuestLoading(false);
       });
@@ -231,10 +228,8 @@ export default function CustomerModal({
       );
       const result = await response?.data;
       setMidwives(result);
-      console.log(result);
     } catch (error) {
       setMidwives([]);
-      console.log(error);
     }
   };
 
@@ -252,8 +247,6 @@ export default function CustomerModal({
       fetchBookingMidwives();
     }
   }, [userData?._id]);
-
-  console.log(userData);
 
   return (
     <>

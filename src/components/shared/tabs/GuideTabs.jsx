@@ -10,8 +10,6 @@ function GuideTabs() {
     dispatch(changeTab(tabValue));
   };
 
-  console.log(activeTab);
-
   return (
     <div className="text-fadeHigh ">
       <nav

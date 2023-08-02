@@ -21,8 +21,6 @@ function CustomerTable() {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
-  console.log(users);
-
   const [isRequestLoading, setIsReuestLoading] = useState(false);
 
   const errorNotify = (message) =>

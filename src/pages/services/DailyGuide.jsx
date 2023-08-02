@@ -10,8 +10,6 @@ function DailyGuide() {
     (state) => state.guides
   );
 
-  console.log(activeTab);
-
   let postpartum = null;
   let prenatal = null;
 

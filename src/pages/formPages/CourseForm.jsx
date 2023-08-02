@@ -153,7 +153,6 @@ function CourseForm() {
       setIsLoading(false);
       setSuccess(true);
     } catch (error) {
-      console.log(error);
       setIsLoading(false);
       setSuccess(false);
 
