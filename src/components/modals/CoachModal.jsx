@@ -107,6 +107,7 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
         setIsRequestLoading(false);
       })
       .catch((err) => {
+        console.log(err);
         errorNotify("Delete coach failed");
         setIsRequestLoading(false);
       });
