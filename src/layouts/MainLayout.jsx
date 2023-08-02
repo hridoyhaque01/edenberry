@@ -49,6 +49,8 @@ const MainLayout = () => {
     } else if (permissons?.length > 0) {
       navigate(`/${permissons[0]}`);
     }
+    console.log(path);
+    console.log(permissons);
   }, [navigate, permissons]);
 
   useEffect(() => {

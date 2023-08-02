@@ -38,6 +38,21 @@ export const updateUser = createAsyncThunk(
   }
 );
 
+export const addMidwives = createAsyncThunk(
+  "users/addMidwives",
+  async ({ id, formData }) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/midwives/assign/${id}`,
+        formData
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
   try {
     await axios.delete(
@@ -116,6 +131,24 @@ const usersSlice = createSlice({
     });
 
     builder.addCase(updateUser.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = true;
+      state.isSuccess = false;
+    });
+    // update user data
+
+    builder.addCase(addMidwives.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isResponseError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(addMidwives.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isResponseError = false;
+      state.isSuccess = true;
+    });
+
+    builder.addCase(addMidwives.rejected, (state) => {
       state.isRequestLoading = false;
       state.isResponseError = true;
       state.isSuccess = false;

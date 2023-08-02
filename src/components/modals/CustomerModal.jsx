@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { useEffect } from "react";
 import {
+  addMidwives,
   deleteUser,
   fetchUsers,
   updateUser,
@@ -53,6 +54,7 @@ export default function CustomerModal({
   const noteRef = useRef();
   const sizeRef = useRef();
   const dispatch = useDispatch();
+
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
     if (
@@ -114,6 +116,7 @@ export default function CustomerModal({
           .then((res) => {
             setIsReuestLoading(false);
             infoNotify("User update successfull");
+            form.reset();
           });
       })
       .catch((error) => {
@@ -163,14 +166,24 @@ export default function CustomerModal({
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     try {
-      await dispatch(updateUser({ id: userData?._id, formData }));
-      await dispatch(fetchUsers());
-      setIsReuestLoading(false);
-      infoNotify("Assign midwife successfull");
+      dispatch(addMidwives({ id: userData?._id, formData }))
+        .unwrap()
+        .then((res) => {
+          dispatch(fetchUsers())
+            .unwrap()
+            .then((res) => {
+              setIsReuestLoading(false);
+              infoNotify("Assign midwife successfull");
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsReuestLoading(false);
+          errorNotify("Assign midwife failed");
+        });
     } catch (error) {
-      console.log(error);
       setIsReuestLoading(false);
-      infoNotify("Assign midwife failed");
+      errorNotify("Somthing went wrong");
     }
   };
 
@@ -237,6 +250,8 @@ export default function CustomerModal({
       fetchBookingMidwives();
     }
   }, [userData?._id]);
+
+  console.log(userData);
 
   return (
     <>

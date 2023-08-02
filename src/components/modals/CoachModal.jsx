@@ -85,6 +85,7 @@ function CoachModal({ errorNotify, infoNotify, setIsRequestLoading }) {
             .then((res) => {
               infoNotify("Coach update successful");
               setIsRequestLoading(false);
+              form.reset();
             });
         })
         .catch((error) => {
