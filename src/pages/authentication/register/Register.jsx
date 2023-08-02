@@ -68,6 +68,7 @@ const Register = () => {
         password,
         status: "active",
         permissions: [
+          "dashboard",
           "services",
           "coach",
           "products",
