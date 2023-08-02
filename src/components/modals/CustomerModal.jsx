@@ -160,7 +160,8 @@ export default function CustomerModal({
     const splitMidwife = midwife?.split("-");
     const midwifeName = splitMidwife[0];
     const midwifeId = splitMidwife[1];
-    const timestamp = Date.now().toLocaleString();
+    const timestamp = Date.now().toString();
+    console.log(timestamp);
 
     const data = { midwifeName, midwifeId, timestamp };
     setIsReuestLoading(true);

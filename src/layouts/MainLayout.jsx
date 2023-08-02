@@ -36,26 +36,19 @@ const MainLayout = () => {
     dispatch(fetchChart());
   }, [dispatch]);
 
-  // console.log(location);
-
   const permissons = useMemo(() => userData?.admin?.permissions, []);
 
   useEffect(() => {
     const path = localStorage.getItem("location");
-    console.log(path);
     if (path) {
       navigate(`/${path}`);
-      // console.log
     } else if (permissons?.length > 0) {
       navigate(`/${permissons[0]}`);
     }
-    console.log(path);
-    console.log(permissons);
   }, [navigate, permissons]);
 
   useEffect(() => {
     const path = location.pathname.substring(1);
-    console.log(path);
     if (permissons?.includes(path)) {
       localStorage.setItem("location", path);
     } else if (permissons?.length > 0 && path === "") {
