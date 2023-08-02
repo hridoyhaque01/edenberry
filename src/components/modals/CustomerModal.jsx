@@ -161,7 +161,9 @@ export default function CustomerModal({
     const splitMidwife = midwife?.split("-");
     const midwifeName = splitMidwife[0];
     const midwifeId = splitMidwife[1];
-    const data = { midwifeName, midwifeId };
+    const timestamp = Date.now().toLocaleString();
+
+    const data = { midwifeName, midwifeId, timestamp };
     setIsReuestLoading(true);
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
