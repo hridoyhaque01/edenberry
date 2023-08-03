@@ -2,6 +2,7 @@ import React from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CoachTabs from "../../components/shared/tabs/CoachTabs";
+import ApprovedCoachTable from "../../components/tables/ApprovedCoachTable";
 import CoachTable from "../../components/tables/CoachTable";
 import AddCoach from "./AddCoach";
 
@@ -56,6 +57,17 @@ function Coach() {
             errorNotify={errorNotify}
             infoNotify={infoNotify}
           ></AddCoach>
+        </div>
+        <div
+          id="tabs-with-underline-4"
+          className="hidden"
+          role="tabpanel"
+          aria-labelledby="tabs-with-underline-item-4"
+        >
+          <ApprovedCoachTable
+            errorNotify={errorNotify}
+            infoNotify={infoNotify}
+          ></ApprovedCoachTable>
         </div>
       </div>
       <ToastContainer

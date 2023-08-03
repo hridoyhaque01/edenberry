@@ -23,6 +23,9 @@ export default {
       secondaryLight: "#FFEFEB",
 
       errorColor: "#FF6B6B",
+      errorLightColor: "#FD5D5D",
+      errorLowColor: "#FFEDED",
+
       warningColor: "#FF9F43",
       infoColor: "#54A0FF",
       alertColor: "#FECA57",

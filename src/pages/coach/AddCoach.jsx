@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import RequestLoader from "../../components/shared/loaders/RequestLoader";
-import { addCoache } from "../../features/coach/coachSlice";
+import {
+  addCoache,
+  fetchApprovedCoaches,
+} from "../../features/coach/coachSlice";
 
 function AddCoach({ errorNotify, infoNotify }) {
   const dispatch = useDispatch();
@@ -25,6 +28,7 @@ function AddCoach({ errorNotify, infoNotify }) {
       dispatch(addCoache(formData))
         .unwrap()
         .then((res) => {
+          dispatch(fetchApprovedCoaches());
           form.reset();
           setIsLoading(false);
           infoNotify("Coach add successfull");

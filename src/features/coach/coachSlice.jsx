@@ -11,6 +11,9 @@ const initialState = {
   isAddError: false,
   isAddSuccess: false,
   coachData: {},
+  isApprovedCoachLoading: true,
+  isApprovedCoachError: false,
+  approvedCoaches: [],
 };
 
 export const fetchCoaches = createAsyncThunk("coach/fetchCoaches", async () => {
@@ -23,6 +26,20 @@ export const fetchCoaches = createAsyncThunk("coach/fetchCoaches", async () => {
     throw error;
   }
 });
+
+export const fetchApprovedCoaches = createAsyncThunk(
+  "coach/fetchApprovedCoaches",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/approveCoach`
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 
 export const addCoache = createAsyncThunk(
   "coach/addCoache",
@@ -65,6 +82,20 @@ export const deleteCoach = createAsyncThunk("coach/deleteCoach", async (id) => {
   }
 });
 
+export const deleteApprovedCoach = createAsyncThunk(
+  "coach/deleteApprovedCoach",
+  async (id) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/approveCoach/delete/${id}`
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const coachSlice = createSlice({
   name: "coachSlice",
   initialState,
@@ -90,6 +121,19 @@ const coachSlice = createSlice({
     builder.addCase(fetchCoaches.rejected, (state) => {
       state.isError = true;
       state.isLoading = false;
+    });
+
+    builder.addCase(fetchApprovedCoaches.pending, (state) => {
+      state.isApprovedCoachError = false;
+    });
+    builder.addCase(fetchApprovedCoaches.fulfilled, (state, action) => {
+      state.isApprovedCoachLoading = false;
+      state.isApprovedCoachError = false;
+      state.approvedCoaches = action.payload;
+    });
+    builder.addCase(fetchApprovedCoaches.rejected, (state) => {
+      state.isApprovedCoachLoading = false;
+      state.isApprovedCoachError = true;
     });
 
     builder.addCase(addCoache.pending, (state) => {
@@ -137,6 +181,23 @@ const coachSlice = createSlice({
       state.isUpdateSuccess = true;
     });
     builder.addCase(deleteCoach.rejected, (state) => {
+      state.isRequestLoading = false;
+      state.isUpdateError = true;
+      state.isUpdateSuccess = false;
+    });
+    // delete coach
+
+    builder.addCase(deleteApprovedCoach.pending, (state) => {
+      state.isRequestLoading = true;
+      state.isUpdateError = false;
+      state.isUpdateSuccess = false;
+    });
+    builder.addCase(deleteApprovedCoach.fulfilled, (state) => {
+      state.isRequestLoading = false;
+      state.isUpdateError = false;
+      state.isUpdateSuccess = true;
+    });
+    builder.addCase(deleteApprovedCoach.rejected, (state) => {
       state.isRequestLoading = false;
       state.isUpdateError = true;
       state.isUpdateSuccess = false;

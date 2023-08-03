@@ -5,7 +5,10 @@ import SideNav from "../components/shared/sidenav/SideNav";
 import TopNav from "../components/shared/topnav/TopNav";
 import { fetchAdmin } from "../features/admin/adminSlice";
 import { fetchChart } from "../features/chart/ChartSlice";
-import { fetchCoaches } from "../features/coach/coachSlice";
+import {
+  fetchApprovedCoaches,
+  fetchCoaches,
+} from "../features/coach/coachSlice";
 import { fetchMidWives } from "../features/midwives/midWiveSlice";
 import { fetchPrivacy } from "../features/privacy/privacySlice";
 import { fetchProducts } from "../features/products/productSlice";
@@ -34,6 +37,7 @@ const MainLayout = () => {
     dispatch(fetchPrivacy());
     dispatch(fetchProducts());
     dispatch(fetchChart());
+    dispatch(fetchApprovedCoaches());
   }, [dispatch]);
 
   const permissons = useMemo(() => userData?.admin?.permissions, []);
