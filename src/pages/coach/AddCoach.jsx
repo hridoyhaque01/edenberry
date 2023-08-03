@@ -28,10 +28,13 @@ function AddCoach({ errorNotify, infoNotify }) {
       dispatch(addCoache(formData))
         .unwrap()
         .then((res) => {
-          dispatch(fetchApprovedCoaches());
-          form.reset();
-          setIsLoading(false);
-          infoNotify("Coach add successfull");
+          dispatch(fetchApprovedCoaches())
+            .unwrap()
+            .then((res) => {
+              form.reset();
+              setIsLoading(false);
+              infoNotify("Coach add successfull");
+            });
         })
         .catch((error) => {
           setIsLoading(false);

@@ -43,9 +43,12 @@ function ApprovedCoachTable({ infoNotify, errorNotify }) {
     dispatch(deleteApprovedCoach(approvedCoachId))
       .unwrap()
       .then((res) => {
-        dispatch(fetchApprovedCoaches());
-        infoNotify("Delete Approved coach successfull");
-        setIsRequestLoading(false);
+        dispatch(fetchApprovedCoaches())
+          .unwrap()
+          .then((res) => {
+            infoNotify("Delete Approved coach successfull");
+            setIsRequestLoading(false);
+          });
       })
       .catch((err) => {
         errorNotify("Delete Approved coach failed");
