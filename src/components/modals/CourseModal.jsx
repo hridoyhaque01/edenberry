@@ -51,9 +51,7 @@ function CourseModal({
 
   const handleChange = (event) => {
     const { value } = event.target;
-    if (value.length <= 1200) {
-      setDescription(value);
-    }
+    setDescription(value);
   };
 
   const handleSubmit = async (event) => {
@@ -300,14 +298,11 @@ function CourseModal({
                     <textarea
                       required
                       name="lessonDescription"
-                      className="p-3 h-32 w-full text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
+                      className="p-3 h-72 w-full text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                       placeholder="Enter lesson description"
                       value={description}
                       onChange={(e) => handleChange(e)}
                     />
-                    <p className="text-darkMid text-xs text-right mt-1">
-                      ({description?.length || 0}/1200)
-                    </p>
                   </div>
                 </div>
               </div>

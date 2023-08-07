@@ -117,6 +117,8 @@ export default function CustomerModal({
             setIsReuestLoading(false);
             infoNotify("User update successfull");
             form.reset();
+            sizeRef.current.value = apparelSize;
+            noteRef.current.value = initialNote;
           });
       })
       .catch((error) => {
@@ -145,13 +147,23 @@ export default function CustomerModal({
 
     try {
       formData.append("data", JSON.stringify(data));
-      await dispatch(updateUser({ id: userData?._id, formData }));
-      await dispatch(fetchUsers());
-      setIsReuestLoading(false);
-      infoNotify("Update shipping  successfull");
+      await dispatch(updateUser({ id: userData?._id, formData }))
+        .unwrap()
+        .then((res) => {
+          dispatch(fetchUsers())
+            .unwrap()
+            .then((res) => {
+              setIsReuestLoading(false);
+              infoNotify("Update shipping  successfull");
+            });
+        })
+        .catch((error) => {
+          setIsReuestLoading(false);
+          errorNotify("update shipping failed");
+        });
     } catch (error) {
       setIsReuestLoading(false);
-      errorNotify("update shipping failed");
+      errorNotify("Somthing went wrong");
     }
   };
 
@@ -195,9 +207,10 @@ export default function CustomerModal({
     dispatch(deleteUser(userData?._id))
       .unwrap()
       .then((res) => {
-        dispatch(fetchUsers());
-        infoNotify("Delete user successfull");
-        setIsReuestLoading(false);
+        dispatch(fetchUsers()).then((res) => {
+          infoNotify("Delete user successfull");
+          setIsReuestLoading(false);
+        });
       })
       .catch((err) => {
         errorNotify("Delete user failed");
@@ -217,9 +230,7 @@ export default function CustomerModal({
 
   const handleChange = (event) => {
     const { value } = event.target;
-    if (value.length <= 1200) {
-      setCustomerNote(value);
-    }
+    setCustomerNote(value);
   };
 
   const fetchBookingMidwives = async () => {
@@ -404,15 +415,12 @@ export default function CustomerModal({
                       <textarea
                         id="customernote"
                         name="customerNote"
-                        className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md resize-none h-32 text-sm placeholder:text-fadeSemi text-black"
+                        className="p-3 h-32 w-full text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                         placeholder="Enter customer note..."
                         value={customerNote}
                         onChange={(e) => handleChange(e)}
                         ref={noteRef}
                       ></textarea>
-                      <p className="text-darkMid text-xs text-right">
-                        ({customerNote?.length || 0}/1200)
-                      </p>
                     </div>
                   </div>
 

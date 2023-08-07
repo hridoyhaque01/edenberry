@@ -81,9 +81,7 @@ function CourseForm() {
 
   const handleChange = (event) => {
     const { value } = event.target;
-    if (value.length <= 1200) {
-      setDescription(value);
-    }
+    setDescription(value);
   };
 
   const handleSubmit = async (event) => {
@@ -317,14 +315,11 @@ function CourseForm() {
                     required
                     id="description"
                     name="description"
-                    className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md resize-none h-32 text-sm placeholder:text-fadeSemi text-black"
+                    className="w-full outline-none border border-fadeMid bg-transparent p-2.5 rounded-md h-72 text-sm placeholder:text-fadeSemi text-black"
                     placeholder="Enter course description"
                     value={description}
                     onChange={(e) => handleChange(e)}
                   ></textarea>
-                  <p className="text-darkMid text-xs text-right mt-1">
-                    ({description?.length || 0}/1200)
-                  </p>
                 </div>
               </div>
             </div>

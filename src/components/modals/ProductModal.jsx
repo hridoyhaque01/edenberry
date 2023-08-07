@@ -38,9 +38,7 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
 
   const handleChange = (event) => {
     const { value } = event.target;
-    if (value.length <= 1200) {
-      setDescription(value);
-    }
+    setDescription(value);
   };
 
   useEffect(() => {
@@ -94,9 +92,10 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
     dispatch(deleteProduct(activeProduct?._id))
       .unwrap()
       .then((res) => {
-        dispatch(fetchProducts());
-        infoNotify("Delete product successfull");
-        setIsRequestLoading(false);
+        dispatch(fetchProducts()).then((res) => {
+          infoNotify("Delete product successfull");
+          setIsRequestLoading(false);
+        });
       })
       .catch((err) => {
         errorNotify("Delete product failed");
@@ -194,15 +193,12 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
                 <div className="w-full">
                   <textarea
                     name="description"
-                    className="p-3 h-32 w-full text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
+                    className="p-3 h-72 w-full text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                     placeholder="Enter product description"
                     required
                     value={description}
                     onChange={(e) => handleChange(e)}
                   />
-                  <p className="text-darkMid text-xs text-right">
-                    ({description?.length || 0}/1200)
-                  </p>
                 </div>
               </div>
 

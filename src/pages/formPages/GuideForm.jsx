@@ -38,9 +38,7 @@ function GuideForm() {
 
   const handleChange = (event) => {
     const { value } = event.target;
-    if (value.length <= 1200) {
-      setDescription(value);
-    }
+    setDescription(value);
   };
 
   const dispatch = useDispatch();
@@ -285,14 +283,11 @@ function GuideForm() {
               <textarea
                 required
                 name="description"
-                className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
+                className="p-3 h-72 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                 placeholder="Enter daily description"
                 value={description}
                 onChange={(e) => handleChange(e)}
               />
-              <p className="text-darkMid text-xs text-right">
-                ({description?.length || 0}/1200)
-              </p>
             </div>
           </div>
           {/* buttons */}

@@ -80,9 +80,7 @@ function ResourceForm() {
 
   const handleChange = (event) => {
     const { value } = event.target;
-    if (value.length <= 1200) {
-      setDescription(value);
-    }
+    setDescription(value);
   };
 
   const handleSubmit = async (event) => {
@@ -285,14 +283,11 @@ function ResourceForm() {
             <textarea
               required
               name="description"
-              className="p-3 h-32 text-darkSemi placeholder:text-blackSemi resize-none bg-transparent border border-fadeMid rounded-md outline-none"
+              className="p-3 h-48 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
               placeholder="Enter resource description"
               value={description}
               onChange={(e) => handleChange(e)}
             />
-            <p className="text-darkMid text-xs text-right">
-              ({description?.length || 0}/1200)
-            </p>
           </div>
           {/* buttons */}
 
@@ -300,7 +295,7 @@ function ResourceForm() {
             {type === "edit" && (
               <label
                 htmlFor="confirmationPopup"
-                className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+                className="h-14 w-72 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
               >
                 Delete Resource
               </label>
