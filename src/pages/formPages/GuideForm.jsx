@@ -283,7 +283,7 @@ function GuideForm() {
               <textarea
                 required
                 name="description"
-                className="p-3 h-72 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
+                className="p-3 w-full h-72 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                 placeholder="Enter daily description"
                 value={description}
                 onChange={(e) => handleChange(e)}

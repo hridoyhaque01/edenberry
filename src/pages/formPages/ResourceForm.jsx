@@ -283,7 +283,7 @@ function ResourceForm() {
             <textarea
               required
               name="description"
-              className="p-3 h-48 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
+              className="p-3 h-72 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
               placeholder="Enter resource description"
               value={description}
               onChange={(e) => handleChange(e)}
@@ -295,7 +295,7 @@ function ResourceForm() {
             {type === "edit" && (
               <label
                 htmlFor="confirmationPopup"
-                className="h-14 w-72 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
+                className="h-14 w-60 py-4 px-6 rounded-xl bg-errorColor text-sm font-semibold text-white text-center cursor-pointer"
               >
                 Delete Resource
               </label>

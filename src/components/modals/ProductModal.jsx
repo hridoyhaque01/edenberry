@@ -193,7 +193,7 @@ function ProductModal({ errorNotify, infoNotify, setIsRequestLoading }) {
                 <div className="w-full">
                   <textarea
                     name="description"
-                    className="p-3 h-72 w-full text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
+                    className="p-3 w-full h-72 text-darkSemi placeholder:text-blackSemi bg-transparent border border-fadeMid rounded-md outline-none"
                     placeholder="Enter product description"
                     required
                     value={description}

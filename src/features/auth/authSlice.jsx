@@ -27,7 +27,7 @@ export const login = createAsyncThunk("auth/login", async (data) => {
       formData
     );
     localStorage.setItem("userData", JSON.stringify(response?.data));
-    const tokenExpiration = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+    const tokenExpiration = 7 * 24 * 60 * 60 * 1000;
     const expirationDate = Date.now() + tokenExpiration;
     localStorage.setItem("tokenExpiration", expirationDate);
     return response?.data;
