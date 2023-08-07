@@ -93,37 +93,51 @@ function CourseForm() {
     setIsLoading(true);
     setSuccess(false);
 
+    let file = null;
     try {
+      if (thumbnail) {
+        const file = await getCompressedImage(thumbnail);
+        formData.append("files", file);
+      }
       if (type === "edit") {
         const data = {
           title,
           description,
         };
         formData.append("data", JSON.stringify(data));
-        if (!thumbnail) {
-          await dispatch(updateCourse({ id, formData }));
-          await setNavigateData((prev) => ({
-            ...prev,
-            title,
-            description,
-            _id: id,
-          }));
-        } else {
-          const file = await getCompressedImage(thumbnail);
-          formData.append("files", file);
-          await dispatch(updateCourse({ id, formData }));
-          await setNavigateData((prev) => ({
-            ...prev,
-            title,
-            description,
-            _id: id,
-            fileUrl: thumbnailPreview,
-          }));
-        }
-
-        infoNotify("Course Update successful");
+        dispatch(updateCourse({ id, formData }))
+          .unwrap()
+          .then((res) => {
+            dispatch(fetchCourses())
+              .unwrap()
+              .then((res) => {
+                if (file) {
+                  setNavigateData((prev) => ({
+                    ...prev,
+                    title,
+                    description,
+                    _id: id,
+                    fileUrl: thumbnailPreview,
+                  }));
+                } else {
+                  setNavigateData((prev) => ({
+                    ...prev,
+                    title,
+                    description,
+                    _id: id,
+                  }));
+                }
+                setIsLoading(false);
+                setSuccess(true);
+                infoNotify("Course Update successful");
+              });
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            setSuccess(false);
+            errorNotify("Course update failed");
+          });
       } else {
-        const file = await getCompressedImage(thumbnail);
         const data = {
           title,
           description,
@@ -131,34 +145,36 @@ function CourseForm() {
         };
         formData.append("data", JSON.stringify(data));
         formData.append("files", file);
-        await dispatch(addCourse(formData))
+        dispatch(addCourse(formData))
           .unwrap()
           .then((res) => {
-            setNavigateData((prev) => ({
-              ...prev,
-              title,
-              description,
-              fileUrl: thumbnailPreview,
-              _id: res?.insertedId,
-              lessons: [],
-            }));
-            setIsDisabled(true);
+            dispatch(fetchCourses())
+              .unwrap()
+              .then((res) => {
+                setNavigateData((prev) => ({
+                  ...prev,
+                  title,
+                  description,
+                  fileUrl: thumbnailPreview,
+                  _id: res?.insertedId,
+                  lessons: [],
+                }));
+                setIsLoading(false);
+                setSuccess(true);
+                infoNotify("Course Add successful");
+                setIsDisabled(true);
+              });
           })
-          .catch((err) => console.log(err));
-        infoNotify("Course Add successful");
+          .catch((err) => {
+            setIsLoading(false);
+            setSuccess(true);
+            errorNotify("Course add failed");
+          });
       }
-      await dispatch(fetchCourses());
-      setIsLoading(false);
-      setSuccess(true);
     } catch (error) {
       setIsLoading(false);
       setSuccess(false);
-
-      if (type === "edit") {
-        errorNotify("Course update failed");
-      } else {
-        errorNotify("Course add failed");
-      }
+      errorNotify("Something went wrong");
     }
   };
 
@@ -190,10 +206,13 @@ function CourseForm() {
     dispatch(deleteCourse(id))
       .unwrap()
       .then((res) => {
-        dispatch(fetchCourses());
-        infoNotify("Delete course successfull");
-        navigate("/services");
-        setIsLoading(false);
+        dispatch(fetchCourses())
+          .unwrap()
+          .then((res) => {
+            infoNotify("Delete course successfull");
+            navigate("/services");
+            setIsLoading(false);
+          });
       })
       .catch((err) => {
         errorNotify("Delete course failed");

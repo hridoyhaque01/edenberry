@@ -144,21 +144,25 @@ function CourseModal({
     dispatch(deleteLesson({ id: courseId, lessonIndex }))
       .unwrap()
       .then((res) => {
-        setNavigateData((prev) => {
-          const updatedLessons = prev.lessons.filter(
-            (lesson) => lesson.id !== lessonIndex
-          );
-          return {
-            ...prev,
-            lessons: updatedLessons,
-          };
-        });
-        dispatch(fetchCourses());
-        lessonModalRef.current.reset();
-        setThumbnailPreview(null);
-        infoNotify("Delete lesson successfull");
-        setIsLoading(false);
-        setSuccess(true);
+        dispatch(fetchCourses())
+          .unwrap()
+          .then((res) => {
+            setNavigateData((prev) => {
+              const updatedLessons = prev.lessons.filter(
+                (lesson) => lesson.id !== lessonIndex
+              );
+              return {
+                ...prev,
+                lessons: updatedLessons,
+              };
+            });
+
+            lessonModalRef.current.reset();
+            setThumbnailPreview(null);
+            infoNotify("Delete lesson successfull");
+            setIsLoading(false);
+            setSuccess(true);
+          });
       })
       .catch((err) => {
         errorNotify("Delete lesson failed");
