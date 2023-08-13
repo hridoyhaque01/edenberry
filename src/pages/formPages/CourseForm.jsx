@@ -147,7 +147,7 @@ function CourseForm() {
         formData.append("files", file);
         dispatch(addCourse(formData))
           .unwrap()
-          .then((res) => {
+          .then((courseResult) => {
             dispatch(fetchCourses())
               .unwrap()
               .then((res) => {
@@ -156,7 +156,7 @@ function CourseForm() {
                   title,
                   description,
                   fileUrl: thumbnailPreview,
-                  _id: res?.insertedId,
+                  _id: courseResult?.insertedId,
                   lessons: [],
                 }));
                 setIsLoading(false);
@@ -219,32 +219,6 @@ function CourseForm() {
         setIsLoading(false);
       });
   };
-
-  // useEffect(() => {
-  //   if (isLessonAddSuccess || isLessonEditSuccess) {
-  //     setLessons(initialLesson);
-  //   }
-  // }, [isLessonAddSuccess, initialLesson]);
-
-  // useEffect(() => {
-  //   if (type === "edit" && stateLessons?.length > 0) {
-  //     dispatch(addLocalLessons(stateLessons));
-  //     console.log(stateLessons);
-  //     setLessons(stateLessons);
-  //   }
-  // }, [type, dispatch, stateLessons]);
-
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     dispatch(fetchCourses());
-  //     if (type !== "edit") {
-  //       setIsDisabled(true);
-  //     }
-  //     infoNotify(`course ${type === "edit" ? "update" : "add"} successfull`);
-  //   } else if (isResponseError) {
-  //     errorNotify("Something went wrong!");
-  //   }
-  // }, [isSuccess, dispatch, type, isResponseError]);
 
   return (
     <>
@@ -360,7 +334,7 @@ function CourseForm() {
                 type="submit"
                 disabled={isLoading || isDisabled}
               >
-                Publish
+                {type === "edit" ? "Update Course" : "Publish"}
               </button>
             </div>
 

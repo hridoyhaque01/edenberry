@@ -27,8 +27,8 @@ const CourseDeletePopup = ({ handleStatus, status, modalClose }) => {
                   y2="110"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stop-color="#2ED3D2" />
-                  <stop offset="1" stop-color="#2ED3D2" stop-opacity="0.48" />
+                  <stop stopColor="#2ED3D2" />
+                  <stop offset="1" stopColor="#2ED3D2" stopOpacity="0.48" />
                 </linearGradient>
               </defs>
             </svg>
