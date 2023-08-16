@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import ServiceTabs from "../../components/shared/tabs/ServiceTabs";
 import Courses from "./Courses";
 import DailyGuide from "./DailyGuide";
+import Exercise from "./Exercise";
 import Resources from "./Resources";
 import Wellness from "./Wellness";
 
@@ -60,6 +61,14 @@ function Services() {
           className={`${activeTab === "wellness" ? "" : "hidden"}`}
         >
           <Wellness></Wellness>
+        </div>
+        <div
+          id="tabs-with-underline-7"
+          role="tabpanel"
+          aria-labelledby="tabs-with-underline-item-7"
+          className={`${activeTab === "exercise" ? "" : "hidden"}`}
+        >
+          <Exercise></Exercise>
         </div>
       </div>
     </div>

@@ -198,7 +198,7 @@ function CourseModal({
         <div className="w-[44rem] z-20 bg-white h-[calc(100%-8rem)] overflow-auto rounded-xl">
           <div className="w-full py-3 px-4 bg-secondaryColor flex items-center justify-between">
             <span className="text-xl text-white font-semibold">
-              {type ? "Update" : "Add"} Lesson
+              {type === "edit" ? "Update" : "Add"} Lesson
             </span>
             <button
               type="button"

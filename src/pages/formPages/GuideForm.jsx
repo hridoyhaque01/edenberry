@@ -156,7 +156,7 @@ function GuideForm() {
         dispatch(fetchGuides())
           .unwrap()
           .then((res) => {
-            infoNotify("Delete guide successfull");
+            // infoNotify("Delete guide successfull");
             navigate("/services");
             setIsLoading(false);
           });

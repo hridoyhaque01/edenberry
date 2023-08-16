@@ -8,6 +8,7 @@ import Register from "../pages/authentication/register/Register";
 import Coach from "../pages/coach/Coach";
 import Dashboard from "../pages/dashboard/Dashboard";
 import CourseForm from "../pages/formPages/CourseForm";
+import ExerciseForm from "../pages/formPages/ExerciseForm";
 import GuideForm from "../pages/formPages/GuideForm";
 import ResourceForm from "../pages/formPages/ResourceForm";
 import WellnessForm from "../pages/formPages/WellnessForm";
@@ -64,6 +65,14 @@ export const routes = createBrowserRouter([
       {
         path: "/editCourse",
         element: <CourseForm></CourseForm>,
+      },
+      {
+        path: "/addExercise",
+        element: <ExerciseForm></ExerciseForm>,
+      },
+      {
+        path: "/editExercise",
+        element: <ExerciseForm></ExerciseForm>,
       },
       {
         path: "/addResource",

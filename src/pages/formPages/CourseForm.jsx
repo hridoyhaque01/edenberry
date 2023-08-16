@@ -129,7 +129,7 @@ function CourseForm() {
                 }
                 setIsLoading(false);
                 setSuccess(true);
-                infoNotify("Course Update successful");
+                infoNotify("Course update successful");
               });
           })
           .catch((error) => {
@@ -161,7 +161,7 @@ function CourseForm() {
                 }));
                 setIsLoading(false);
                 setSuccess(true);
-                infoNotify("Course Add successful");
+                infoNotify("Course add successful");
                 setIsDisabled(true);
               });
           })
@@ -209,7 +209,7 @@ function CourseForm() {
         dispatch(fetchCourses())
           .unwrap()
           .then((res) => {
-            infoNotify("Delete course successfull");
+            // infoNotify("Delete course successfull");
             navigate("/services");
             setIsLoading(false);
           });
@@ -338,12 +338,17 @@ function CourseForm() {
               </button>
             </div>
 
-            {navigateData?.lessons?.map((lesson, index) => (
-              <div className="flex flex-col gap-5" key={index}>
+            <div className="flex flex-col gap-5">
+              {(navigateData?._id || type === "edit") && (
                 <span className="text-xs font-mont font-semibold text-black">
                   Lessons
                 </span>
-                <div className="flex items-center justify-between border  border-fadeSemi p-2 rounded-lg">
+              )}
+              {navigateData?.lessons?.map((lesson, index) => (
+                <div
+                  className="flex items-center justify-between border  border-fadeSemi p-2 rounded-lg"
+                  key={index}
+                >
                   <div className="flex items-center gap-3">
                     <div>
                       <img
@@ -396,8 +401,8 @@ function CourseForm() {
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             {navigateData?._id && (
               <div>

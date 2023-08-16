@@ -154,7 +154,7 @@ function ResourceForm() {
         dispatch(fetchResources())
           .unwrap()
           .then((res) => {
-            infoNotify("Delete resource successfull");
+            // infoNotify("Delete resource successfull");
             navigate("/services");
             setIsLoading(false);
           });

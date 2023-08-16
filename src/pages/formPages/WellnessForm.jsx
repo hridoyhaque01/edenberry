@@ -155,7 +155,7 @@ function WellnessForm() {
         dispatch(fetchWellness())
           .unwrap()
           .then((res) => {
-            infoNotify("Delete wellness successfull");
+            // infoNotify("Delete wellness successfull");
             navigate("/services");
             setIsLoading(false);
           });

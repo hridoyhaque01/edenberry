@@ -14,6 +14,7 @@ import { fetchPrivacy } from "../features/privacy/privacySlice";
 import { fetchProducts } from "../features/products/productSlice";
 import { fetchSeekHelps } from "../features/seekHelps/seekHelpsSlice";
 import { fetchCourses } from "../features/services/courseSlice";
+import { fetchExercise } from "../features/services/exerciseSlice";
 import { fetchGuides } from "../features/services/guidesSlice";
 import { fetchResources } from "../features/services/resourceSlice";
 import { fetchWellness } from "../features/services/wellnessSlice";
@@ -38,6 +39,7 @@ const MainLayout = () => {
     dispatch(fetchProducts());
     dispatch(fetchChart());
     dispatch(fetchApprovedCoaches());
+    dispatch(fetchExercise());
   }, [dispatch]);
 
   const permissons = useMemo(() => userData?.admin?.permissions, []);

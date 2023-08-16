@@ -131,7 +131,7 @@ const Sales = () => {
         </div>
         <div className="flex flex-col gap-4">
           <div>
-            <h4 className="text-2xl font-bold text-black">Users Accusation</h4>
+            <h4 className="text-2xl font-bold text-black">Users Acquisition</h4>
             <p className="text-blackSemi mt-2">See users by date</p>
           </div>
           <div className="overflow-x-auto overflow-y-hidden flex items-center justify-center">

@@ -8,6 +8,7 @@ import privacyReducer from "../features/privacy/privacySlice";
 import productReducr from "../features/products/productSlice";
 import seekHelpsReducer from "../features/seekHelps/seekHelpsSlice";
 import courseReducer from "../features/services/courseSlice";
+import exerciseReducer from "../features/services/exerciseSlice";
 import guidesReducer from "../features/services/guidesSlice";
 import resourceSlice from "../features/services/resourceSlice";
 import servicesReducer from "../features/services/servicesSlice";
@@ -21,6 +22,7 @@ export const store = configureStore({
     wellness: wellnessReducer,
     services: servicesReducer,
     courses: courseReducer,
+    exercise: exerciseReducer,
     resources: resourceSlice,
     guides: guidesReducer,
     coaches: coachReducer,

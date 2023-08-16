@@ -88,6 +88,19 @@ function ServiceTabs() {
         >
           Wellness
         </button>
+        <button
+          type="button"
+          className={`border-b-2 border-transparent hs-tab-active:border-b-primaryColor hs-tab-active:text-primaryColor py-2 px-4 inline-flex items-center ${
+            activeTab === "exercise" ? "active" : ""
+          }`}
+          id="tabs-with-underline-item-6"
+          data-hs-tab="#tabs-with-underline-6"
+          aria-controls="tabs-with-underline-6"
+          role="tab"
+          onClick={() => handleTab("exercise")}
+        >
+          Exercise
+        </button>
       </nav>
     </div>
   );
