@@ -2,18 +2,30 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{html,js,ts,jsx,tsx}",
     "node_modules/preline/dist/*.js",
   ],
   theme: {
+    scrollbar: ["rounded"],
+
     colors: {
       transparent: "transparent",
       disabled: "rgba(0, 0, 0, 0.04)",
+      overlay: "rgba(0, 0, 0, 0.45)",
 
       successColor: "#2CC672",
+      greenColor: "#00AE5B",
+
+      redColor: "#FF4646",
+
       primaryColor: "#005959",
       secondaryColor: "#F3BDB6",
+      secondaryLight: "#FFEFEB",
+
       errorColor: "#FF6B6B",
+      errorLightColor: "#FD5D5D",
+      errorLowColor: "#FFEDED",
+
       warningColor: "#FF9F43",
       infoColor: "#54A0FF",
       alertColor: "#FECA57",
@@ -50,25 +62,34 @@ export default {
       darkSemi: "#424242",
       darkMid: "#484848",
 
-      blueLight: "EAEDF7",
+      blueLight: "#EAEDF7",
 
       aqua: "#E0EBEC",
       aquaHigh: "#E8E8E8",
+      aquaLight: "#E6EFEF",
 
       fade: "#F7F6F4",
       fadeHigh: "#9E9E9E",
       fadeSemi: "#919191",
       fadeMid: "#d9d9d9",
-      fadeMid: "#d9d9d9",
+      fadeReg: "#BDBDBD",
 
       white: "#fff",
       whiteHigh: "#F5F5F5",
       whiteSemi: "#FAFAFA",
     },
 
-    // fontFamily: {
-    //   mont: ["Montserrat", "sans-serif"],
-    // },
+    boxShadow: {
+      lg: "0px 4px 32px 0px rgba(0, 0, 0, 0.08)",
+      sm: "0px 2px 4px 0px rgba(28, 41, 90, 0.04)",
+    },
+
+    fontFamily: {
+      mont: ["Montserrat", "sans-serif"],
+    },
+    backgroundImage: {
+      authBg: "url('./assets/images/authBg.png')",
+    },
   },
   plugins: [require("daisyui"), require("preline/plugin")],
   daisyui: {

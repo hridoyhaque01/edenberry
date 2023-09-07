@@ -16,7 +16,7 @@ function DashboardTabs() {
           aria-controls="tabs-with-underline-1"
           role="tab"
         >
-          Sales by Date
+          Sales By Date
         </button>
         <button
           type="button"
@@ -26,16 +26,6 @@ function DashboardTabs() {
           role="tab"
         >
           Customers
-        </button>
-        <button
-          type="button"
-          className="border-b-2 border-transparent hs-tab-active:border-b-primaryColor hs-tab-active:text-primaryColor py-2 px-4 inline-flex items-center"
-          id="tabs-with-underline-item-3"
-          data-hs-tab="#tabs-with-underline-3"
-          aria-controls="tabs-with-underline-3"
-          role="tab"
-        >
-          Stock
         </button>
       </nav>
     </div>

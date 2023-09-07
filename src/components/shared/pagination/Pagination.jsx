@@ -6,7 +6,7 @@ export const Pagination = ({
   totalRows,
 }) => {
   const handleIncrement = () => {
-    if (currentPage * rowsPerPage > totalRows) {
+    if (currentPage * rowsPerPage >= totalRows) {
       return;
     } else {
       setCurrentPage((prev) => prev + 1);
@@ -20,8 +20,6 @@ export const Pagination = ({
       setCurrentPage((prev) => prev - 1);
     }
   };
-
-  // console.log(totalRows);
 
   const handleItemsPerPage = (value) => {
     setCurrentPage(1);

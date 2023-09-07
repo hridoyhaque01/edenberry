@@ -1,16 +1,15 @@
 import React from "react";
-import Customers from "../../components/dashboardComponents/Customers";
-import Sales from "../../components/dashboardComponents/Sales";
-import Stockes from "../../components/dashboardComponents/Stockes";
 import DashboardTabs from "../../components/shared/tabs/DashboardTabs";
-import Title from "../../components/shared/titles/Title";
+import CustomerTable from "../../components/tables/CustomerTable";
+import Sales from "./Sales";
 
 function Dashboard() {
+  // const { userData } = useSelector((state) => state.auth);
+
   return (
     <div className="h-full flex flex-col gap-8 py-8">
-      <Title></Title>
       <DashboardTabs></DashboardTabs>
-      <div className="mt-3">
+      <div className="mt-3 h-full">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
@@ -20,19 +19,11 @@ function Dashboard() {
         </div>
         <div
           id="tabs-with-underline-2"
-          className="hidden"
+          className="hidden h-full"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-2"
         >
-          <Customers></Customers>
-        </div>
-        <div
-          id="tabs-with-underline-3"
-          className="hidden"
-          role="tabpanel"
-          aria-labelledby="tabs-with-underline-item-3"
-        >
-          <Stockes></Stockes>
+          <CustomerTable></CustomerTable>
         </div>
       </div>
     </div>
